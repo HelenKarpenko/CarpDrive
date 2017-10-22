@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><%= folder.name %></title>
+	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
+	<script>
+        function imgError(image) {
+            image.onerror = "";
+            image.src = "/images/folder.png";
+            return true;
+        }
+	</script>
+</head>
+<body>
+
+<div class="title">
+		<a href="/folders" target="_self">
+			<img src="/images/back.png" alt="Back" title="Back">
+		</a>
+    <div><%= folder.name %></div>
+</div>
+
+<div class="catalog">
+	<%for(let f of folders){ %>
+	<div class="item">
+		<a href="/folders/f<%=f.id%>" target="_self">
+			<img src="/images/<%=f.img%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
+		</a>
+	</div>
+	<%}%>
+</div>
+
+<div class="info">
+	<img src="/images/<%=folder.img%>" alt="Folder" onerror="imgError(this)">
+	<table>
+		<tr>
+			<td>Name</td>
+			<td><b><%= folder.name %></b></td>
+		</tr>
+		<tr>
+			<td>Type</td>
+			<td><b><%= folder.type %></b></td>
+		</tr>
+		<tr>
+			<td>Size</td>
+			<td><b><%= folder.size %></b></td>
+		</tr>
+		<tr>
+			<td>Location</td>
+			<td><b><%= folder.location %></b></td>
+		</tr>
+		<tr>
+			<td>Owner</td>
+			<td><b><%= folder.owner %></b></td>
+		</tr>
+		<tr>
+			<td>Modified</td>
+			<td><b><%= folder.modified %></b></td>
+		</tr>
+		<tr>
+			<td>Created</td>
+			<td><b><%= folder.created %></b></td>
+		</tr>
+	</table>
+	<p><%= folder.description %></p>
+</div>
+</body>
+</html>
+
+
