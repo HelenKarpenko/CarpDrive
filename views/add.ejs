@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Add new folder</title>
+	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="header">
+	<span id="back_wrapper">
+		<a href="/folders" target="_self">
+			<img src="/images/back.png" alt="Back" title="Back">
+		</a>
+	</span>
+	<span id="title_wrapper">
+		Create new folder
+	</span>
+
+</div>
+<div class="main">
+	<form action="/folders/add" method="POST" enctype="multipart/form-data">
+		<div id="info_wrapper">
+			<div class="mainInfo">
+				<label>Image</label><br>
+				<input type='file' name="img" id="img" required><br>
+				<label>Name</label><br>
+				<input type="text" id="name" name="name" placeholder="Name" required><br>
+				<label>Type</label><br>
+				<select id="type" name="type">
+					<option id="sheets" value="Sheets" selected >Sheets</option>
+					<option id="docs" value="Docs">Docs</option>
+					<option id="folder" value="Folder">Folder</option>
+					<option id="pdf" value="PDF" selected >PDF</option>
+					<option id="compressedArchive" value="Compressed Archive">Compressed Archive</option>
+					<option id="slides" value="Slides">Slides</option>
+				</select><br>
+				<label>Size</label><br>
+				<input type="number" name="size" min="0" max="1000" step="1" id="size" onchange="changeRange()" value="0"/><br>
+				<label>Location</label><br>
+				<input type="text" id="location" name="location" value="" required><br>
+				<label>Owner</label><br>
+				<input type="text" id="owner" name="owner" value="" required><br>
+			</div>
+			<div class="description">
+				<label>Description</label><br>
+				<textarea name="description" id="text"></textarea><br>
+			</div>
+		</div>
+		<input type="submit" value="Create" id="createB"/>
+	</form>
+</div>
+</body>
+</html>
