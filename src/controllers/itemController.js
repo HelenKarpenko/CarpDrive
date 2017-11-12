@@ -65,7 +65,11 @@ async function getAllChildren(id) {
         console.log(item);
         let allChildren = [];
         for (let fid of item.children) {
-            allChildren.push(Item.getById(fid));
+            console.log(fid);
+            let child=await Item.findById(fid).exec();
+            if(child){
+            allChildren.push(child);
+            }
         }
         return Promise.all(allChildren);
     }catch(err){

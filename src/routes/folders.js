@@ -6,22 +6,22 @@ const userCtrl = require('../controllers/usersController');
 const utilties = require('../utilities/utilities');
 var router = express.Router();
 
-router.get('/f:id',function(req, res, next) {
-    Promise.all([
-        itemCtrl.getAll(),
-        itemCtrl.getById(req.params.id)
-    ])
-        .then(([p1, p2]) => {
-        res.render('f',
-            {
-                folders: p1,
-                folder: p2,
-            })
-    })
-        .catch(err => {
-            utilties.error(500,"Some error at server, when search folder by id",next);
-        })
-});
+// router.get('/f:id',function(req, res, next) {
+//     Promise.all([
+//         itemCtrl.getAll(),
+//         itemCtrl.getById(req.params.id)
+//     ])
+//         .then(([p1, p2]) => {
+//         res.render('folder',
+//             {
+//                 folders: p1,
+//                 folder: p2,
+//             })
+//     })
+//         .catch(err => {
+//             utilties.error(500,"Some error at server, when search folder by id",next);
+//         })
+// });
 
 router.get('/f:id/add',function(req, res, next) {
     res.render('add', {folder: req.params.id});
@@ -46,11 +46,42 @@ router.get('/', function (req, res, next) {
         .then(data => {
             let args = utilties.paginate(data, (req.query.page) ? req.query.page : 1);
             args.user = req.user;
-            res.render('folders', args,)
+            res.render('folders', args)
         })
         .catch(err => {throw err});
 });
 
+// router.get('/f:id',function(req, res, next) {
+//     Promise.all([
+//         itemCtrl.getById(req.params.id),
+//         itemCtrl.getAllChildren(req.params.id)
+//     ])
+//         .then(([p1, p2]) => {
+//             res.render('f',
+//                 {
+//                     parent: p1,
+//                     children: p2,
+//                 })
+//         })
+//         .catch(err => {
+//             utilties.error(500,"Some error at server, when search folder by id",next);
+//         })
+// });
 
+﻿router.get('/f:id', async (req, res,next) => {
+        try {
+            let children = await itemCtrl.getAllChildren(req.params.id);
+            console.log("!!!"+ children);
+            let parent = await itemCtrl.getById(req.params.id);
+            console.log("+++++++"+parent.parent)
+            res.render('f', {
+                children: children,
+                curr: parent,
+            });
+        }catch (e){
+            console.log("!!!!!!!"+e);
+            next(e);
+        }
+    });
 
 module.exports = router;

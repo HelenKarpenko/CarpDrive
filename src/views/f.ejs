@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title><%= folder.name %></title>
+	<title><%= curr.name %></title>
 	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
 	<script>
         function imgError(image) {
@@ -13,80 +13,47 @@
 	</script>
 </head>
 <body>
-<div id="folder_wrapper">
 
-	<div id="title_info">
+<div class="header">
+		<span id="back_wrapper">
+			<%if(curr.parent=="5a088662347adc2a45b446e6"){%>
+			<a href="/folders" target="_self">
+				<img src="/images/back.png" alt="Back" title="Back">
+			</a>
+			<%}else{%>
+			<a href="/folders/f<%=curr.parent%>" target="_self">
+				<img src="/images/back.png" alt="Back" title="Back">
+			</a>
+			<%}%>
+		</span>
+	<span id="title_wrapper">
+			Current folder: <%= curr.name%> <%=(curr.id)%>
+		</span>
+</div>
 
-		<div class="title">
-			<span id="back_wrapper">
-				<a href="/folders" target="_self">
-					<img src="/images/back.png" alt="Back" title="Back">
-				</a>
-			</span>
-			<span id="title_wrapper">
-				<%= folder.name %>
-			</span>
-		</div>
-
-		<div class="info">
-
-			<div id="search_add">
-				<form action="./f<%=folder.id%>/add" method="get">
-					<button id="add" type="submit">
-					</button>
-				</form>
-			</div>
-
-
-			<img src="/res/images/<%=folder.img%>" alt="Folder" onerror="imgError(this)">
-			<table>
-				<tr>
-					<td>Name</td>
-					<td><b><%= folder.name %></b></td>
-				</tr>
-				<tr>
-					<td>Type</td>
-					<td><b><%= folder.contentType %></b></td>
-				</tr>
-				<tr>
-					<td>Size</td>
-					<td><b><%= folder.size %></b></td>
-				</tr>
-				<tr>
-					<td>Location</td>
-					<td><b><%= folder.location %></b></td>
-				</tr>
-				<tr>
-					<td>Owner</td>
-					<td><b><%= folder.owner %></b></td>
-				</tr>
-				<tr>
-					<td>Modified</td>
-					<td><b><%= folder.info.modified %></b></td>
-				</tr>
-				<tr>
-					<td>Created</td>
-					<td><b><%= folder.info.created %></b></td>
-				</tr>
-			</table>
-			<p><%= folder.description %></p>
-
-			<div>
-				<br>
-				<h2>children</h2>
-
-                <%for(let f of folder.children){%>
-				<h5><%=f%></h5>
-                <%}%>
-
-			</div>
-
-		</div>
-
-
+<div class="main">
+	<div id="search_add">
+		<form action="/folders/f<%= curr.id %>/add/" method="get">
+			<button id="add" type="submit">
+			</button>
+		</form>
 	</div>
 
+	<div class="flex">
+        <% if(children.length === 0){%>
+		There are no folders
+        <%}else{%>
+        <%for(let f of children){ %>
+		<div class="item">
+			<a href="/folders/f<%=f.id%>" target="_self">
+				<img src="/res/images/<%=f.img%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
+			</a>
+		</div>
+        <%}%>
+        <%}%>
+	</div>
 </div>
+
 </body>
 </html>
 
