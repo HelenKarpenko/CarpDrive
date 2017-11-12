@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><%= file.name %></title>
+	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
+	<script>
+        function imgError(image) {
+            image.onerror = "";
+            image.src = "/images/folder.png";
+            return true;
+        }
+	</script>
+</head>
+<body>
+
+<div class="header">
+		<span id="back_wrapper">
+            <%if(file.parent==null){%>
+			<a href="/" target="_self">
+				<img src="/images/back.png" alt="Back" title="Back">
+			</a>
+            <%}else{%>
+			<a href="/folders/f<%=file.parent%>" target="_self">
+				<img src="/images/back.png" alt="Back" title="Back">
+			</a>
+            <%}%>
+		</span>
+	<span id="title_wrapper">
+			Current File: <%= file.name%> <%=(file.id)%>
+		</span>
+</div>
+
+<div class="main">
+	<img src="/res/images/<%=file.data%>" alt="<%=file.name%>" onerror="imgError(this)"> <%=file.name%>
+</div>
+
+</body>
+</html>
+
+

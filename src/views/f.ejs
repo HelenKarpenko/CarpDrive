@@ -53,15 +53,15 @@
 		There are no folders
         <%}else{%>
         <%for(let f of children){ %>
-		<!--<%=f._id%><br>-->
 		<div class="item">
-			<a href="/folders/f<%=f.id%>" target="_self">
 				<!--<img src="/res/images/<%=f.data%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>-->
-				<%if(f.isFile){%>
+			<%if(f.isFile){%>
+				<a href="/folders/a<%=f.id%>" target="_self">
 				<img src="/images/filePNG.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
-                <%}else{%>
+			<%}else{%>
+				<a href="/folders/f<%=f.id%>" target="_self">
 				<img src="/images/folder.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%> <%=f.children.folders.length + f.children.files.length%>
-				<%}%>
+			<%}%>
 
 				<!--<img src="/res/images/<%=f.data%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>-->
 

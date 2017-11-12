@@ -148,4 +148,16 @@ router.post('/f:id/addFile',async function (req, res, next) {
     res.redirect('/folders/f'+req.params.id);
 })
 
+router.get('/a:id', async (req, res,next) => {
+    try {
+        let file = await fileCtrl.getById(req.params.id)
+        res.render('file', {
+            file: file,
+        });
+    }catch (e){
+        console.log(e);
+        next(e);
+    }
+});
+
 module.exports = router;
