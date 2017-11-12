@@ -19,7 +19,17 @@
 
 </div>
 <div class="main">
-	<form action="/folders/f<%=folder%>/add" method="POST" enctype="multipart/form-data">
+    <!--<% if(!isFile){ %>-->
+	<!--<form action="/folders/addFolder" method="POST" enctype="multipart/form-data">-->
+        <!--<% }else{ %>-->
+		<!--<form action="/folders/addFile" method="POST" enctype="multipart/form-data">-->
+            <!--<% } %>-->
+
+	<% if(!isFile){ %>
+		<form action="/folders/f<%=folder%>/addFolder" method="POST" enctype="multipart/form-data">
+	<% }else{ %>
+		<form action="/folders/f<%=folder%>/addFile" method="POST" enctype="multipart/form-data">
+	<% } %>
 		<div id="info_wrapper">
 			<div class="mainInfo">
 				<label>Image</label><br>

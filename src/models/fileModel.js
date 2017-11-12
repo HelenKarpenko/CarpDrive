@@ -1,8 +1,9 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
-let folderSchema = new Schema({
+let fileSchema = new Schema({
     name: String,
+    data: Schema.Types.ObjectId,
     owner: String,
     // owner: Schema.Types.ObjectId,
     sharedWith : [
@@ -17,10 +18,7 @@ let folderSchema = new Schema({
         description: String,
     },
     parent: Schema.Types.ObjectId,
-    children: {
-        folders: [Schema.Types.ObjectId],
-        files: [Schema.Types.ObjectId]
-    }
+    isFile: Boolean,
 });
 
-module.exports = mongoose.model('Folder', folderSchema);
+module.exports = mongoose.model('File', fileSchema);

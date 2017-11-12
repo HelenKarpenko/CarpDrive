@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
 let User = require('../models/userModel');
-let folderCtrl = require('./folderController');
+let folderCtrl = require('./lenafolderController');
 
 mongoose.Promise = global.Promise;
 

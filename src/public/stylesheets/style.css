@@ -160,24 +160,19 @@ input#search{
 
 }
 
-#search_add{
+#add{
     position: relative;
     display: inline-block;
-    /*height: 50px;*/
-    /*width: 100%;*/
     margin: auto;
-    /*margin: 20px;*/
-    /*!*right: 0px;*!*/
     display: -webkit-inline-box;
 }
 
-#search_add img{
+#add img{
     width: 49%;
     height: 49%;
-    /*background-color: #ec3d24;*/
 }
 
-#search_add button:hover {
+#add button:hover {
     transform: scale(1.1,1.1);
 }
 
@@ -322,11 +317,21 @@ hr{
     background-position: center;
     padding: 25px;
 }
-#add{
+#addFolder{
     border: 0;
     background: transparent;
     margin: 10px;
-    background-image: url("../images/add.png");
+    background-image: url("../images/addFolder.png");
+    background-size: cover;
+    background-position: center;
+    padding: 25px;
+}
+
+#addFile{
+    border: 0;
+    background: transparent;
+    margin: 10px;
+    background-image: url("../images/addFile.png");
     background-size: cover;
     background-position: center;
     padding: 25px;

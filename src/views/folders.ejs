@@ -25,18 +25,43 @@
 </div>
 
 <div class="main">
-	<div id="search_add">
-		<form action="/folders/f0/add/" method="get">
-			<button id="add" type="submit">
+	<!--<div id="add">-->
+		<!--<form action="/folders/f0/addFolder/" method="get">-->
+			<!--<button id="addFolder" type="submit">-->
+			<!--</button>-->
+		<!--</form>-->
+		<!--<form action="/folders/f0/addFile/" method="get">-->
+			<!--<button id="addFile" type="submit">-->
+			<!--</button>-->
+		<!--</form>-->
+	<!--</div>-->
+
+
+	<div id="add">
+		<form action="/folders/addFolder/" method="get">
+			<button id="addFolder" type="submit">
+			</button>
+		</form>
+		<form action="/folders/addFile/" method="get">
+			<button id="addFile" type="submit">
 			</button>
 		</form>
 	</div>
 
 	<div class="flex">
-		<% if(items.length === 0){%>
+		<% if((folders.length + files.length) === 0){%>
 			There are no folders
 		<%}else{%>
-			<%for(let f of items){ %>
+			<%for(let f of folders){ %>
+			<div class="item">
+				<%if(f.parent == null){%>
+				<a href="/folders/f<%=f.id%>" target="_self">
+					<img src="/res/images/<%=f.img%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
+				</a>
+				<%}%>
+			</div>
+			<%}%>
+			<%for(let f of files){ %>
 			<div class="item">
 				<%if(f.id == "5a0886ffb6ed6b2a55c0d8d2"){%>
 				<a href="/folders/f<%=f.id%>" target="_self">
@@ -45,20 +70,9 @@
 				<%}%>
 			</div>
 			<%}%>
-        <%}%>
+		<%}%>
 	</div>
 
-	<!--<div class="pagination">-->
-        <!--<% if(pageCount >= 1) { %>-->
-		<!--<a <%= currentPage != 1 ? `href=/folders?page=${1}` : "class=active" %>>&laquo;</a>-->
-        <!--<% for(var i = Math.max(1, Number(currentPage - range));  i <= Number(currentPage) + Number(range) & i <= pageCount ;i++){ %>-->
-		<!--<a <%= currentPage != i ? `href=/folders?page=${i}` : "class=active" %>><%= i %></a>-->
-        <!--<% } %>-->
-		<!--<a <%= currentPage != pageCount ? `href=/folders?page=${pageCount}` : "class=active" %>>&raquo;</a>-->
-        <!--<% } else{ %>-->
-		<!--<a class="active">1</a>-->
-        <!--<% } %>-->
-	<!--</div>-->
 </div>
 </body>
 </html>

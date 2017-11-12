@@ -1,87 +1,151 @@
+// var express = require('express');
+// var router = express.Router();
+//
+// const folderCtrl = require('../controllers/folderController');
+// const fileCtrl = require('../controllers/fileController');
+// const imgCtrl = require('../controllers/fileDataController');
+// // const userCtrl = require('../controllers/usersController');
+// const utilties = require('../utilities/utilities');
+//
+// router.get('/', function (req, res, next) {
+//     Promise.all([
+//         fileCtrl.getAll(),
+//         folderCtrl.getAll()
+//     ])
+//         .then(([files, folders]) => {
+//             res.render('folders', {
+//                 files: files,
+//                 folders: folders,
+//             })
+//         })
+//         .catch(err => {throw err});
+// });
+//
+// ﻿router.get('/f:id', async (req, res,next) => {
+//         try {
+//             let children = await folderCtrl.getAllChildren(req.params.id);
+//             let parent = await folderCtrl.getById(req.params.id);
+//             res.render('f', {
+//                 children: children,
+//                 curr: parent,
+//             });
+//         }catch (e){
+//             console.log(e);
+//             next(e);
+//         }
+//     });
+//
+// router.get('/addFolder',function(req, res, next) {
+//     res.render('add', {folder: req.params.id, isFile: false});
+// });
+//
+// router.post('/addFolder',async function (req, res, next) {
+//
+//     await folderCtrl.create(
+//         req.body.name,
+//         req.body.owner,
+//         req.body.description,
+//         req.params.id)
+//         .﻿then(data => {folderCtrl.addChild(req.params.id, data._id)})
+//         .catch(err => utilties.error(500,"Some error at server, when create:"+err,next));
+//
+//     res.redirect('/folders');
+// })
+
+// router.get('/f:id/addFolder',function(req, res, next) {
+//     res.render('add', {folder: req.params.id, isFile: false});
+// });
+//
+// router.post('/f:id/addFolder',async function (req, res, next) {
+//
+//     await folderCtrl.create(
+//         req.body.name,
+//         req.body.owner,
+//         req.body.description,
+//         req.params.id)
+//         .﻿then(data => {folderCtrl.addChild(req.params.id, data._id)})
+//         .catch(err => utilties.error(500,"Some error at server, when create:"+err,next));
+//
+//     res.redirect('/folders/f'+req.params.id);
+// })
+//
+// router.get('/f:id/addFile',function(req, res, next) {
+//     res.render('add', {folder: req.params.id, isFile: true});
+// });
+//
+// router.post('/f:id/addFile',async function (req, res, next) {
+//
+//     await fileCtrl.create(
+//         req.body.name,
+//         req.files.img,
+//         req.body.owner,
+//         req.body.description,
+//         req.params.id)
+//         .﻿then(data => {fileCtrl.addChild(req.params.id, data._id)})
+//         .catch(err => utilties.error(500,"Some error at server, when create:"+err,next));
+//
+//     res.redirect('/folders/f'+req.params.id);
+// })
+//
+
 var express = require('express');
-const folderCtrl = require('../controllers/folderController');
-const itemCtrl = require('../controllers/itemController');
-const imgCtrl = require('../controllers/fileController');
-const userCtrl = require('../controllers/usersController');
-const utilties = require('../utilities/utilities');
 var router = express.Router();
 
-// router.get('/f:id',function(req, res, next) {
-//     Promise.all([
-//         itemCtrl.getAll(),
-//         itemCtrl.getById(req.params.id)
-//     ])
-//         .then(([p1, p2]) => {
-//         res.render('folder',
-//             {
-//                 folders: p1,
-//                 folder: p2,
-//             })
-//     })
-//         .catch(err => {
-//             utilties.error(500,"Some error at server, when search folder by id",next);
-//         })
-// });
+const folderCtrl = require('../controllers/folderController');
+const fileCtrl = require('../controllers/fileController');
+const imgCtrl = require('../controllers/fileDataController');
+// const userCtrl = require('../controllers/usersController');
+const utilties = require('../utilities/utilities');
 
-router.get('/f:id/add',function(req, res, next) {
-    res.render('add', {folder: req.params.id});
+
+﻿router.get('/f:id', async (req, res,next) => {
+    try {
+        let children = await folderCtrl.getAllChildren(req.params.id);
+        let parent = await folderCtrl.getById(req.params.id);
+        res.render('f', {
+            children: children,
+            curr: parent,
+        });
+    }catch (e){
+        console.log(e);
+        next(e);
+    }
 });
 
-router.post('/f:id/add',async function (req, res, next) {
-    console.log("+++++"+ req.params.id)
-    await itemCtrl.create(
+
+router.get('/f:id/addFolder',function(req, res, next) {
+    res.render('add', {folder: req.params.id, isFile: false});
+});
+
+router.post('/f:id/addFolder',async function (req, res, next) {
+
+    await folderCtrl.create(
         req.body.name,
-        req.files.img,
-        false,
         req.body.owner,
         req.body.description,
         req.params.id)
-        .﻿then(data => {itemCtrl.addChild(req.params.id, data._id)})
-        .catch(err=>utilties.error(500,"Some error at server, when create:"+err,next));
-    res.redirect('/folders');
+        .﻿then(data => {folderCtrl.addChild(req.params.id, data._id, false)})
+        .catch(err => utilties.error(500,"Some error at server, when create:"+err,next));
+
+    res.redirect('/folders/f'+req.params.id);
 })
 
-router.get('/', function (req, res, next) {
-    itemCtrl.getAll()
-        .then(data => {
-            let args = utilties.paginate(data, (req.query.page) ? req.query.page : 1);
-            args.user = req.user;
-            res.render('folders', args)
-        })
-        .catch(err => {throw err});
+router.get('/f:id/addFile',function(req, res, next) {
+    res.render('add', {folder: req.params.id, isFile: true});
 });
 
-// router.get('/f:id',function(req, res, next) {
-//     Promise.all([
-//         itemCtrl.getById(req.params.id),
-//         itemCtrl.getAllChildren(req.params.id)
-//     ])
-//         .then(([p1, p2]) => {
-//             res.render('f',
-//                 {
-//                     parent: p1,
-//                     children: p2,
-//                 })
-//         })
-//         .catch(err => {
-//             utilties.error(500,"Some error at server, when search folder by id",next);
-//         })
-// });
+router.post('/f:id/addFile',async function (req, res, next) {
 
-﻿router.get('/f:id', async (req, res,next) => {
-        try {
-            let children = await itemCtrl.getAllChildren(req.params.id);
-            console.log("!!!"+ children);
-            let parent = await itemCtrl.getById(req.params.id);
-            console.log("+++++++"+parent.parent)
-            res.render('f', {
-                children: children,
-                curr: parent,
-            });
-        }catch (e){
-            console.log("!!!!!!!"+e);
-            next(e);
-        }
-    });
+    await fileCtrl.create(
+        req.body.name,
+        req.files.img,
+        req.body.owner,
+        req.body.description,
+        req.params.id)
+        .﻿then(data => {folderCtrl.addChild(req.params.id, data._id, true)})
+        .catch(err => utilties.error(500,"Some error at server, when create:"+err,next));
+
+    res.redirect('/folders/f'+req.params.id);
+})
 
 module.exports = router;

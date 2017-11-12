@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
 let Item = require('../models/itemModel');
-const fileController = require('./fileController')
+const fileController = require('./fileDataController')
 
 mongoose.Promise = global.Promise;
 
@@ -50,7 +50,6 @@ function getByName(name) {
 
 
 function addChild(id, childId) {
-    console.log("ENTER");
     Item.findById(id).exec()
         .then(item => {
                 item.children.push(mongoose.Types.ObjectId(childId));
@@ -62,10 +61,8 @@ function addChild(id, childId) {
 async function getAllChildren(id) {
     try{
         let item = await Item.findById(id).exec();
-        console.log(item);
         let allChildren = [];
         for (let fid of item.children) {
-            console.log(fid);
             let child=await Item.findById(fid).exec();
             if(child){
             allChildren.push(child);

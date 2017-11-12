@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
 let Folder = require('../models/folderModel');
-const imagesController = require('./fileController')
+const file = require('./fileController')
 
 mongoose.Promise = global.Promise;
 
@@ -12,24 +12,25 @@ function connect(url) {
     }
 }
 
-async function create(img,name,size,type,location,owner,description) {
+async function create(name,owner,description, parent) {
     let folder = new Folder({
-        img: await imagesController.save(img),
         name: name,
-        size: size,
-        type: type,
-        location: location,
         owner: owner,
-        description: description
+        sharedWithMe: [],
+        info: {description: description},
+        // parent: null,
+        parent: mongoose.Types.ObjectId(parent),
+        children: {
+            folders: [],
+            files: []
+        },
     });
     return new Promise((resolve,reject) =>{
-        "use strict";
         folder.save(function (err, data) {
             if(err) reject(err);
             else resolve(data);
         });
-    })
-
+    });
 }
 
 function getAll() {
@@ -44,10 +45,48 @@ async function remove(id) {
     return Folder.findByIdAndRemove(id).exec();
 }
 
-
 function getByName(name) {
     let regExp = new RegExp('^'+name, "i");
     return Folder.find({name: regExp}).exec();
+}
+
+
+function addChild(id, childId, isFile) {
+    Folder.findById(id).exec()
+        .then(folder => {
+            if(isFile){
+                console.log("+++"+ file);
+                folder.children.files.push(mongoose.Types.ObjectId(childId));
+            }else{
+                folder.children.folders.push(mongoose.Types.ObjectId(childId));
+            }
+            return folder.save();
+        })
+        .catch(err => console.log(err));
+}
+
+async function getAllChildren(id) {
+    try{
+        let folder = await Folder.findById(id).exec();
+        let allChildren = [];
+        let child;
+        for (let fid of folder.children.folders) {
+            child = await Folder.findById(fid).exec();
+                if(child){
+                    allChildren.push(child);
+                }
+        }
+        for (let fid of folder.children.files) {
+            let child = await file.getById(fid);
+            if(child){
+                allChildren.push(child);
+            }
+        }
+        return Promise.all(allChildren);
+    }catch(err){
+        console.log(err);
+        return []
+    }
 }
 
 module.exports = {
@@ -55,7 +94,8 @@ module.exports = {
     create: create,
     getAll: getAll,
     getById: getById,
-    // update: update,
     remove: remove,
     getByName: getByName,
+    addChild: addChild,
+    getAllChildren: getAllChildren,
 };

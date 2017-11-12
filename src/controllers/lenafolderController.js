@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
-let File = require('../models/fileModel');
-const fileController = require('./fileDataController')
+let Folder = require('../models/folderModel');
+const imagesController = require('./fileDataController')
 
 mongoose.Promise = global.Promise;
 
@@ -12,39 +12,42 @@ function connect(url) {
     }
 }
 
-async function create(name,data,owner,description, parent) {
-    let file = new File({
+async function create(img,name,size,type,location,owner,description) {
+    let folder = new Folder({
+        img: await imagesController.save(img),
         name: name,
-        data: await fileController.save(data),
+        size: size,
+        type: type,
+        location: location,
         owner: owner,
-        sharedWithMe: [],
-        info: {description: description},
-        parent: mongoose.Types.ObjectId(parent),
-        isFile: true
+        description: description
     });
     return new Promise((resolve,reject) =>{
-        file.save(function (err, data) {
+        "use strict";
+        folder.save(function (err, data) {
             if(err) reject(err);
             else resolve(data);
         });
-    });
+    })
+
 }
 
 function getAll() {
-    return File.find().exec();
+    return Folder.find().exec();
 }
 
 function getById(id) {
-    return File.findById(id).exec();
+    return Folder.findById(id).exec();
 }
 
 async function remove(id) {
-    return File.findByIdAndRemove(id).exec();
+    return Folder.findByIdAndRemove(id).exec();
 }
+
 
 function getByName(name) {
     let regExp = new RegExp('^'+name, "i");
-    return File.find({name: regExp}).exec();
+    return Folder.find({name: regExp}).exec();
 }
 
 module.exports = {
@@ -52,6 +55,7 @@ module.exports = {
     create: create,
     getAll: getAll,
     getById: getById,
+    // update: update,
     remove: remove,
     getByName: getByName,
 };
