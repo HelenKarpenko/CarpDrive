@@ -6,17 +6,6 @@
     <link type="text/css" href="/stylesheets/style.css" rel="stylesheet" />
 </head>
 <body>
-<!--<div>-->
-    <!--<% if (user) { %>-->
-    <!--<a href='/profile'>-->
-        <!--<b><%= user.username %></b>-->
-    <!--</a>-->
-    <!--<a href='/logout'>Logout</a>-->
-    <!--<% } else { %>-->
-    <!--<a href='/register'>Register</a>-->
-    <!--<a href='/login'>Login</a>-->
-    <!--<% } %>-->
-<!--</div>-->
 
 <div class="header">
 		<span id="back_wrapper">
@@ -58,11 +47,13 @@
         There are no folders
         <%}else{%>
         <%for(let f of items){ %>
+        <%if (f){%>
         <div class="item">
             <a href="/folders/f<%=f.id%>" target="_self">
                 <img src="/res/images/<%=f.img%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
             </a>
         </div>
+        <%}%>
         <%}%>
         <%}%>
     </div>

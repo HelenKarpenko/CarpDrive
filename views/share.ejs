@@ -2,9 +2,37 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>$Title$</title>
+	<title>Share</title>
+	<script>
+        function imgError(image) {
+            image.onerror = "";
+            image.src = "/images/folder.png";
+            return true;
+        }
+	</script>
 </head>
 <body>
-$END$
+<div id="title">
+	<h1>Share</h1>
+</div>
+<hr>
+<div id="main">
+	<div id="folder">
+		Folder : <%=folder.name%>
+	</div>
+	<hr>
+	<div id="users">
+		<form action="./f<%= folder._id %>/share" method="POST">
+			<select name="users">
+				<%for(let u of users){
+					if(u._id !== admin._id){%>
+						<option value="user" selected><%= u.name %></option>
+					<%}
+				}%>
+			</select>
+			<input type="submit" value="Share"/>
+		</form>
+	</div>
+</div>
 </body>
 </html>
