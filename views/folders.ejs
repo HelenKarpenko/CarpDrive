@@ -19,34 +19,41 @@
 				<img src="/images/back.png" alt="Back" title="Back">
 			</a>
 		</span>
-	<span id="title_wrapper">
+		<span id="title_wrapper">
 			Choose a folder
 		</span>
+		<div id="profile">
+			<a href='/profile' >
+				<%= user.username %>
+				<img src="/images/user.png" alt="" style="vertical-align:middle">
+			</a>
+		</div>
 </div>
 
 <div class="main">
 	<div id="search_add">
-
+        <%if(user.isAdmin){ %>
 		<form action="/folders/add/" method="get">
 			<button id="add" type="submit">
 			</button>
 		</form>
+        <%}%>
 		<form action="/folders/search" method="GET">
 			<input type="text" name="name" id="search" placeholder="Search">
 		</form>
 	</div>
 
 	<div class="flex">
-        <% if(items.length === 0){%>
-		There are no folders
-        <%}else{%>
-        <%for(let f of items){ %>
-		<div class="item">
-			<a href="/folders/f<%=f.id%>" target="_self">
-				<img src="/res/images/<%=f.img%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
-			</a>
-		</div>
-        <%}%>
+		<% if(items.length === 0){%>
+			There are no folders
+		<%}else{%>
+			<%for(let f of items){ %>
+			<div class="item">
+				<a href="/folders/f<%=f.id%>" target="_self">
+					<img src="/res/images/<%=f.img%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
+				</a>
+			</div>
+			<%}%>
         <%}%>
 	</div>
 
@@ -64,4 +71,3 @@
 </div>
 </body>
 </html>
-

@@ -1,110 +1,77 @@
 var express = require('express');
-var router = express.Router();
 let fs = require('fs-promise');
-let document = require('document');
-const folder = require('../modul/folder_storage');
+//﻿const folder = require('../modul/folder_storage');
+const folderCtrl = require('../controllers/folderController');
+const imgCtrl = require('../controllers/imgController');
+const userCtrl = require('../controllers/usersController');
+const utilties = require('../utilities/utilities');
+var router = express.Router();
 
-/* GET users listing. */
-// router.get('/', function(req, res, next) {
-//     res.redirect('/folders/page=1');
-// });
-
-router.get('/f:id', function(req, res, next) {
+router.get('/f:id',utilties.checkAuth, function(req, res, next) {
     Promise.all([
-        folder.getAll(),
-        folder.getById(req.params.id)
+        folderCtrl.getAll(),
+        folderCtrl.getById(req.params.id)
     ])
-        .then(([p1, p2]) => res.render('f', {folders: p1, folder:p2}))
+        .then(([p1, p2]) => {
+        res.render('f',
+            {
+                folders: p1,
+                folder: p2,
+                user: req.user
+            })
+    })
         .catch(err => {
-            console.log("Error: " + err);
-            next();
+            utilties.error(500,"Some error at server, when search folder by id",next);
         })
 });
 
-router.post('/remove/:id', function(req, res, next) {
-    folder.remove(Number(req.params.id))
-        .catch(err => console.error(err));
-    res.redirect('/folders');
+router.post('/remove/:id',utilties.checkAuth, utilties.checkAdmin, function(req, res, next) {
+    folderCtrl.getById(req.params.id).then((folder)=>{
+        folderCtrl.remove(req.params.id).then(()=>{
+            "use strict";
+            imgCtrl.remove(folder.img).then(()=>res.redirect('/folders'));
+        });
+    }).catch(err => utilties.error(500,"Some error at server, when remove",next));
+
 });
 
-router.get('/add', function(req, res, next) {
-    folder.getById(1)
-        .then(data => res.render('add', {folder: data}))
-        .catch(err => {
-            console.log("Error: " + err);
-            next();
+router.get('/add',utilties.checkAuth, utilties.checkAdmin, function(req, res, next) {
+    res.render('add', {});
+});
+
+router.post('/add',utilties.checkAuth, utilties.checkAdmin,function (req, res, next) {
+    folderCtrl.create(
+        req.files.img,
+        req.body.name,
+        req.body.size,
+        req.body.type,
+        req.body.location,
+        req.user.name,
+        req.body.description)
+        .then(data => {
+            userCtrl.addFolder(req.user._id, data._id)
         })
-});
-
-router.post('/add',function (req,res,next) {
-    let imgFile = req.files.img;
-    fs.writeFile("public/images/uploads/"+imgFile.name, imgFile.data);
-    folder.create("uploads/"+imgFile.name, req.body.name, req.body.size, req.body.type, req.body.location, req.body.owner, req.body.description)
-        .catch(err => console.error(err));
+        .catch(err=>utilties.error(500,"Some error at server, when create",next));
     res.redirect('/folders');
 })
 
-// router.get('/search' , function (req, res, next){
-//     folder.getAll()
-//         .then(data => {
-//             let folders = [];
-//             for(let f of data){
-//                 if(f.name === req.query.name){
-//                     folders.push(f);
-//                 }
-//             }
-//     console.log('>>>>> folders = '+JSON.stringify(folders));
-//             res.redirect('/folders/search/page=1');
-//             res.render('search', {folders: folders})
-//         })
-//         .catch(err => {
-//             console.log("Error: " + err);
-//             next();
-//         })
-// });
-router.get('/search/', function (req, res, next) {
-    console.log("++++++++++++++++++ /search/page="+ req.params.page)
-    folder.getAll()
+router.get('/search/',utilties.checkAuth, function (req, res, next) {
+    folderCtrl.getByName(req.query.name)
         .then(data => {
-            let folders=data.filter((e)=>{return e.name.toLowerCase().startsWith(req.query.name.toLowerCase())});
-            console.log('>>>>> folders = '+JSON.stringify(folders));
-            res.render('search', paginate(folders, (req.query.page)?req.query.page:1,`&name=${req.query.name}`));
-        })
-        .catch(err => {
-            console.log("Error: " + err);
-            next();
-        })
+            let args = utilties.paginate(data, (req.query.page)?req.query.page:1);
+            args.user = req.user;
+            res.render('folders', args)})
+        .catch(err => {throw err});
 });
 
-router.get('/', function (req, res, next) {
-    folder.getAll()
-        .then(data => res.render('folders', paginate(data, (req.query.page)?req.query.page:1),))
-        .catch(err => {
-            console.log("Error: " + err);
-            next();
-        });
+router.get('/', utilties.checkAuth, function (req, res, next) {
+    folderCtrl.getAll()
+        .then(data => {
+            let args = utilties.paginate(data, (req.query.page) ? req.query.page : 1);
+            args.user = req.user;
+            res.render('folders', args,)
+        })
+        .catch(err => {throw err});
 });
-
-const itemsCount = 4;
-const pagesRange = 4;
-
-function paginate(items, page,subURL) {
-    let args = {};
-    let startItem = (page - 1) * itemsCount;
-    args.pageCount = Math.trunc(items.length / itemsCount) + ((items.length % itemsCount > 0) ? 1 : 0);
-    args.items = items.slice(startItem, startItem + itemsCount);
-    args.currentPage = page;
-    args.range = pagesRange;
-    args.subURL=subURL;
-    console.log('========================================')
-    console.log('>>>>> args.pageCount = '+args.pageCount);
-    console.log('>>>>> args.items = '+JSON.stringify(args.items));
-    console.log('>>>>> args.currentPage = '+args.currentPage);
-    console.log('>>>>> args.range = '+args.range);
-
-    return args;
-}
-
-
 
 module.exports = router;

@@ -16,13 +16,13 @@
 <div id="folder_wrapper">
 
 	<div class="catalog">
-        <%for(let f of folders){ %>
+		<%for(let f of folders){ %>
 		<div class="item">
 			<a href="/folders/f<%=f.id%>" target="_self">
 				<img src="/res/images/<%=f.img%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
 			</a>
 		</div>
-        <%}%>
+		<%}%>
 	</div>
 
 	<div id="title_info">
@@ -35,10 +35,16 @@
 			<span id="title_wrapper">
 				<%= folder.name %>
 			</span>
+			<div id="profile">
+				<a href='/profile' >
+                    <%= user.username %>
+					<img src="/images/user.png" alt="" style="vertical-align:middle">
+				</a>
+			</div>
 		</div>
 		<div class="info">
 			<div id="search_add">
-
+                <%if(user.isAdmin){%>
 				<form action="./remove/<%=folder.id%>" method="post">
 					<button id="remove" type="submit">
 					</button>
@@ -47,6 +53,7 @@
 					<button id="add" type="submit">
 					</button>
 				</form>
+                <%}%>
 				<form action="/folders/search" method="GET">
 					<input type="text" name="name" id="search" placeholder="Search">
 				</form>
@@ -89,3 +96,5 @@
 </div>
 </body>
 </html>
+
+
