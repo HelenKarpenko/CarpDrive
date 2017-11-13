@@ -112,6 +112,24 @@ const utilties = require('../utilities/utilities');
     }
 });
 
+router.get('/search/', async (req, res, next) => {
+    try {
+        let dirTree = await folderCtrl.getAllChildrenJSON('5a08c6845cbcad3021b58be7');
+        let parent = {
+            name: "SEARCH"
+        }
+        let items = await folderCtrl.getByName(req.query.name)
+        res.render('f', {
+            dirTree: dirTree,
+            curr: parent,
+            items: items,
+        });
+    }catch (e){
+        console.log(e);
+        next(e);
+    }
+});
+
 router.get('/f:id/addFolder',function(req, res, next) {
     res.render('add', {folder: req.params.id, isFile: false});
 });
