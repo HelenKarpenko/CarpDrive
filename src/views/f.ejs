@@ -17,6 +17,7 @@
 <body>
 
 <div id="folder_wrapper">
+
     <div class="catalog">
         <ul>
             <%include buildTree.ejs%>
@@ -32,6 +33,7 @@
             });
         </script>
     </div>
+
     <div id="title_info">
         <div class="title">
 			<span id="back_wrapper">
@@ -40,7 +42,7 @@
 				</a>
 			</span>
             <span id="title_wrapper">
-				ghjhgh
+                <%= curr.name %>
 			</span>
             <!--<div id="profile">-->
             <!--<a href='/profile' >-->
@@ -49,10 +51,10 @@
             <!--</div>-->
         </div>
         <div class="info">
-            <div id="search_add">
-
                 <div id="add">
-
+                    <form action="/folders/search" method="GET">
+                        <input type="text" name="name" id="search" placeholder="Search">
+                    </form>
                     <div id="add">
                         <form action="/folders/f<%= curr.id %>/addFolder/" method="get">
                             <button id="addFolder" type="submit">
@@ -65,31 +67,45 @@
                     </div>
 
                     <div id="add">
+                        <form action="/folders/f<%= curr.id %>/removeAll/" method="post">
+                            <button id="removeAll" type="submit">
+                            </button>
+                        </form>
                         <form action="/folders/f<%= curr.id %>/removeFolder/" method="post">
                             <button id="removeFolder" type="submit">
                             </button>
                         </form>
-                        <form action="/folders/f<%= curr.id %>/removeFile/" method="post">
-                            <button id="removeFile" type="submit">
-                            </button>
-                        </form>
+                        <!--<form action="/folders/f<%= curr.id %>/removeFile/" method="post">-->
+                            <!--<button id="removeFile" type="submit">-->
+                            <!--</button>-->
+                        <!--</form>-->
                     </div>
-
-                </div>
-                <!--<form action="./remove/" method="post">-->
-                <!--<button id="remove" type="submit">-->
-                <!--</button>-->
-                <!--</form>-->
-                <!--<form action="./add/" method="get">-->
-                <!--<button id="add" type="submit">-->
-                <!--</button>-->
-                <!--</form>-->
-                <!--<form action="/folders/search" method="GET">-->
-                <!--<input type="text" name="name" id="search" placeholder="Search">-->
-                <!--</form>-->
             </div>
 
-        </div>
+
+            <div class="flex">
+                <% if(items.length === 0){%>
+
+                There are no folders
+
+                <%}else{%>
+
+                    <%for(let f of items){%>
+                    <div class="item">
+                        <%if(f.isFile){%>
+                        <a href="/folders/a<%=f.id%>" target="_self">
+                            <img src="/images/filePNG.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
+                        </a>
+                            <%}else{%>
+                            <a href="/folders/f<%=f.id%>" target="_self">
+                                <img src="/images/folder.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%> <%=f.children.folders.length + f.children.files.length%>
+                                <%}%>
+                            </a>
+                    </div>
+                    <%}%>
+                <%}%>
+
+
     </div>
 
 </div>

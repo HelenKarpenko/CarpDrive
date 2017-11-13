@@ -75,84 +75,53 @@ folderSchema.pre('remove',async function (next) {
     next();
 })
 
-//1 method get childrens [{..},{..}]
+
 folderSchema.methods.getAllFiles = async function () {
     console.log('get all FILES',this.id,this.name);
     let children_ids = [];
-    //collect promises
-    this.children.files.forEach((fid)=> children_ids.push(file.getById(fid)));
-    //run promises
-    let child_files=await Promise.all(children_ids);
+    this.children.files.forEach((fid) => children_ids.push(file.getById(fid)));
+    let child_files = await Promise.all(children_ids);
 
-    let children=[];
-    child_files.forEach((file_child)=>{
-        if(file_child){
+    let children = [];
+    child_files.forEach((file)=>{
+        if(file){
             children.push({
-                name:file_child.name,
-                id:file_child.id,
-                type:'file'
+                name: file.name,
+                id: file.id,
+                isFile: true
             });
         }
     });
-
     return children;
 }
-
 folderSchema.methods.getAllFolders = async function () {
     const folder_c = require('../controllers/folderController');
+
     console.log('get all FOLDER',this.id,this.name);
+
     let children_ids = [];
-    //collect promises
+
     this.children.folders.forEach((fid)=> children_ids.push(folder_c.getById(fid)));
-    //run promises
-    let child_folders=await Promise.all(children_ids);
-    //get new trees
-    let child_trees_promise=[];
-    //push promise to array
-    child_folders.forEach((folder)=> child_trees_promise.push(folder.getAllChildren()));
-    //collect sub trees of each child-folder
-    let child_trees=await Promise.all(child_trees_promise);
-    //collect this children
-    // let children=[];
-    // child_trees.forEach((folder_child,i)=>{
-    //     if(folder_child){
-    //         children.push({
-    //
-    //             items:child_trees[i]
-    //         });
-    //     }
-    // });
+    let child_folders = await Promise.all(children_ids);
+
+    let child_trees_promise = [];
+    child_folders.forEach((folder) => child_trees_promise.push(folder.getAllChildren()));
+    let child_trees = await Promise.all(child_trees_promise);
 
     return child_trees;
-    // let children = [];
-    // for(let fid of this.children.folder){
-    //     child = await folder_c.getById(fid);
-    //     if(child){
-    //         children.push({
-    //             isFile: false,
-    //             data: child
-    //         });
-    //     }
-    // }
-    // return Promise.all(children);
 }
-
-
 folderSchema.methods.getAllChildren = async function () {
     console.log('getAll call',this.id,this.name);
-    let promises=[this.getAllFolders(),this.getAllFiles()];
-    console.log(promises);
-    let result=await Promise.all(promises);
 
-    let items=result[0].concat(result[1]);
+    let promises = [this.getAllFolders(),this.getAllFiles()];
+    let result = await Promise.all(promises);
+    let items = result[0].concat(result[1]);
     return {
-        name:this.name,
-        id:this.id,
-        type:'folder',
-        items:items
+        name: this.name,
+        id: this.id,
+        isFile: false,
+        items: items
     };
 }
-//2 method get child {type:.., items:[]}
-
 
 module.exports = mongoose.model('Folder', folderSchema);

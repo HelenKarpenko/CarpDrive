@@ -98,14 +98,13 @@ const utilties = require('../utilities/utilities');
 
 ﻿router.get('/f:id', async (req, res,next) => {
     try {
-        console.log(req.params.id);
-        let children = await folderCtrl.getAllChildren(req.params.id);
-        console.log("_____"+JSON.stringify(children,undefined,2));
+        let dirTree = await folderCtrl.getAllChildrenJSON('5a08c6845cbcad3021b58be7');
         let parent = await folderCtrl.getById(req.params.id);
-
+        let items = await folderCtrl.getAllItems(req.params.id)
         res.render('f', {
-            children: children,
+            dirTree: dirTree,
             curr: parent,
+            items: items,
         });
     }catch (e){
         console.log(e);
@@ -172,12 +171,25 @@ router.post('/f:id/removeFile',function(req, res, next) {
         .catch(err => utilties.error(500,"Some error at server, when remove",next));
 });
 
-router.post('/f:id/removeFolder',function(req, res, next) {
+router.post('/f:id/removeAll',function(req, res, next) {
     folderCtrl.getById(req.params.id)
         .then(folder => {
             folderCtrl.removeAll(req.params.id)
                 .then(()=>{
                     res.redirect('/folders/f'+req.params.id);
+                })
+
+        })
+        .catch(err => utilties.error(500,"Some error at server, when remove",next));
+});
+
+router.post('/f:id/removeFolder',function(req, res, next) {
+    folderCtrl.getById(req.params.id)
+        .then(folder => {
+            folderCtrl.removeAll(req.params.id)
+                .then(()=>{
+                    folderCtrl.remove(req.params.id)
+                        .then(()=>res.redirect('/folders/f'+folder.parent));
                 })
 
         })

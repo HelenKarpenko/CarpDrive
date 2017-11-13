@@ -43,10 +43,6 @@ async function remove(id) {
     let file= await getById(id);
     if(file)
     return file.remove();
-    // return File.findByIdAndRemove(id).exec();
-        // .then(data => {
-        //     return fileController.remove(data.data)
-        // })
 }
 
 function getByName(name) {

@@ -106,27 +106,27 @@
 
 	</div>
 
-	<!--<div class="flex">-->
-	<!--<% if(children.length === 0){%>-->
-	<!--There are no folders-->
-	<!--<%}else{%>-->
-	<!--<%for(let f of children){ %>-->
-	<!--<div class="item">-->
-	<!--&lt;!&ndash;<img src="/res/images/<%=f.data%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>&ndash;&gt;-->
-	<!--<%if(f.isFile){%>-->
-	<!--<a href="/folders/a<%=f.id%>" target="_self">-->
-	<!--<img src="/images/filePNG.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>-->
-	<!--<%}else{%>-->
-	<!--<a href="/folders/f<%=f.id%>" target="_self">-->
-	<!--<img src="/images/folder.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%> <%=f.children.folders.length + f.children.files.length%>-->
-	<!--<%}%>-->
+	<div class="flex">
+	<% if(children.length === 0){%>
+	There are no folders
+	<%}else{%>
+	<%for(let f of children){ %>
+	<div class="item">
+	<!--<img src="/res/images/<%=f.data%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>-->
+	<%if(f.isFile){%>
+	<a href="/folders/a<%=f.id%>" target="_self">
+	<img src="/images/filePNG.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
+	<%}else{%>
+	<a href="/folders/f<%=f.id%>" target="_self">
+	<img src="/images/folder.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%> <%=f.children.folders.length + f.children.files.length%>
+	<%}%>
 
-	<!--&lt;!&ndash;<img src="/res/images/<%=f.data%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>&ndash;&gt;-->
+	<!--<img src="/res/images/<%=f.data%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>-->
 
-	<!--</a>-->
-	<!--</div>-->
-	<!--<%}%>-->
-	<!--<%}%>-->
+	</a>
+	</div>
+	<%}%>
+	<%}%>
 </div>
 </div>
 
