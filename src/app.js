@@ -26,7 +26,7 @@ const database = require('./controllers/lenafolderController');
 // database.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds151973.mlab.com:51973/cloud-web-lab`)
 database.connect(`mongodb://localhost:27017/carpdrive`)
     .then(data => {
-      console.log(data);
+      console.log('+connected');
       require('./controllers/fileDataController').connect();
     })
     .catch(err => {throw err});

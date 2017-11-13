@@ -1,5 +1,6 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
+let fileDataController=require('../controllers/fileDataController');
 
 let fileSchema = new Schema({
     name: String,
@@ -19,6 +20,12 @@ let fileSchema = new Schema({
     },
     parent: Schema.Types.ObjectId,
     isFile: Boolean,
+});
+
+fileSchema.pre('remove',async function (next) {
+    console.log('remove',this.name);
+    await fileDataController.remove(this.data);
+    next();
 });
 
 module.exports = mongoose.model('File', fileSchema);

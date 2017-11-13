@@ -98,6 +98,7 @@ const utilties = require('../utilities/utilities');
 
 ﻿router.get('/f:id', async (req, res,next) => {
     try {
+        console.log(req.params.id);
         let children = await folderCtrl.getAllChildren(req.params.id);
         console.log("_____"+children.length);
         let parent = await folderCtrl.getById(req.params.id);

@@ -42,13 +42,30 @@ function getById(id) {
 }
 
 async function remove(id) {
-    Folder.findById(id)
-        .then(folder => {
-            Folder.findById(folder.parent)
-                .then(parent => parent.children.folders)
-        })
-        .catch(err => console.log("REMOVE : "+err))
-    return Folder.findByIdAndRemove(id).exec();
+    let folder=await Folder.findById(id);
+    if(folder){
+        let folders=[];
+        for(let childid of folder.children.folders){
+            console.log('child',childid);
+            folders.push(remove(childid))
+        }
+        await Promise.all(folders);
+
+        let files=[];
+        for(let childid of folder.children.files){
+            console.log('child',childid);
+            folders.push(File.remove(childid))
+        }
+        await Promise.all(files);
+
+    }
+    // Folder.findById(id)
+    //     .then(folder => {
+    //         Folder.findById(folder.parent)
+    //             .then(parent => parent.children.folder)
+    //     })
+    //     .catch(err => console.log("REMOVE : "+err))
+    // return Folder.findByIdAndRemove(id).exec();
 }
 
 function getByName(name) {
@@ -87,7 +104,7 @@ async function getAllChildren(id) {
                 allChildren.push(child);
             }
         }
-        return Promise.all(allChildren);
+        return allChildren;
     }catch(err){
         console.log(err);
         return []
@@ -95,29 +112,26 @@ async function getAllChildren(id) {
 }
 
 async function removeAll(id) {
+    console.log("++++++");
+
     let folder = await Folder.findById(id).exec();
-    if(folder) {
-        await removeAllFiles(folder);
-        for (let f of folder.children.folders) {
-            console.log("REMOVE."+ f._id +" "+ f.name);
-            this.removeAll(f._id);
-        }
-        return remove(id);
+    if(folder){
+        return folder.clean();
     }
+    // if(folder) {
+    //     await removeAllFiles(folder);
+    //     for (let f of folder.children.folders) {
+    //         console.log("REMOVE."+ f._id +" "+ f.name);
+    //         this.removeAll(f._id);
+    //     }
+    //     return remove(id);
+    // }
+
 }
 
 
 async function removeAllFiles(folder) {
-    for(let file_child of folder.children.files){
-        await file.remove(file_child)
-    }
-    // folder.children.files = [];
-    // return new Promise((resolve,reject) =>{
-    //     folder.save(function (err, data) {
-    //         if(err) reject(err);
-    //         else resolve(data);
-    //     });
-    // });
+    return folder.removeFiles();
 }
 
 

@@ -65,7 +65,9 @@ function getById(id) {
 function remove(id) {
     return new Promise((resolve, reject) => {
         fileModel.remove({_id: id, root: folder}, (err) => {
+            console.log('try to remove',id);
             if (err) reject(err);
+            console.log('sucess',id);
             resolve();
         });
     });
