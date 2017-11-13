@@ -1,0 +1,47 @@
+<%
+function addSubTree(arr) {
+    if (arr) {
+        arr.forEach((item) => {
+            buildTree(item);
+        });
+    }
+}
+
+function buildTree(root) {
+    if(root.type==='folder'){
+//        add tree and collapse
+        %>
+
+                <li>
+                    <span  class="Collapsable">
+                         <%=root.type%>:<a href="/folders/<%=root.type==='file'?"a":"f"%><%=root.id%>">
+                           <%=root.name%>
+                        </a>
+                    </span>
+                    <ul>
+                        <%addSubTree(root.items)%>
+                    </ul>
+                </li>
+
+        <%
+    }else{
+//        add only name of item
+        %>
+<li>
+    <%=root.type%>:
+            <a href="/folders/<%=root.type==='file'?"a":"f"%><%=root.id%>">
+                <%=root.name%>
+            </a>
+</li>
+        <%
+
+    }
+}
+%>
+    <%addSubTree([children])%>
+<!--<li>item 2</span><ul>-->
+<!--<li><span class="Collapsable">item 1</span></li>-->
+<!--<li><span class="Collapsable">item 2</span></li>-->
+<!--<li><span class="Collapsable">item 3</span></li>-->
+<!--<li><span class="Collapsable">item 4</span></li>-->
+<!--</ul>-->

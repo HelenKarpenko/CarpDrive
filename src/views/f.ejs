@@ -1,89 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title><%= curr.name %></title>
-	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
-	<script>
+    <meta charset="UTF-8">
+    <title><%= curr.name %></title>
+    <link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
+    <script>
         function imgError(image) {
             image.onerror = "";
             image.src = "/images/folder.png";
             return true;
         }
-	</script>
+    </script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 </head>
+
 <body>
 
-<div class="header">
-		<span id="back_wrapper">
-			<%if(curr.parent==null){%>
-			<a href="/" target="_self">
-				<img src="/images/back.png" alt="Back" title="Back">
-			</a>
-			<%}else{%>
-			<a href="/folders/f<%=curr.parent%>" target="_self">
-				<img src="/images/back.png" alt="Back" title="Back">
-			</a>
-			<%}%>
-		</span>
-	<span id="title_wrapper">
-			Current folder: <%= curr.name%> <%=(curr.id)%>
-		</span>
+<div id="folder_wrapper">
+    <div class="catalog">
+        <ul>
+            <%include buildTree.ejs%>
+        </ul>
+        </li>
+        </ul>
+        <script type="text/javascript">
+            $(".Collapsable").click(function () {
+
+                $(this).parent().children().toggle();
+                $(this).toggle();
+
+            });
+        </script>
+    </div>
+    <div id="title_info">
+        <div class="title">
+			<span id="back_wrapper">
+				<a href="/folders" target="_self">
+					<img src="/images/back.png" alt="Back" title="Back">
+				</a>
+			</span>
+            <span id="title_wrapper">
+				ghjhgh
+			</span>
+            <!--<div id="profile">-->
+            <!--<a href='/profile' >-->
+            <!--<img src="/images/user.png" alt="" style="vertical-align:middle">-->
+            <!--</a>-->
+            <!--</div>-->
+        </div>
+        <div class="info">
+            <div id="search_add">
+
+                <div id="add">
+
+                    <div id="add">
+                        <form action="/folders/f<%= curr.id %>/addFolder/" method="get">
+                            <button id="addFolder" type="submit">
+                            </button>
+                        </form>
+                        <form action="/folders/f<%= curr.id %>/addFile/" method="get">
+                            <button id="addFile" type="submit">
+                            </button>
+                        </form>
+                    </div>
+
+                    <div id="add">
+                        <form action="/folders/f<%= curr.id %>/removeFolder/" method="post">
+                            <button id="removeFolder" type="submit">
+                            </button>
+                        </form>
+                        <form action="/folders/f<%= curr.id %>/removeFile/" method="post">
+                            <button id="removeFile" type="submit">
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+                <!--<form action="./remove/" method="post">-->
+                <!--<button id="remove" type="submit">-->
+                <!--</button>-->
+                <!--</form>-->
+                <!--<form action="./add/" method="get">-->
+                <!--<button id="add" type="submit">-->
+                <!--</button>-->
+                <!--</form>-->
+                <!--<form action="/folders/search" method="GET">-->
+                <!--<input type="text" name="name" id="search" placeholder="Search">-->
+                <!--</form>-->
+            </div>
+
+        </div>
+    </div>
+
 </div>
-
-<div class="main">
-
-	<div id="add">
-
-		<div id="add">
-			<form action="/folders/f<%= curr.id %>/addFolder/" method="get">
-				<button id="addFolder" type="submit">
-				</button>
-			</form>
-			<form action="/folders/f<%= curr.id %>/addFile/" method="get">
-				<button id="addFile" type="submit">
-				</button>
-			</form>
-		</div>
-
-		<div id="add">
-			<form action="/folders/f<%= curr.id %>/removeFolder/" method="post">
-				<button id="removeFolder" type="submit">
-				</button>
-			</form>
-			<form action="/folders/f<%= curr.id %>/removeFile/" method="post">
-				<button id="removeFile" type="submit">
-				</button>
-			</form>
-		</div>
-
-	</div>
-
-	<div class="flex">
-        <% if(children.length === 0){%>
-		There are no folders
-        <%}else{%>
-        <%for(let f of children){ %>
-		<div class="item">
-				<!--<img src="/res/images/<%=f.data%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>-->
-			<%if(f.isFile){%>
-				<a href="/folders/a<%=f.id%>" target="_self">
-				<img src="/images/filePNG.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
-			<%}else{%>
-				<a href="/folders/f<%=f.id%>" target="_self">
-				<img src="/images/folder.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%> <%=f.children.folders.length + f.children.files.length%>
-			<%}%>
-
-				<!--<img src="/res/images/<%=f.data%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>-->
-
-			</a>
-		</div>
-        <%}%>
-        <%}%>
-	</div>
-</div>
-
 </body>
 </html>
+
+
+
 
 

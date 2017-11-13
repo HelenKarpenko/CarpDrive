@@ -41,8 +41,50 @@ function getById(id) {
     return Folder.findById(id).exec();
 }
 
+function getByName(name) {
+    let regExp = new RegExp('^'+name, "i");
+    return Folder.find({name: regExp}).exec();
+}
+
+function addChild(id, childId, isFile) {
+    Folder.findById(id).exec()
+        .then(folder => {
+            if(isFile){
+                folder.children.files.push(mongoose.Types.ObjectId(childId));
+            }else{
+                folder.children.folders.push(mongoose.Types.ObjectId(childId));
+            }
+            return folder.save();
+        })
+        .catch(err => console.log(err));
+}
+
+// async function getAllChildren(id) {
+//     try{
+//         let folder = await Folder.findById(id).exec();
+//         let allChildren = [];
+//         let child;
+//         for (let fid of folder.children.folders) {
+//             child = await Folder.findById(fid).exec();
+//                 if(child){
+//                     allChildren.push(child);
+//                 }
+//         }
+//         for (let fid of folder.children.files) {
+//             child = await file.getById(fid);
+//             if(child){
+//                 allChildren.push(child);
+//             }
+//         }
+//         return allChildren;
+//     }catch(err){
+//         console.log(err);
+//         return []
+//     }
+// }
+
 async function remove(id) {
-    let folder=await Folder.findById(id);
+    let folder = await Folder.findById(id);
     if(folder){
         let folders=[];
         for(let childid of folder.children.folders){
@@ -59,81 +101,31 @@ async function remove(id) {
         await Promise.all(files);
 
     }
-    // Folder.findById(id)
-    //     .then(folder => {
-    //         Folder.findById(folder.parent)
-    //             .then(parent => parent.children.folder)
-    //     })
-    //     .catch(err => console.log("REMOVE : "+err))
-    // return Folder.findByIdAndRemove(id).exec();
-}
-
-function getByName(name) {
-    let regExp = new RegExp('^'+name, "i");
-    return Folder.find({name: regExp}).exec();
-}
-
-
-function addChild(id, childId, isFile) {
-    Folder.findById(id).exec()
-        .then(folder => {
-            if(isFile){
-                folder.children.files.push(mongoose.Types.ObjectId(childId));
-            }else{
-                folder.children.folders.push(mongoose.Types.ObjectId(childId));
-            }
-            return folder.save();
-        })
-        .catch(err => console.log(err));
-}
-
-async function getAllChildren(id) {
-    try{
-        let folder = await Folder.findById(id).exec();
-        let allChildren = [];
-        let child;
-        for (let fid of folder.children.folders) {
-            child = await Folder.findById(fid).exec();
-                if(child){
-                    allChildren.push(child);
-                }
-        }
-        for (let fid of folder.children.files) {
-            child = await file.getById(fid);
-            if(child){
-                allChildren.push(child);
-            }
-        }
-        return allChildren;
-    }catch(err){
-        console.log(err);
-        return []
-    }
 }
 
 async function removeAll(id) {
-    console.log("++++++");
-
     let folder = await Folder.findById(id).exec();
     if(folder){
         return folder.clean();
     }
-    // if(folder) {
-    //     await removeAllFiles(folder);
-    //     for (let f of folder.children.folders) {
-    //         console.log("REMOVE."+ f._id +" "+ f.name);
-    //         this.removeAll(f._id);
-    //     }
-    //     return remove(id);
-    // }
 
 }
-
 
 async function removeAllFiles(folder) {
     return folder.removeFiles();
 }
 
+async function getAllFiles(folder) {
+    return folder.getAllFile();
+}
+
+async function getAllChildren(id) {
+    let folder = await Folder.findById(id).exec();
+    if(folder){
+        return folder.getAllChildren();
+    }
+
+}
 
 module.exports = {
     connect: connect,

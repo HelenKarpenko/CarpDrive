@@ -100,8 +100,9 @@ const utilties = require('../utilities/utilities');
     try {
         console.log(req.params.id);
         let children = await folderCtrl.getAllChildren(req.params.id);
-        console.log("_____"+children.length);
+        console.log("_____"+JSON.stringify(children,undefined,2));
         let parent = await folderCtrl.getById(req.params.id);
+
         res.render('f', {
             children: children,
             curr: parent,

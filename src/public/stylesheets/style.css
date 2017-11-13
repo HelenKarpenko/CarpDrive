@@ -285,7 +285,7 @@ input#search{
     margin-bottom: 0.5em;
 }
 .catalog {
-    width: 150px;
+    width: 400px;
     height: 100%;
     box-sizing: border-box;
     padding: 1%;
@@ -296,7 +296,7 @@ input#search{
     border-radius: 10px;
     overflow-y: scroll;
     float: left;
-    text-align: center;
+    text-align: left;
     margin-right: 20px;
 }
 .catalog img{
@@ -548,3 +548,4 @@ input#inputStyle{
     margin: auto;
 
 }
+

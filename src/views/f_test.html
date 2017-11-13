@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><%= curr.name %></title>
+	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
+	<script>
+        function imgError(image) {
+            image.onerror = "";
+            image.src = "/images/folder.png";
+            return true;
+        }
+	</script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="header">
+		<span id="back_wrapper">
+			<%if(curr.parent==null){%>
+			<a href="/" target="_self">
+				<img src="/images/back.png" alt="Back" title="Back">
+			</a>
+			<%}else{%>
+			<a href="/folders/f<%=curr.parent%>" target="_self">
+				<img src="/images/back.png" alt="Back" title="Back">
+			</a>
+			<%}%>
+		</span>
+	<span id="title_wrapper">
+			Current folder: <%= curr.name%> <%=(curr.id)%>
+		</span>
+</div>
+
+<div class="main">
+
+	<ul>
+		<li><span class="Collapsable">item 1</span><ul>
+			<li><span class="Collapsable">item 1</span></li>
+			<li><span class="Collapsable">item 2</span><ul>
+				<li><span class="Collapsable">item 1</span></li>
+				<li><span class="Collapsable">item 2</span></li>
+				<li><span class="Collapsable">item 3</span></li>
+				<li><span class="Collapsable">item 4</span></li>
+			</ul>
+			</li>
+			<li><span class="Collapsable">item 3</span></li>
+			<li><span class="Collapsable">item 4</span><ul>
+				<li><span class="Collapsable">item 1</span></li>
+				<li><span class="Collapsable">item 2</span></li>
+				<li><span class="Collapsable">item 3</span></li>
+				<li><span class="Collapsable">item 4</span></li>
+			</ul>
+			</li>
+		</ul>
+		</li>
+		<li><span class="Collapsable">item 2</span><ul>
+			<li><span class="Collapsable">item 1</span></li>
+			<li><span class="Collapsable">item 2</span></li>
+			<li><span class="Collapsable">item 3</span></li>
+			<li><span class="Collapsable">item 4</span></li>
+		</ul>
+		</li>
+		<li><span class="Collapsable">item 3</span><ul>
+			<li><span class="Collapsable">item 1</span></li>
+			<li><span class="Collapsable">item 2</span></li>
+			<li><span class="Collapsable">item 3</span></li>
+			<li><span class="Collapsable">item 4</span></li>
+		</ul>
+		</li>
+		<li><span class="Collapsable">item 4</span></li>
+	</ul>
+	<script type="text/javascript">
+        $(".Collapsable").click(function () {
+
+            $(this).parent().children().toggle();
+            $(this).toggle();
+
+        });
+
+	</script>
+
+	<div id="add">
+
+	<div id="add">
+	<form action="/folders/f<%= curr.id %>/addFolder/" method="get">
+	<button id="addFolder" type="submit">
+	</button>
+	</form>
+	<form action="/folders/f<%= curr.id %>/addFile/" method="get">
+	<button id="addFile" type="submit">
+	</button>
+	</form>
+	</div>
+
+	<div id="add">
+	<form action="/folders/f<%= curr.id %>/removeFolder/" method="post">
+	<button id="removeFolder" type="submit">
+	</button>
+	</form>
+	<form action="/folders/f<%= curr.id %>/removeFile/" method="post">
+	<button id="removeFile" type="submit">
+	</button>
+	</form>
+	</div>
+
+	</div>
+
+	<!--<div class="flex">-->
+	<!--<% if(children.length === 0){%>-->
+	<!--There are no folders-->
+	<!--<%}else{%>-->
+	<!--<%for(let f of children){ %>-->
+	<!--<div class="item">-->
+	<!--&lt;!&ndash;<img src="/res/images/<%=f.data%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>&ndash;&gt;-->
+	<!--<%if(f.isFile){%>-->
+	<!--<a href="/folders/a<%=f.id%>" target="_self">-->
+	<!--<img src="/images/filePNG.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>-->
+	<!--<%}else{%>-->
+	<!--<a href="/folders/f<%=f.id%>" target="_self">-->
+	<!--<img src="/images/folder.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%> <%=f.children.folders.length + f.children.files.length%>-->
+	<!--<%}%>-->
+
+	<!--&lt;!&ndash;<img src="/res/images/<%=f.data%>" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>&ndash;&gt;-->
+
+	<!--</a>-->
+	<!--</div>-->
+	<!--<%}%>-->
+	<!--<%}%>-->
+</div>
+</div>
+
+</body>
+</html>
