@@ -42,6 +42,12 @@ function getById(id) {
 }
 
 async function remove(id) {
+    Folder.findById(id)
+        .then(folder => {
+            Folder.findById(folder.parent)
+                .then(parent => parent.children.folders)
+        })
+        .catch(err => console.log("REMOVE : "+err))
     return Folder.findByIdAndRemove(id).exec();
 }
 
@@ -55,7 +61,6 @@ function addChild(id, childId, isFile) {
     Folder.findById(id).exec()
         .then(folder => {
             if(isFile){
-                console.log("+++"+ file);
                 folder.children.files.push(mongoose.Types.ObjectId(childId));
             }else{
                 folder.children.folders.push(mongoose.Types.ObjectId(childId));
@@ -77,7 +82,7 @@ async function getAllChildren(id) {
                 }
         }
         for (let fid of folder.children.files) {
-            let child = await file.getById(fid);
+            child = await file.getById(fid);
             if(child){
                 allChildren.push(child);
             }
@@ -89,6 +94,33 @@ async function getAllChildren(id) {
     }
 }
 
+async function removeAll(id) {
+    let folder = await Folder.findById(id).exec();
+    if(folder) {
+        await removeAllFiles(folder);
+        for (let f of folder.children.folders) {
+            console.log("REMOVE."+ f._id +" "+ f.name);
+            this.removeAll(f._id);
+        }
+        return remove(id);
+    }
+}
+
+
+async function removeAllFiles(folder) {
+    for(let file_child of folder.children.files){
+        await file.remove(file_child)
+    }
+    // folder.children.files = [];
+    // return new Promise((resolve,reject) =>{
+    //     folder.save(function (err, data) {
+    //         if(err) reject(err);
+    //         else resolve(data);
+    //     });
+    // });
+}
+
+
 module.exports = {
     connect: connect,
     create: create,
@@ -98,4 +130,6 @@ module.exports = {
     getByName: getByName,
     addChild: addChild,
     getAllChildren: getAllChildren,
+    removeAllFiles: removeAllFiles,
+    removeAll: removeAll,
 };

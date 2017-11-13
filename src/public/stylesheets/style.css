@@ -337,6 +337,26 @@ hr{
     padding: 25px;
 }
 
+#removeFolder{
+    border: 0;
+    background: transparent;
+    margin: 10px;
+    background-image: url("../images/folderDelete.png");
+    background-size: cover;
+    background-position: center;
+    padding: 25px;
+}
+
+#removeFile{
+    border: 0;
+    background: transparent;
+    margin: 10px;
+    background-image: url("../images/fileDelete.png");
+    background-size: cover;
+    background-position: center;
+    padding: 25px;
+}
+
 #users{
     border: 0;
     background: transparent;
