@@ -5,8 +5,7 @@ let userSchema = new Schema({
     name: String,
     login: String,
     password: String,
-    isAdmin: Boolean,
-    folders: [Schema.Types.ObjectId],
+    folder: Schema.Types.ObjectId,
     sharedWithMe: [Schema.Types.ObjectId]
 });
 

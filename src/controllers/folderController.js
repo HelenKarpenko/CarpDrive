@@ -15,7 +15,7 @@ function connect(url) {
 async function create(name,owner,description, parent) {
     let folder = new Folder({
         name: name,
-        owner: owner,
+        owner: mongoose.Types.ObjectId(owner),
         sharedWithMe: [],
         info: {description: description},
         // parent: null,
@@ -32,6 +32,7 @@ async function create(name,owner,description, parent) {
         });
     });
 }
+
 
 function getAll() {
     return Folder.find().exec();

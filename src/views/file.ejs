@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title><%= file.name %></title>
+	<title><%= curr.name %></title>
 	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
 	<script>
         function imgError(image) {
@@ -11,31 +11,84 @@
             return true;
         }
 	</script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 </head>
+
 <body>
 
-<div class="header">
-		<span id="back_wrapper">
-            <%if(file.parent==null){%>
-			<a href="/" target="_self">
-				<img src="/images/back.png" alt="Back" title="Back">
-			</a>
-            <%}else{%>
-			<a href="/folders/f<%=file.parent%>" target="_self">
-				<img src="/images/back.png" alt="Back" title="Back">
-			</a>
-            <%}%>
-		</span>
-	<span id="title_wrapper">
-			Current File: <%= file.name%> <%=(file.id)%>
-		</span>
-</div>
+<div id="folder_wrapper">
 
-<div class="main">
-	<img src="/res/images/<%=file.data%>" alt="<%=file.name%>" onerror="imgError(this)"> <%=file.name%>
-</div>
+	<div class="catalog">
+		<ul>
+            <%include buildTree.ejs%>
+		</ul>
+		</li>
+		</ul>
+		<script type="text/javascript">
+            $(".Collapsable").click(function () {
+                $(this).parent().children().toggle();
+                $(this).toggle();
+            });
+		</script>
 
+	</div>
+
+
+	<div id="title_info">
+		<div class="title">
+			<span id="back_wrapper">
+				<a href="/folders/f<%=curr.parent%>" target="_self">
+					<img src="/images/back.png" alt="Back" title="Back">
+				</a>
+			</span>
+			<span id="title_wrapper">
+                <%= curr.name %>
+			</span>
+			<!--<div id="profile">-->
+			<!--<a href='/profile' >-->
+			<!--<img src="/images/user.png" alt="" style="vertical-align:middle">-->
+			<!--</a>-->
+			<!--</div>-->
+		</div>
+		<div class="info">
+			<div id="add">
+				<form action="/folders/search" method="GET">
+					<input type="text" name="name" id="search" placeholder="Search">
+				</form>
+
+
+				<div id="add">
+					<form action="/folders/f<%= curr.id %>/removeAll/" method="post">
+						<button id="removeAll" type="submit">
+						</button>
+					</form>
+
+					<form action="/folders/a<%= curr.id %>/download/" method="get">
+						<button id="download" type="submit">
+						</button>
+					</form>
+					<form action="/folders/a<%= curr.id %>/removeFile/" method="post">
+					<button id="removeFile" type="submit">
+					</button>
+					</form>
+				</div>
+			</div>
+			<div>
+				<img src="/res/images/<%=curr.data%>" alt="<%=curr.name%>" onerror="imgError(this)"> <%=curr.name%>
+			</div>
+
+			<!--<div id="pdf">-->
+				<!--<object width="500" height="600" type="application/pdf" data="/res/images/<%=curr.data%>" id="pdf_content" >-->
+					<!--<p>Insert your error message here, if the PDF cannot be displayed.</p>-->
+				<!--</object>-->
+			<!--</div>-->
+
+
+		</div>
 </body>
 </html>
+
+
+
 
 

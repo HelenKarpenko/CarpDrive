@@ -367,6 +367,16 @@ hr{
     padding: 25px;
 }
 
+#download{
+    border: 0;
+    background: transparent;
+    margin: 10px;
+    background-image: url("../images/download.png");
+    background-size: cover;
+    background-position: center;
+    padding: 25px;
+}
+
 #users{
     border: 0;
     background: transparent;
@@ -558,4 +568,3 @@ input#inputStyle{
     margin: auto;
 
 }
-

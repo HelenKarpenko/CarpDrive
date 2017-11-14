@@ -5,8 +5,8 @@ let file = require('../controllers/fileController');
 
 let folderSchema = new Schema({
     name: String,
-    owner: String,
-    // owner: Schema.Types.ObjectId,
+    // owner: String,
+    owner: Schema.Types.ObjectId,
     sharedWith : [
         {
             user: Schema.Types.ObjectId,

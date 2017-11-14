@@ -32,23 +32,32 @@
 
             });
         </script>
+
     </div>
+
 
     <div id="title_info">
         <div class="title">
 			<span id="back_wrapper">
-				<a href="/folders" target="_self">
+                <% if((String)(curr._id) !== (String)(user.folder)){ %>
+				<a href="/folders/f<%=curr.parent%>" target="_self">
 					<img src="/images/back.png" alt="Back" title="Back">
 				</a>
+                <%}else{%>
+                <a href="/" target="_self">
+					<img src="/images/back.png" alt="Back" title="Back">
+				</a>
+                <%}%>
 			</span>
             <span id="title_wrapper">
                 <%= curr.name %>
 			</span>
-            <!--<div id="profile">-->
-            <!--<a href='/profile' >-->
-            <!--<img src="/images/user.png" alt="" style="vertical-align:middle">-->
-            <!--</a>-->
-            <!--</div>-->
+            <div id="profile">
+                <a href='/profile' >
+                    <%= user.name %>
+                    <img src="/images/user.png" alt="" style="vertical-align:middle">
+                </a>
+            </div>
         </div>
         <div class="info">
                 <div id="add">
@@ -71,10 +80,13 @@
                             <button id="removeAll" type="submit">
                             </button>
                         </form>
+                        <%if((String)(curr._id) !== (String)(user.folder)){%>
                         <form action="/folders/f<%= curr.id %>/removeFolder/" method="post">
                             <button id="removeFolder" type="submit">
                             </button>
                         </form>
+                        <%}%>
+
                         <!--<form action="/folders/f<%= curr.id %>/removeFile/" method="post">-->
                             <!--<button id="removeFile" type="submit">-->
                             <!--</button>-->
@@ -92,19 +104,31 @@
 
                     <%for(let f of items){%>
                     <div class="item">
-                        <%if(f.isFile){%>
+                        <%if(!('children' in f)){%>
                         <a href="/folders/a<%=f.id%>" target="_self">
                             <img src="/images/filePNG.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
                         </a>
                             <%}else{%>
                             <a href="/folders/f<%=f.id%>" target="_self">
-                                <img src="/images/folder.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%> <%=f.children.folders.length + f.children.files.length%>
+                                <img src="/images/folder.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
+                                <%=f.children.folders.length + f.children.files.length%>
                                 <%}%>
                             </a>
                     </div>
                     <%}%>
                 <%}%>
 
+                <div class="pagination">
+                    <% if(pageCount >= 1) { %>
+                    <a <%= currentPage != 1 ? `href=/folders/f${curr._id}?page=${1}` : "class=active" %>>&laquo;</a>
+                    <% for(var i = Math.max(1, Number(currentPage - range));  i <= Number(currentPage) + Number(range) & i <= pageCount ;i++){ %>
+                    <a <%= currentPage != i ? `href=/folders/f${curr._id}?page=${i}` : "class=active" %>><%= i %></a>
+                    <% } %>
+                    <a <%= currentPage != pageCount ? `href=/folders/f${curr._id}?page=${pageCount}` : "class=active" %>>&raquo;</a>
+                    <% } else{ %>
+                    <a class="active">1</a>
+                    <% } %>
+                </div>
 
     </div>
 

@@ -5,8 +5,8 @@ let fileDataController=require('../controllers/fileDataController');
 let fileSchema = new Schema({
     name: String,
     data: Schema.Types.ObjectId,
-    owner: String,
-    // owner: Schema.Types.ObjectId,
+    // owner: String,
+    owner: Schema.Types.ObjectId,
     sharedWith : [
         {
             user: Schema.Types.ObjectId,

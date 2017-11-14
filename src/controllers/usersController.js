@@ -1,6 +1,5 @@
 let mongoose = require('mongoose');
 let User = require('../models/userModel');
-let folderCtrl = require('./lenafolderController');
 
 mongoose.Promise = global.Promise;
 
@@ -12,12 +11,12 @@ function connect(url) {
     }
 }
 
-async function create(name,login,password,isAdmin) {
+async function create(name,login,password) {
     let user = new User({
         name: name,
         login: login,
         password: password,
-        isAdmin: isAdmin,
+        folder: null,
         folders: [],
         sharedWithMe: [],
     });
@@ -41,8 +40,17 @@ function getByName(name) {
     return User.find({name: regExp}).exec();
 }
 
+function getByUsername(username) {
+    return User.find({username: username}).exec();
+}
+
 function getByLogin(login) {
     return User.find({login: login}).exec();
+}
+
+async function addMainFolder(user, folderId) {
+    user.folder = folderId;
+    return user.save();
 }
 
 function addFolder(id, folderId) {
@@ -77,6 +85,8 @@ module.exports = {
     remove: remove,
     getByName: getByName,
     getByLogin: getByLogin,
+    getByUsername: getByUsername,
     addFolder: addFolder,
-    getAllFolder: getAllFolder
+    getAllFolder: getAllFolder,
+    addMainFolder: addMainFolder
 };

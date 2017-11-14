@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
 let File = require('../models/fileModel');
-const fileController = require('./fileDataController')
+const dataCtrl = require('./fileDataController')
 
 mongoose.Promise = global.Promise;
 
@@ -15,8 +15,8 @@ function connect(url) {
 async function create(name,data,owner,description, parent) {
     let file = new File({
         name: name,
-        data: await fileController.save(data),
-        owner: owner,
+        data: await dataCtrl.save(data),
+        owner: mongoose.Types.ObjectId(owner),
         sharedWithMe: [],
         info: {description: description},
         parent: mongoose.Types.ObjectId(parent),
@@ -31,18 +31,30 @@ async function create(name,data,owner,description, parent) {
 }
 
 function getAll() {
-    return File.find().exec();
+   return File.find().exec();
 }
 
-function getById(id) {
+async function getById(id) {
     return File.findById(id).exec();
 }
 
-async function remove(id) {
+async function remove(id, parent) {
     console.log('remove',id);
-    let file= await getById(id);
+    let index = parent.children.files.indexOf(id)
+    if(index >= 0) parent.children.files.splice(index, 1);
+    let file = await getById(id);
     if(file)
     return file.remove();
+}
+
+function getByName(name) {
+    let regExp = new RegExp('^'+name, "i");
+    return File.find({name: regExp}).exec();
+}
+
+async function getData(id){
+    let file = await getById(id);
+    return dataCtrl.getById(file.data);
 }
 
 function getByName(name) {
@@ -56,5 +68,7 @@ module.exports = {
     getAll: getAll,
     getById: getById,
     remove: remove,
+    getByName: getByName,
+    getData: getData,
     getByName: getByName,
 };

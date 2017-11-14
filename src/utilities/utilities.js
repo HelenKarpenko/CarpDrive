@@ -9,8 +9,33 @@ function paginate(items, page,subURL) {
     args.currentPage = page;
     args.range = pagesRange;
     args.subURL = subURL;
-
     return args;
+}
+
+function checkAuth(req, res, next) {
+    // if (!req.user) return res.sendStatus(401);
+    // next();
+    if(!req.user){
+        error(401,"unauthorized",next);
+    }
+    next();
+}
+
+// function checkAdmin(req, res, next) {
+//     // if (req.user.isAdmin !== true) return res.sendStatus(403);
+//     // next();
+//     if(!req.user){
+//         error(403,"forbidden",next);
+//     }
+//     next();
+// }
+
+function checkMainFolder(req, res, next) {
+    console.log("-+-+-"+ req.user.folder+" === " +req.params.id)
+    if(req.user.folder == req.params.id){
+        error(403,"forbidden",next);
+    }
+    next();
 }
 
 function error(status, text, next) {
@@ -21,6 +46,9 @@ function error(status, text, next) {
 
 module.exports = {
     paginate: paginate,
+    checkAuth: checkAuth,
+    // checkAdmin: checkAdmin,
+    checkMainFolder: checkMainFolder,
     error:error
 
 };

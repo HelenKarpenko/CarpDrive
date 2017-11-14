@@ -5,7 +5,6 @@ let favicon = require('serve-favicon');
 let logger = require('morgan');
 let bodyParser = require('body-parser');
 require('dotenv').config();
-
 const busboyBodyParser = require('busboy-body-parser');
 
 // new imports
@@ -22,7 +21,7 @@ const user = require('./controllers/usersController');
 
 
 
-const database = require('./controllers/lenafolderController');
+const database = require('./controllers/folderController');
 // database.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds151973.mlab.com:51973/cloud-web-lab`)
 database.connect(`mongodb://localhost:27017/carpdrive`)
     .then(data => {
