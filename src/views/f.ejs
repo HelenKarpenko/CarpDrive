@@ -133,7 +133,7 @@
                             <%}else{%>
                             <a href="/folders/f<%=f.id%>" target="_self">
                                 <img src="/images/folder.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
-                                <%=f.children.folders.length + f.children.files.length%>
+                                (<%=f.children.folders.length + f.children.files.length%>)
                                 <%}%>
                             </a>
                     </div>
