@@ -79,12 +79,13 @@ passport.use(new LocalStrategy(
         // console.log(username, password);
         user.getByLogin(username)
             .then(data => {
-                console.log(hash, data[0].password)
-                if(data && hash===data[0].password) {
-                    done(null, data[0]);
-                }else{
-                    done('Passport error 1');
-                }
+
+
+                    if (data && data.length > 0&& hash === data[0].password) {
+                        done(null, data[0]);
+                    } else {
+                        done('Passport error 1');
+                    }
             }).catch(e=>done(e));
     }
 ));
