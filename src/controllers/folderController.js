@@ -16,7 +16,7 @@ async function create(name,owner,description, parent) {
     let folder = new Folder({
         name: name,
         owner: mongoose.Types.ObjectId(owner),
-        sharedWithMe: [],
+        sharedWith: [],
         info: {description: description},
         // parent: null,
         parent: mongoose.Types.ObjectId(parent),

@@ -18,7 +18,21 @@
 
 <div id="folder_wrapper">
 
+
     <div class="catalog">
+        <div id="tab">
+            <div id="myFolderTab">
+                <a href="/folders/f<%=user.folder%>" target="_self">
+                    My Folders
+                </a>
+            </div>
+            <div id="sharedTab">
+                <a href="/folders/sharedWithMe" target="_self">
+                    Shared with me
+                </a>
+            </div>
+        </div>
+
         <ul>
             <%include buildTree.ejs%>
         </ul>
@@ -108,6 +122,13 @@
                             <%}%>
 
                         <%}%>
+                    </div>
+
+                    <div id="add">
+                        <form action="/folders/a<%= curr.id %>/share/" method="get">
+                            <button id="shareFile" type="submit">
+                            </button>
+                        </form>
                     </div>
             </div>
 

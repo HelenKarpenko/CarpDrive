@@ -35,11 +35,15 @@ folderSchema.methods.removeChild = function (child) {
 folderSchema.methods.removeFiles = async function () {
     console.log('remove files call',this.id,this.name);
     let childs = []
+    console.log('FILES COUNT '+this.children.files.length);
     for (let fid of this.children.files) {
-        child = await file.getById(fid);
-        if(child){
-            childs.push(child.remove());
-        }
+        // child = await file.getById(fid);
+        // if(child){
+        //     childs.push(child.remove());
+        // }
+        childs.push(file.remove(fid))
+
+        ;
     }
     this.children.files = [];
     await this.save();
