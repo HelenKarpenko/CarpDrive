@@ -1,6 +1,6 @@
 const itemsCount = 6;
 const pagesRange = 4;
-
+const adminId = '5a0c9091180b171fde9b15d8'
 function paginate(items, page,subURL) {
     let args = {};
     let startItem = (page - 1) * itemsCount;
@@ -13,22 +13,25 @@ function paginate(items, page,subURL) {
 }
 
 function checkAuth(req, res, next) {
-    // if (!req.user) return res.sendStatus(401);
-    // next();
     if(!req.user){
         error(401,"unauthorized",next);
     }
     next();
 }
 
-// function checkAdmin(req, res, next) {
-//     // if (req.user.isAdmin !== true) return res.sendStatus(403);
-//     // next();
-//     if(!req.user){
-//         error(403,"forbidden",next);
-//     }
-//     next();
-// }
+function checkMyFolder(req, res, next) {
+    if(req.user._id === req.params.id.owner){
+        error(401,"unauthorized",next);
+    }
+    next();
+}
+
+function checkAdmin(req, res, next) {
+    if((String)(req.user._id) !== (String)(adminId)){
+        error(403,"forbidden",next);
+    }
+    next();
+}
 
 function checkMainFolder(req, res, next) {
     console.log("-+-+-"+ req.user.folder+" === " +req.params.id)
@@ -44,11 +47,20 @@ function error(status, text, next) {
     next(error);
 }
 
+function checkAdminRemove(req, res, next) {
+    if((String)(req.params.id) === (String)(adminId)){
+        error(403,"forbidden",next);
+    }
+    next();
+}
+
 module.exports = {
     paginate: paginate,
     checkAuth: checkAuth,
-    // checkAdmin: checkAdmin,
+    checkAdmin: checkAdmin,
     checkMainFolder: checkMainFolder,
+    checkMyFolder: checkMyFolder,
+    checkAdminRemove: checkAdminRemove,
     error:error
 
 };

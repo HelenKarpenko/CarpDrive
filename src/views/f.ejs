@@ -52,6 +52,7 @@
             <span id="title_wrapper">
                 <%= curr.name %>
 			</span>
+
             <div id="profile">
                 <a href='/profile' >
                     <%= user.name %>
@@ -93,13 +94,20 @@
                             </button>
                         </form>
                             <%if((String)(curr._id) !== (String)(user.folder)){%>
+                                <%if(isAdmin){%>
+                                    <form action="/folders/f<%= curr._id %>/removeUser" method="get">
+                                        <button id="removeFolder" type="submit">
+                                        </button>
+                                    </form>
+                                <%}else{%>
                             <form action="/folders/f<%= curr.id %>/removeFolder/" method="post">
                                 <button id="removeFolder" type="submit">
                                 </button>
                             </form>
-                            <%}%>
                         <%}%>
+                            <%}%>
 
+                        <%}%>
                     </div>
             </div>
 
@@ -107,7 +115,7 @@
             <div class="flex">
                 <% if(items.length === 0){%>
 
-                There are no folders
+                <div id="noFolder">There are no folders</div>
 
                 <%}else{%>
 

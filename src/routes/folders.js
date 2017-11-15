@@ -5,7 +5,7 @@ var path = require('path');
 const folderCtrl = require('../controllers/folderController');
 const fileCtrl = require('../controllers/fileController');
 const imgCtrl = require('../controllers/fileDataController');
-// const userCtrl = require('../controllers/usersController');
+const userCtrl = require('../controllers/usersController');
 const utilities = require('../utilities/utilities');
 
 ﻿router.get('/',utilities.checkAuth, async (req, res,next) => {
@@ -22,6 +22,7 @@ const utilities = require('../utilities/utilities');
         args.curr = parent;
         args.user = req.user;
         args.isSearch = false;
+        args.isAdmin = checkAdmin(req);
         console.log("++++"+ parent._id + " = " + req.user.folder);
         res.render('f', args);
     }catch (e){
@@ -146,6 +147,7 @@ router.get('/a:id', utilities.checkAuth,async (req, res,next) => {
         res.render('file', {
             dirTree: dirTree,
             curr: file,
+            user: req.user
         });
     }catch (e){
         console.log(e);
@@ -177,5 +179,26 @@ router.post('/a:id/removeFile',utilities.checkAuth,async(req, res, next) => {
     }
 });
 
+router.get('/f:id/removeUser',utilities.checkAuth,utilities.checkAdmin, async(req, res, next) => {
+    try{
+        console.log("++++++" + req.params.id);
+        let folder = await folderCtrl.getById(req.params.id);
+        let user = await userCtrl.getById(folder.owner);
+        res.render('removeUser', {
+             warning: "When you delete this folder "+ folder.name +" ("+ folder._id +"), delete its owner "+ user.name+" ("+user._id +") !",
+            user: user,
+            folder: folder
+        });
+    }catch(e){
+        console.log(e);
+    }
+});
 
+
+const adminId = '5a0c9091180b171fde9b15d8'
+function checkAdmin(req) {
+    console.log("CHECKADMIN  " + req.user._id + " "+ adminId);
+    if((String)(req.user._id) === (String)(adminId)) return true;
+    return false;
+}
 module.exports = router;

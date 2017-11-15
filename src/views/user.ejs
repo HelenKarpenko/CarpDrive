@@ -1,41 +1,44 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Profile</title>
+	<title><%user.name%></title>
 	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet" />
 </head>
 <body>
 
 <div class="header">
 		<span id="back_wrapper">
-			<a href="/" target="_self">
+			<a href="/users" target="_self">
 				<img src="/images/back.png" alt="Back" title="Back">
 			</a>
 		</span>
 	<span id="title_wrapper">
-			<%= user.name %>
+			 <%=user.name%>
 		</span>
-
 	<div id="profile">
-		<a href='/logout' >
-			Sign Out
-			<img src="/images/exit.png" alt="" style="vertical-align:middle">
+		<a href='/profile' >
+            <%= user.name %>
+			<img src="/images/user.png" alt="" style="vertical-align:middle">
 		</a>
 	</div>
 </div>
 
 <div class="main">
-    <%if(isAdmin){%>
-	<p>Ты админ и ты красавчик</p>
-	<form action="/users/" method="get">
-		<button id="admin" type="submit">
-		</button>
-	</form>
-    <%}%>
+    <%if((String)(user._id) !== (String)(admin._id)){%>
+	<div id="add">
+		<div id="add">
+			<form action="/users/u<%= user._id %>/removeUser/" method="get">
+				<button id="removeAll" type="submit">
+				</button>
+			</form>
+		</div>
+	</div>
+	<%}%>
 	<div id="profileWrapper">
 		<div id="profileImg">
-			<img src="/images/user.png" alt="User" onerror="imgError(this)">
+		<img src="/images/user.png" alt="User" onerror="imgError(this)">
 		</div>
 		<table id="profileTable">
 			<tr>

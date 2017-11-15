@@ -5,6 +5,8 @@ const userCtrl = require('../controllers/usersController');
 const utilities = require('../utilities/utilities');
 const folderCtrl = require('../controllers/folderController');
 
+const mainFolderId = "5a0c9091180b171fde9b15d9";
+
 // ресурс доступний всім користувачам, навіть неаутентифікованих
 router.get('/',
     (req, res) => {
@@ -42,8 +44,8 @@ router.post('/register',
         if(users.length === 0){
             try{
                 let user = await userCtrl.create(req.body.name, req.body.username, passwordHash);
-                let folder = await folderCtrl.create(req.body.name+' folder', user._id, req.body.name+' folder', '5a08c6845cbcad3021b58be7');
-                await folderCtrl.addChild('5a08c6845cbcad3021b58be7', folder._id, false)
+                let folder = await folderCtrl.create(req.body.name+' folder', user._id, req.body.name+' folder', mainFolderId);
+                await folderCtrl.addChild(mainFolderId , folder._id, false)
                 await userCtrl.addMainFolder(user,folder._id)
                 res.redirect('/');
             }catch(e){
@@ -73,6 +75,7 @@ router.get('/profile',
             let args = utilities.paginate(folders, (req.query.page) ? req.query.page : 1);
             args.user = req.user;
             args.folders = folders;
+            args.isAdmin = checkAdmin(req);
             console.log(args);
             res.render('profile', args);
         }catch (e){
@@ -88,23 +91,26 @@ router.get('/logout',
         res.redirect('/');
     });
 
+router.get('/admin',
+    utilities.checkAuth,
+    utilities.checkAdmin,
+    (req, res) => {
+        userCtrl.getAll()
+            .then(data => {
+                let args = utilities.paginate(data,(req.query.page) ? req.query.page : 1);
+                args.users = data;
+                args.user = req.user;
+
+                res.render('admin', args);
+            })
+            .catch(() => res.sendStatus(500));
+    });
+
+const adminId = '5a0c9091180b171fde9b15d8'
+function checkAdmin(req) {
+    console.log("CHECKADMIN  " + req.user._id + " "+ adminId);
+    if((String)(req.user._id) === (String)(adminId)) return true;
+    return false;
+}
+
 module.exports = router;
-
-// const userCtrl = require('../controllers/usersController');
-// const folderCtrl = require('../controllers/folderController');
-// const imgCtrl = require('../controllers/imgController');
-// const utilities = require('../utilities/utilities')
-
-// router.get('/admin',
-//     utilities.checkAuth,
-//     utilities.checkAdmin,
-//     (req, res) => {
-//         userCtrl.getAll()
-//             .then(data => {
-//                 res.render('admin', {
-//                     user: req.user,
-//                     users: data,
-//                 });
-//             })
-//             .catch(() => res.sendStatus(500));
-//     });

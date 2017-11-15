@@ -17,13 +17,14 @@ const crypto = require('crypto');
 let  index = require('./routes/index');
 let  users = require('./routes/folders');
 let  res = require('./routes/res');
+let  u = require('./routes/users');
 const user = require('./controllers/usersController');
 
 
 
 const database = require('./controllers/folderController');
-// database.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds151973.mlab.com:51973/cloud-web-lab`)
-database.connect(`mongodb://localhost:27017/carpdrive`)
+database.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds111066.mlab.com:11066/carpdrive`)
+// database.connect(`mongodb://localhost:27017/carpdrive`)
     .then(data => {
       console.log('+connected');
       require('./controllers/fileDataController').connect();
@@ -58,6 +59,7 @@ app.use(passport.session());
 app.use('/', index);
 app.use('/folders', users);
 app.use('/res', res);
+app.use('/users', u);
 
 const serverSalt = "45%sAlT_";
 

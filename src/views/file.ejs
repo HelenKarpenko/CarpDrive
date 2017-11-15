@@ -44,11 +44,12 @@
 			<span id="title_wrapper">
                 <%= curr.name %>
 			</span>
-			<!--<div id="profile">-->
-			<!--<a href='/profile' >-->
-			<!--<img src="/images/user.png" alt="" style="vertical-align:middle">-->
-			<!--</a>-->
-			<!--</div>-->
+			<div id="profile">
+				<a href='/profile' >
+                    <%= user.name %>
+					<img src="/images/user.png" alt="" style="vertical-align:middle">
+				</a>
+			</div>
 		</div>
 		<div class="info">
 			<div id="add">
@@ -68,18 +69,15 @@
 					</form>
 				</div>
 			</div>
+
 			<div>
-				<img src="/res/images/<%=curr.data%>" alt="<%=curr.name%>" onerror="imgError(this)"> <%=curr.name%>
+				<img src="/res/images/<%=curr.data%>" alt="<%=curr.name%>" onerror="imgError(this)">
+
+				<p><%= curr.info.description %></p>
 			</div>
-
-			<!--<div id="pdf">-->
-				<!--<object width="500" height="600" type="application/pdf" data="/res/images/<%=curr.data%>" id="pdf_content" >-->
-					<!--<p>Insert your error message here, if the PDF cannot be displayed.</p>-->
-				<!--</object>-->
-			<!--</div>-->
-
-
 		</div>
+		</div>
+</div>
 </body>
 </html>
 

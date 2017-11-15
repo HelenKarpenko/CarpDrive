@@ -135,7 +135,6 @@ input#search{
     align-items: stretch;
     flex-flow: row wrap;
     margin: 7% 5% 3%;
-
 }
 .item img {
     display: block;
@@ -157,7 +156,6 @@ input#search{
 }
 .item:hover {
     transform: scale(1.1,1.1);
-
 }
 
 #add{
@@ -271,7 +269,7 @@ input#search{
 .info img{
     float: left;
     margin-right: 5%;
-    max-width: 30%;
+    max-width: 60%;
 }
 .info table{
     margin: 3%;
@@ -341,7 +339,7 @@ hr{
     border: 0;
     background: transparent;
     margin: 10px;
-    background-image: url("../images/deleteAll.png");
+    background-image: url("../images/folderDelete.png");
     background-size: cover;
     background-position: center;
     padding: 25px;
@@ -351,7 +349,7 @@ hr{
     border: 0;
     background: transparent;
     margin: 10px;
-    background-image: url("../images/folderDelete.png");
+    background-image: url("../images/deleteAll.png");
     background-size: cover;
     background-position: center;
     padding: 25px;
@@ -362,6 +360,16 @@ hr{
     background: transparent;
     margin: 10px;
     background-image: url("../images/fileDelete.png");
+    background-size: cover;
+    background-position: center;
+    padding: 25px;
+}
+
+#admin{
+    border: 0;
+    background: transparent;
+    margin: 10px;
+    background-image: url("../images/users.png");
     background-size: cover;
     background-position: center;
     padding: 25px;
@@ -387,6 +395,7 @@ hr{
     padding: 25px;
 }
 
+
 #info_wrapper{
     margin-top: 0%;
     width: 100%;
@@ -394,6 +403,29 @@ hr{
     display: inline-block;
     display: -webkit-inline-box;
 }
+#profileWrapper{
+    /*margin-top: 3%;*/
+    box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    background-color: rgba(255, 255, 255, 0.58);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 2% auto;
+    width: 50%;
+    height: 100%;
+}
+
+#profileImg{
+    float: left;
+    margin-right: 5%;
+    max-width: 70%;
+}
+#profileTable{
+    margin: 3%;
+    text-align: left;
+    border-spacing: 10px 5px;
+}
+
 
 .mainInfo{
     /*background-color: yellow;*/
@@ -515,4 +547,7 @@ input#inputStyle{
     border-spacing: 40px 10px;
     margin: auto;
 
+}
+#noFolder{
+    font-size: 50px;
 }
