@@ -79,7 +79,8 @@ passport.use(new LocalStrategy(
         // console.log(username, password);
         user.getByLogin(username)
             .then(data => {
-                if(data && data !== null) {
+                console.log(hash, data[0].password)
+                if(data && hash===data[0].password) {
                     done(null, data[0]);
                 }else{
                     done('Passport error 1');
