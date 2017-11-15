@@ -8,6 +8,11 @@
 <body>
 
 <div class="header">
+	<span id="back_wrapper">
+			<a href="/" target="_self">
+				<img src="/images/back.png" alt="Back" title="Back">
+			</a>
+		</span>
 	Help
 	<span id="signin_signout">
         <% if (user) { %>
@@ -46,17 +51,19 @@
 			<td><b>Delete all children in current folder</b></td>
 		</tr>
 		<tr>
-			<td><img src="/images/fileRemove.png" alt="remove" onerror="imgError(this)"></td>
+			<td><img src="/images/fileDelete.png" alt="remove" onerror="imgError(this)"></td>
 			<td><b>Delete file</b></td>
 		</tr>
 		<tr>
-			<td><img src="/images/download.png" alt="remove" onerror="imgError(this)"></td>
+			<td><img src="/images/download.png" alt="download" onerror="imgError(this)"></td>
 			<td><b>Download file</b></td>
 		</tr>
+		<tr>
+			<td><img src="/images/users.png" alt="users" onerror="imgError(this)"></td>
+			<td><b>Show all users (for admin)</b></td>
+		</tr>
 	</table>
-	<hr>
-	START<br>⬇<br>
-	<a href="/folders/f<%=user.folder%>" class="image">Next</a>
+
 </div>
 </body>
 </html>

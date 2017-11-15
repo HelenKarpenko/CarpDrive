@@ -534,9 +534,11 @@ input#inputStyle{
     transform: none;
 }
 
-#profile:hover{
+#profileItem:hover{
     transform: scale(1.1,1.1);
 }
+
+
 
 .title #profile{
     top:4px;
@@ -550,4 +552,15 @@ input#inputStyle{
 }
 #noFolder{
     font-size: 50px;
+}
+#help{
+    margin: auto;
+    width: 50%;
+    height: 100%;
+    border-spacing: 5px 5px;
+    text-align: left;
+}
+
+#help img{
+    width: 20%;
 }
