@@ -55,23 +55,31 @@
 				<form action="/folders/search" method="GET">
 					<input type="text" name="name" id="search" placeholder="Search">
 				</form>
+				<form action="/folders/a<%= curr.id %>/download/" method="get">
+					<button id="download" type="submit">
+					</button>
+				</form>
 
-
+				<%if((String)(u._id) === (String)(curr.owner)){%>
 				<div id="add">
 					<form action="/folders/f<%= curr.id %>/removeAll/" method="post">
 						<button id="removeAll" type="submit">
 						</button>
 					</form>
 
-					<form action="/folders/a<%= curr.id %>/download/" method="get">
-						<button id="download" type="submit">
-						</button>
-					</form>
 					<form action="/folders/a<%= curr.id %>/removeFile/" method="post">
 					<button id="removeFile" type="submit">
 					</button>
 					</form>
 				</div>
+
+				<div id="add">
+					<form action="/folders/a<%= curr.id %>/share/" method="get">
+						<button id="shareFile" type="submit">
+						</button>
+					</form>
+				</div>
+				<%}%>
 			</div>
 			<div>
 				<img src="/res/images/<%=curr.data%>" alt="<%=curr.name%>" onerror="imgError(this)"> <%=curr.name%>

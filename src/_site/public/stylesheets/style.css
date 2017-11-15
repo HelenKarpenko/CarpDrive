@@ -216,11 +216,13 @@ input#search{
 }
 
 #title_info{
+    box-sizing: border-box;
     display: flex;
-
     overflow: hidden;
     flex-direction:  column  ;
-    margin-left: 30px;
+
+    /*margin-left: 30px;*/
+    width: auto;
     height: 100%;
     position: relative;
 }
@@ -232,7 +234,7 @@ input#search{
     /*background-color: white;*/
     display: block;
     position: relative;
-    margin: 2% auto;
+    /*margin: 2% auto;*/
 }
 
 .title{

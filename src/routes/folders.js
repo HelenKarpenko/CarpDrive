@@ -5,23 +5,12 @@ var path = require('path');
 const folderCtrl = require('../controllers/folderController');
 const fileCtrl = require('../controllers/fileController');
 const imgCtrl = require('../controllers/fileDataController');
-// const userCtrl = require('../controllers/usersController');
+const userCtrl = require('../controllers/usersController');
 const utilities = require('../utilities/utilities');
 
-// ﻿router.get('/f:id',utilities.checkAuth, async (req, res,next) => {
-//     try {
-//         let dirTree = await folderCtrl.getAllChildrenJSON('5a08c6845cbcad3021b58be7');
-//         let parent = await folderCtrl.getById(req.params.id);
-//         let items = await folderCtrl.getAllItems(req.params.id)
-//         let args = utilities.paginate(items,(req.query.page) ? req.query.page : 1);
-//         args.dirTree = dirTree;
-//         args.curr = parent;
-//         res.render('f', args);
-//     }catch (e){
-//         console.log(e);
-//         next(e);
-//     }
-// });
+router.get('/',utilities.checkAuth, async (req, res,next) => {
+    res.redirect('/folders/f'+req.user.folder);
+});
 
 ﻿router.get('/f:id',utilities.checkAuth, async (req, res,next) => {
     try {
@@ -88,7 +77,7 @@ router.post('/f:id/addFile',utilities.checkAuth,async function (req, res, next) 
     await fileCtrl.create(
         req.body.name,
         req.files.img,
-        req.body.owner,
+        req.user._id,
         req.body.description,
         req.params.id)
         .﻿then(data => {folderCtrl.addChild(req.params.id, data._id, true)})
@@ -141,6 +130,7 @@ router.get('/a:id', utilities.checkAuth,async (req, res,next) => {
         res.render('file', {
             dirTree: dirTree,
             curr: file,
+            u: req.user,
         });
     }catch (e){
         console.log(e);
@@ -172,5 +162,54 @@ router.post('/a:id/removeFile',utilities.checkAuth,async(req, res, next) => {
     }
 });
 
+router.get('/a:id/share',utilities.checkAuth,async(req, res, next)=> {
+    let file = await fileCtrl.getById(req.params.id);
+    res.render('share', {
+        folder: req.params.id,
+        isFile: true,
+        file: file,
+    });
+});
+
+router.post('/a:id/share',utilities.checkAuth,async function (req, res, next) {
+    console.log("+++"+ req.body.idShare, req.params.id);
+    try{
+        await Promise.all([
+            userCtrl.addShareFile(req.body.idShare, req.params.id),
+            fileCtrl.addShare(req.body.idShare, req.params.id),
+        ])
+    }catch (err){
+        utilities.error(500,"Some error at server, when create:"+err,next);
+    }
+    res.redirect('/folders/a'+req.params.id);
+})
+
+router.get('/sharedWithMe',utilities.checkAuth, async (req, res,next) => {
+    try {
+        let files = req.user.sharedWithMe.files;
+        let filesArr = [];
+        for(let f of files){
+            console.log("++++"+ f);
+            let file = await fileCtrl.getById(f);
+            console.log("++++"+ file);
+            filesArr.push(file);
+        }
+        // let dirTree = await folderCtrl.getAllChildrenJSON(req.user.sharedWithMe.folders);
+        // let parent = await folderCtrl.getById(req.user.sharedWithMe.folders);
+        // let items = await folderCtrl.getAllItems(req.user.sharedWithMe.folders)
+        // let args = utilities.paginate(items,(req.query.page) ? req.query.page : 1);
+        // args.dirTree = dirTree;
+        // args.curr = parent;
+        // args.user = req.user;
+        console.log("++++"+ filesArr);
+        res.render('sharedWithMe', {
+            user: req.user,
+            files: filesArr,
+        });
+    }catch (e){
+        console.log(e);
+        next(e);
+    }
+});
 
 module.exports = router;

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Share</title>
+	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="header">
+	<span id="back_wrapper">
+		<a href="/folders" target="_self">
+			<img src="/images/back.png" alt="Back" title="Back">
+		</a>
+	</span>
+	<span id="title_wrapper">
+		Share
+	</span>
+
+</div>
+<div class="main">
+		<form action="/folders/a<%= file._id %>/share" method="POST">
+			<div id="info_wrapper">
+				<div class="mainInfo">
+					<label>Enter id</label><br>
+					<input type="text" id="idShare" name="idShare" placeholder="idShare" value="id " required><br>
+					<input type="submit" value="Share" id="share"/>
+				</div>
+			</div>
+		</form>
+		<div>
+			<img src="/res/images/<%=file.data%>" alt="<%=file.name%>" onerror="imgError(this)"> <%=file.name%>
+		</div>
+</div>
+</body>
+</html>

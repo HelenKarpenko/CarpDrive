@@ -18,7 +18,10 @@ async function create(name,login,password) {
         password: password,
         folder: null,
         folders: [],
-        sharedWithMe: [],
+        sharedWithMe: {
+            folders:[],
+            files:[],
+        },
     });
     return user.save();
 }
@@ -62,6 +65,19 @@ function addFolder(id, folderId) {
         .catch(err=>console.log(err));
 }
 
+async function addShareFile(userId, fileId) {
+    console.log("SHARE WITH ME "+ userId +" "+ fileId);
+    let user = await getById(userId);
+    user.sharedWithMe.files.push(fileId);
+    return user.save();
+}
+
+async function addShareFolder(userId, folderId) {
+    let user = await getById(userId);
+    user.sharedWithMe.files.push(folderId);
+    return user.save();
+}
+
 async function getAllFolder(id) {
     try{
         let user = await User.findById(id).exec();
@@ -77,6 +93,17 @@ async function getAllFolder(id) {
     }
 }
 
+async function removeSharedFile(userId,fileId) {
+    let user = await this.getById(userId);
+    let index = user.sharedWithMe.files.indexOf(fileId);
+    console.log("removeSharedFile: before= " + user.sharedWithMe.files);
+    console.log("removeSharedFile: index= " + index+" id= " + fileId);
+    if(index >= 0) user.sharedWithMe.files.splice(index, 1)
+    console.log("removeSharedFile: after= " + user.sharedWithMe.files);
+
+    return await user.save();
+}
+
 module.exports = {
     connect: connect,
     create: create,
@@ -88,5 +115,8 @@ module.exports = {
     getByUsername: getByUsername,
     addFolder: addFolder,
     getAllFolder: getAllFolder,
-    addMainFolder: addMainFolder
+    addMainFolder: addMainFolder,
+    addShareFile: addShareFile,
+    addShareFolder: addShareFolder,
+    removeSharedFile: removeSharedFile,
 };

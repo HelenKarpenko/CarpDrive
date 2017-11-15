@@ -6,7 +6,10 @@ let userSchema = new Schema({
     login: String,
     password: String,
     folder: Schema.Types.ObjectId,
-    sharedWithMe: [Schema.Types.ObjectId]
+    sharedWithMe: {
+        folders: [Schema.Types.ObjectId],
+        files: [Schema.Types.ObjectId]
+    }
 });
 
 module.exports = mongoose.model('User', userSchema);
