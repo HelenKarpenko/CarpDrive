@@ -6,8 +6,8 @@
     "node": "8.4.0"
   },
   "scripts": {
-    "start": "node ./bin/www",
-    "devstart": "nodemon ./bin/www"
+    "start": "node ./src/bin/www",
+    "devstart": "nodemon ./src/bin/www"
   },
   "author": "",
   "license": "ISC",
@@ -22,9 +22,13 @@
     "express-session": "^1.15.6",
     "file-type": "^7.2.0",
     "fs-promise": "^2.0.3",
+    "gridfs": "^1.0.0",
     "gridfs-stream": "^1.1.1",
+    "mongo-tree": "0.0.4",
     "mongodb": "^2.2.33",
-    "mongoose": "^4.12.6",
+    "mongoose": "^4.13.1",
+    "mongoose-gridfs": "^0.3.1",
+    "mongoose-paginate": "^5.0.3",
     "morgan": "^1.9.0",
     "nodemon": "^1.12.1",
     "passport": "^0.4.0",
