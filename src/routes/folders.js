@@ -31,7 +31,7 @@ const utilities = require('../utilities/utilities');
     }
 });
 
-router.get('/search/',utilities.checkAuth, async (req, res, next) => {
+router.get('/f:id/search/',utilities.checkAuth, async (req, res, next) => {
     try {
         let dirTree = await folderCtrl.getAllChildrenJSON(req.user.folder);
         let parent = {
@@ -55,7 +55,7 @@ router.get('/search/',utilities.checkAuth, async (req, res, next) => {
         args.files = files;
         args.isSearch = true;
 
-        res.render('f', args );
+        res.render('search', args );
     }catch (e){
         console.log(e);
         next(e);

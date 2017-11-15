@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Search</title>
+	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
+	<script>
+        function imgError(image) {
+            image.onerror = "";
+            image.src = "/images/folder.png";
+            return true;
+        }
+	</script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+</head>
+
+<body>
+
+<div id="folder_wrapper">
+
+	<div class="catalog">
+		<ul>
+            <%include buildTree.ejs%>
+		</ul>
+		</li>
+		</ul>
+		<script type="text/javascript">
+            $(".Collapsable").click(function () {
+
+                $(this).parent().children().toggle();
+                $(this).toggle();
+
+            });
+		</script>
+
+	</div>
+
+
+	<div id="title_info">
+		<div class="title">
+			<span id="back_wrapper">
+				<a href="/folders/f<%=user.folder%>" target="_self">
+					<img src="/images/back.png" alt="Back" title="Back">
+				</a>
+			</span>
+			<span id="title_wrapper">
+                <%= curr.name %>
+			</span>
+
+
+			<div id="profile">
+				<a href='/profile' id="profileItem">
+                    <%= user.name %>
+					<img src="/images/user.png" alt="" style="vertical-align:middle">
+				</a>
+				<a href='/help' id="profileItem">
+					Help
+				</a>
+			</div>
+
+		</div>
+		<div class="info">
+			<div id="add">
+				<form action="/folders/f<%= user.folder %>/search" method="GET">
+					<input type="text" name="name" id="search" placeholder="Search">
+				</form>
+				<div id="add">
+                    <%if(isSearch){%>
+					<form action="/folders/f<%= user.folder %>/addFolder/" method="get">
+						<button id="addFolder" type="submit">
+						</button>
+					</form>
+					<form action="/folders/f<%= user.folder %>/addFile/" method="get">
+						<button id="addFile" type="submit">
+						</button>
+					</form>
+                    <%}else{%>
+					<form action="/folders/f<%= curr.id %>/addFolder/" method="get">
+						<button id="addFolder" type="submit">
+						</button>
+					</form>
+					<form action="/folders/f<%= curr.id %>/addFile/" method="get">
+						<button id="addFile" type="submit">
+						</button>
+					</form>
+                    <%}%>
+				</div>
+
+				<div id="add">
+                    <%if(items.length !== 0){%>
+					<form action="/folders/f<%= curr.id %>/removeAll/" method="post">
+						<button id="removeAll" type="submit">
+						</button>
+					</form>
+                    <%if((String)(curr._id) !== (String)(user.folder)){%>
+                    <%if(isAdmin){%>
+					<form action="/folders/f<%= curr._id %>/removeUser" method="get">
+						<button id="removeFolder" type="submit">
+						</button>
+					</form>
+                    <%}else{%>
+					<form action="/folders/f<%= curr.id %>/removeFolder/" method="post">
+						<button id="removeFolder" type="submit">
+						</button>
+					</form>
+                    <%}%>
+                    <%}%>
+
+                    <%}%>
+				</div>
+			</div>
+
+
+			<div class="flex">
+                <% if(items.length === 0){%>
+
+				<div id="noFolder">There are no folders</div>
+
+                <%}else{%>
+
+                <%for(let f of items){%>
+				<div class="item">
+                    <%if(!('children' in f)){%>
+					<a href="/folders/a<%=f.id%>" target="_self">
+						<img src="/images/filePNG.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
+					</a>
+                    <%}else{%>
+					<a href="/folders/f<%=f.id%>" target="_self">
+						<img src="/images/folder.png" alt="<%=f.name%>" onerror="imgError(this)"> <%=f.name%>
+                        <%=f.children.folders.length + f.children.files.length%>
+                        <%}%>
+					</a>
+				</div>
+                <%}%>
+                <%}%>
+			</div>
+
+			<div class="pagination">
+                <% if(pageCount >= 1) { %>
+				<a <%= currentPage != 1 ? `href=/folders/f${curr._id}?page=${1}` : "class=active" %>>&laquo;</a>
+                <% for(var i = Math.max(1, Number(currentPage - range));  i <= Number(currentPage) + Number(range) & i <= pageCount ;i++){ %>
+				<a <%= currentPage != i ? `href=/folders/f${curr._id}?page=${i}` : "class=active" %>><%= i %></a>
+                <% } %>
+				<a <%= currentPage != pageCount ? `href=/folders/f${curr._id}?page=${pageCount}` : "class=active" %>>&raquo;</a>
+                <% } else{ %>
+				<a class="active">1</a>
+                <% } %>
+			</div>
+
+		</div>
+</body>
+</html>
+
+
+
+
+
