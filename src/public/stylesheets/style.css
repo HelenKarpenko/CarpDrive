@@ -296,6 +296,7 @@ input#search{
     float: left;
     text-align: left;
     margin-right: 20px;
+    overflow-x: scroll;
 }
 .catalog img{
     display: block;
