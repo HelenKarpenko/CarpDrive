@@ -47,9 +47,12 @@ async function remove(id, parent) {
     return file.remove();
 }
 
-function getByName(name) {
+function getByName(name, owner) {
     let regExp = new RegExp('^'+name, "i");
-    return File.find({name: regExp}).exec();
+    return File.find({
+        name: regExp,
+        owner: owner,
+    }).exec();
 }
 
 async function getData(id){
@@ -57,10 +60,7 @@ async function getData(id){
     return dataCtrl.getById(file.data);
 }
 
-function getByName(name) {
-    let regExp = new RegExp('^'+name, "i");
-    return File.find({name: regExp}).exec();
-}
+
 
 module.exports = {
     connect: connect,

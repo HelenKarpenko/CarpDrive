@@ -134,7 +134,7 @@ input#search{
     justify-content: center;
     align-items: stretch;
     flex-flow: row wrap;
-    margin: 1% 2% 3%;
+    margin: 7% 5% 3%;
 
 }
 .item img {
@@ -178,7 +178,7 @@ input#search{
 
 .pagination {
     position: absolute;
-    bottom: 2%;
+    bottom: 5%;
     margin: auto;
     width: 100%;
     height: 40px;
@@ -414,7 +414,7 @@ hr{
 }
 #createB{
     position: relative;
-    margin: 10% 35%;
+    margin: 2% 35%;
     width: 30%;
     height: 40px;
     border-radius: 10px;
@@ -425,36 +425,16 @@ hr{
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
+#createB:hover{
+    transform: scale(1.1,1.1);
+}
+
 input#name{
     border:1px solid #DADADA;
     margin-top:10px;
     margin-bottom:10px;
     padding-left:5px;
-    width:80%;
-    height:30px;
-    font-size:14px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    border-radius:10px;
-}
-
-input#location{
-    border:1px solid #DADADA;
-    margin-top:10px;
-    margin-bottom:10px;
-    padding-left:5px;
-    width:80%;
-    height:30px;
-    font-size:14px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    border-radius:10px;
-}
-
-input#owner{
-    border:1px solid #DADADA;
-    margin-top:10px;
-    margin-bottom:10px;
-    padding-left:5px;
-    width:80%;
+    width:50%;
     height:30px;
     font-size:14px;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
@@ -465,45 +445,13 @@ textarea{
     margin-top:10px;
     margin-bottom:10px;
     padding-left:5px;
-    width:80%;
+    width:50%;
     height:100%;
-    min-height: 420px;
+    min-height: 300px;
     font-size:14px;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
     border-radius:10px;
     border: none;
-}
-
-select#type{
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -webkit-padding-end: 20px;
-    -moz-padding-end: 20px;
-    -webkit-padding-start: 2px;
-    -moz-padding-start: 2px;
-
-    border:1px solid #DADADA;
-    margin-top:10px;
-    margin-bottom:10px;
-    padding-left:5px;
-    width:81%;
-    height:33px;
-    font-size:14px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    border-radius:10px;
-}
-#size{
-    border:1px solid #DADADA;
-    margin-top:10px;
-    margin-bottom:10px;
-    padding-left:5px;
-    width:80%;
-    height:30px;
-    font-size:14px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    border-radius:10px;
 }
 
 

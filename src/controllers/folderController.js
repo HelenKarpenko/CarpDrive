@@ -42,9 +42,12 @@ function getById(id) {
     return Folder.findById(id).exec();
 }
 
-function getByName(name) {
+function getByName(name, owner) {
     let regExp = new RegExp('^'+name, "i");
-    return Folder.find({name: regExp}).exec();
+    return Folder.find({
+        name: regExp,
+        owner: owner,
+    }).exec();
 }
 
 function addChild(id, childId, isFile) {

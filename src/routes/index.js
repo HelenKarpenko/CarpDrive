@@ -43,6 +43,7 @@ router.post('/register',
             try{
                 let user = await userCtrl.create(req.body.name, req.body.username, passwordHash);
                 let folder = await folderCtrl.create(req.body.name+' folder', user._id, req.body.name+' folder', '5a08c6845cbcad3021b58be7');
+                await folderCtrl.addChild('5a08c6845cbcad3021b58be7', folder._id, false)
                 await userCtrl.addMainFolder(user,folder._id)
                 res.redirect('/');
             }catch(e){

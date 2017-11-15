@@ -17,7 +17,6 @@ async function create(name,login,password) {
         login: login,
         password: password,
         folder: null,
-        folders: [],
         sharedWithMe: [],
     });
     return user.save();

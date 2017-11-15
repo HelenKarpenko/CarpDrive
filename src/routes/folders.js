@@ -8,20 +8,9 @@ const imgCtrl = require('../controllers/fileDataController');
 // const userCtrl = require('../controllers/usersController');
 const utilities = require('../utilities/utilities');
 
-// ﻿router.get('/f:id',utilities.checkAuth, async (req, res,next) => {
-//     try {
-//         let dirTree = await folderCtrl.getAllChildrenJSON('5a08c6845cbcad3021b58be7');
-//         let parent = await folderCtrl.getById(req.params.id);
-//         let items = await folderCtrl.getAllItems(req.params.id)
-//         let args = utilities.paginate(items,(req.query.page) ? req.query.page : 1);
-//         args.dirTree = dirTree;
-//         args.curr = parent;
-//         res.render('f', args);
-//     }catch (e){
-//         console.log(e);
-//         next(e);
-//     }
-// });
+﻿router.get('/',utilities.checkAuth, async (req, res,next) => {
+    res.redirect('/folders/f'+req.user.folder);
+});
 
 ﻿router.get('/f:id',utilities.checkAuth, async (req, res,next) => {
     try {
@@ -32,6 +21,7 @@ const utilities = require('../utilities/utilities');
         args.dirTree = dirTree;
         args.curr = parent;
         args.user = req.user;
+        args.isSearch = false;
         console.log("++++"+ parent._id + " = " + req.user.folder);
         res.render('f', args);
     }catch (e){
@@ -42,20 +32,29 @@ const utilities = require('../utilities/utilities');
 
 router.get('/search/',utilities.checkAuth, async (req, res, next) => {
     try {
-        let dirTree = await folderCtrl.getAllChildrenJSON('5a08c6845cbcad3021b58be7');
+        let dirTree = await folderCtrl.getAllChildrenJSON(req.user.folder);
         let parent = {
             name: "SEARCH"
         }
-        let folders = await folderCtrl.getByName(req.query.name);
-        let files = await fileCtrl.getByName(req.query.name);
+        let folders = await folderCtrl.getByName(req.query.name, req.user._id);
+        let files = await fileCtrl.getByName(req.query.name, req.user._id);
+        let items = [];
+        for(let f of folders){
+            items.push(f)
+        }
+        for(let f of files){
+            items.push(f)
+        }
 
-        let args = utilities.paginate(folders,(req.query.page) ? req.query.page : 1);
+        let args = utilities.paginate(items,(req.query.page) ? req.query.page : 1);
         args.dirTree = dirTree;
         args.curr = parent;
+        args.user = req.user;
         args.folders = folders;
         args.files = files;
+        args.isSearch = true;
 
-        res.render('search', args );
+        res.render('f', args );
     }catch (e){
         console.log(e);
         next(e);
@@ -63,7 +62,11 @@ router.get('/search/',utilities.checkAuth, async (req, res, next) => {
 });
 
 router.get('/f:id/addFolder', utilities.checkAuth,function(req, res, next) {
-    res.render('add', {folder: req.params.id, isFile: false});
+    res.render('add', {
+        folder: req.params.id,
+        isFile: false,
+        title: 'Create new folder',
+    });
 });
 
 router.post('/f:id/addFolder', utilities.checkAuth,async function (req, res, next) {
@@ -80,11 +83,13 @@ router.post('/f:id/addFolder', utilities.checkAuth,async function (req, res, nex
 })
 
 router.get('/f:id/addFile',utilities.checkAuth,function(req, res, next) {
-    res.render('add', {folder: req.params.id, isFile: true});
+    res.render('add', {
+        folder: req.params.id,
+        isFile: true,
+    });
 });
 
 router.post('/f:id/addFile',utilities.checkAuth,async function (req, res, next) {
-
     await fileCtrl.create(
         req.body.name,
         req.files.img,
@@ -136,7 +141,7 @@ router.post('/f:id/removeFolder',utilities.checkAuth,utilities.checkMainFolder,f
 
 router.get('/a:id', utilities.checkAuth,async (req, res,next) => {
     try {
-        let dirTree = await folderCtrl.getAllChildrenJSON('5a08c6845cbcad3021b58be7');
+        let dirTree = await folderCtrl.getAllChildrenJSON(req.user.folder);
         let file = await fileCtrl.getById(req.params.id);
         res.render('file', {
             dirTree: dirTree,

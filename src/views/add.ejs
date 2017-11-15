@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Add new folder</title>
+	<title>Create</title>
 	<link type="text/css" href="/stylesheets/style.css" rel="stylesheet">
 </head>
 <body>
@@ -14,49 +14,27 @@
 		</a>
 	</span>
 	<span id="title_wrapper">
+        <% if(!isFile){ %>
 		Create new folder
+        <%}else{%>
+		Create new file
+		<%}%>
 	</span>
 
 </div>
 <div class="main">
-    <!--<% if(!isFile){ %>-->
-	<!--<form action="/folders/addFolder" method="POST" enctype="multipart/form-data">-->
-        <!--<% }else{ %>-->
-		<!--<form action="/folders/addFile" method="POST" enctype="multipart/form-data">-->
-            <!--<% } %>-->
 
 	<% if(!isFile){ %>
 		<form action="/folders/f<%=folder%>/addFolder" method="POST" enctype="multipart/form-data">
 	<% }else{ %>
 		<form action="/folders/f<%=folder%>/addFile" method="POST" enctype="multipart/form-data">
+			<label>Download new file</label><br>
+			<input type='file' name="img" id="img" required><br>
 	<% } %>
-		<div id="info_wrapper">
-			<div class="mainInfo">
-				<label>Image</label><br>
-				<input type='file' name="img" id="img" required><br>
 				<label>Name</label><br>
 				<input type="text" id="name" name="name" placeholder="Name" value="Name" required><br>
-				<label>Type</label><br>
-					<select id="type" name="type">
-						<option id="sheets" value="Sheets" selected >Sheets</option>
-						<option id="docs" value="Docs">Docs</option>
-						<option id="folder" value="Folder">Folder</option>
-						<option id="pdf" value="PDF" selected >PDF</option>
-						<option id="compressedArchive" value="Compressed Archive">Compressed Archive</option>
-						<option id="slides" value="Slides">Slides</option>
-					</select><br>
-				<label>Size</label><br>
-				<input type="number" name="size" min="0" max="1000" step="1" id="size" onchange="changeRange()" value="0"/><br>
-				<label>Location</label><br>
-				<input type="text" id="location" name="location" value="kkk" required><br>
-				<label>Owner</label><br>
-				<input type="text" id="owner" name="owner" value="kkk" required><br>
-			</div>
-			<div class="description">
 				<label>Description</label><br>
-				<textarea name="description" id="text"></textarea><br>
-			</div>
-		</div>
+				<textarea name="description" id="text"></textarea>
 		<input type="submit" value="Create" id="createB"/>
 	</form>
 </div>
