@@ -311,7 +311,7 @@ hr{
     border: 0;
     background: transparent;
     margin: 10px;
-    background-image: url("../images/delete.png");
+    background-image: url("../images/deleteAll.png");
     background-size: cover;
     background-position: center;
     padding: 25px;
