@@ -1,4 +1,6 @@
 let mongoose = require('mongoose');
+let mongoosePaginate = require('mongoose-paginate');
+var mongooseTree = require('mongoose-tree');
 
 let Schema = mongoose.Schema;
 let file = require('../controllers/fileController');
@@ -24,6 +26,9 @@ let folderSchema = new Schema({
         files: [Schema.Types.ObjectId]
     }
 });
+
+folderSchema.plugin(mongoosePaginate);
+folderSchema.plugin(mongooseTree);
 
 folderSchema.methods.removeChild = function (child) {
     console.log('remove child call',this.id);

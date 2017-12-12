@@ -54,6 +54,8 @@ function checkAdminRemove(req, res, next) {
     next();
 }
 
+
+
 module.exports = {
     paginate: paginate,
     checkAuth: checkAuth,

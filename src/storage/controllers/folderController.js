@@ -18,7 +18,6 @@ async function create(name,owner,description, parent) {
         owner: mongoose.Types.ObjectId(owner),
         sharedWithMe: [],
         info: {description: description},
-        // parent: null,
         parent: mongoose.Types.ObjectId(parent),
         children: {
             folders: [],
@@ -119,6 +118,21 @@ async function getAllChildrenJSON(id) {
     }
 }
 
+function find(query, page, limit) {
+    return Folder.paginate(query, { page: Math.abs(Number(page)) || 1, limit: Math.abs(Number(limit)) || 12 })
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+async function getMyDrive(id) {
+    return Folder.findById(id).exec();
+}
+async function getMyDriveChildren(id) {
+    return Folder.find({parent: id}).exec();
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 module.exports = {
     connect: connect,
     create: create,
@@ -131,4 +145,10 @@ module.exports = {
     removeAllFiles: removeAllFiles,
     removeAll: removeAll,
     getAllItems: getAllItems,
+    find: find,
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    getMyDrive: getMyDrive,
+    getMyDriveChildren: getMyDriveChildren,
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };
