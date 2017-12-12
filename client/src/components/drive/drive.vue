@@ -1,34 +1,40 @@
-
 <template>
-  <container>
-    <v-layout row>
-      <v-navigation-drawer permanent light>
-        <v-list>
-          <v-list-tile v-for="item in navigation" :key="item.title" @click="">
-            <v-list-tile-action>
-              <v-icon large>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-navigation-drawer>
-
-      <v-flex xs-5>
-        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
-      </v-flex>
-
-    </v-layout>
-  </container>
+  <!--<v-container>-->
+      <v-container grid-list-md text-xs-center>
+        <v-layout row wrap>
+          <template v-if="item.children.length > 0">
+            <v-flex xs3 v-for="(item, i) in item.children" :key="i">
+              <v-card>
+                <v-card-media src="/static/image/folder.svg" height="250px" contain>
+                </v-card-media>
+                <v-card-title primary-title>
+                  <div>
+                    <h3 class="headline mb-0">{{item.name}}</h3>
+                  </div>
+                </v-card-title>
+                <v-card-actions>
+                </v-card-actions>
+              </v-card>
+            </v-flex>
+          </template>
+          <template v-else>
+            <v-flex>
+              <v-card>
+                <v-card-title primary-title>
+                  <div>
+                    <h3 class="headline mb-0">Empty</h3>
+                  </div>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+          </template>
+        </v-layout>
+      </v-container>
+  <!--</v-container>-->
 </template>
 
-
-<!--<template>-->
-  <!--<el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>-->
-<!--</template>-->
 <script>
-  import TreeItem from './item.vue';
+  import TreeItem from '@/components/drive/tree';
   import foldersAPI from '@/services/folders';
   export default{
     components:{
@@ -36,69 +42,33 @@
     },
     data(){
       return{
-        navigation: [
-          { title: 'My drive', icon: 'cloud' },
-          { title: 'Shared with me', icon: 'folder_shared' },
-        ],
-        mini: true,
-        right: null,
-        data: [{
-          name: 'Level one 1',
-          children: [{
-            name: 'Level two 1-1',
-            children: [{
-              name: 'Level three 1-1-1'
-            }]
-          }]
-          }, {
-          name: 'Level one 2',
-          children: [{
-            name: 'Level two 2-1',
-            children: [{
-              name: 'Level three 2-1-1'
-            }]
-          }, {
-            name: 'Level two 2-2',
-            children: [{
-              name: 'Level three 2-2-1'
-            }]
-          }]
-        }, {
-          name: 'Level one 3',
-          children: [{
-            name: 'Level two 3-1',
-            children: [{
-              name: 'Level three 3-1-1'
-            }]
-          }, {
-            name: 'Level two 3-2',
-            children: [{
-              name: 'Level three 3-2-1'
-            }]
-          }]
-        }],
-
-        defaultProps: {
-          children: 'children',
-          label: 'name'
+        folderID: null,
+        item: {
+          info: null,
+          children: null,
         },
       }
     },
     created: async function (){
-      await this.load();
     },
     watch:{
       page:async function(){
         await this.load();
       }
     },
+    async beforeRouteUpdate (to, from, next) {
+     this.folderID = to.params.id;
+     await this.load();
+     next();
+    },
     methods: {
       load: async function () {
         try {
-          let res = await foldersAPI.find();
-          this.data = res.data;
-          console.log(this.items);
-
+          let res = await foldersAPI.get(this.folderID);
+          if(res.data.success){
+            this.item = res.data.folder;
+            console.log(this.item);
+          }
         } catch (e) {
           console.log(e)
         }

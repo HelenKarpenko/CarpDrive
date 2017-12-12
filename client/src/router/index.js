@@ -15,7 +15,7 @@ export default new Router({
     //   component: HelloWorld
     // },
     {
-      path: '/my-drive',
+      path: '/my-drive/:id',
       name: 'MyDrive',
       component: MyDrive
     },

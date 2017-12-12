@@ -2,7 +2,7 @@ import API from './api';
 
 export default {
   find(args) {
-    let query = 'api/v1/folders?';
+    let query = 'api/v1/my-drive';
     // if(args.filterString){
     //   query +=`name=${args.filterString}&`
     // }
@@ -12,13 +12,13 @@ export default {
     // if(args.limit){
     //   query += `limit=${args.limit}&`
     // }
-    return API().get(query);
+    return API.noAuth().get(query);
   },
   getItem(id) {
-    return API().get(`api/v1/folders/${id}`);
+    return API().noAuth().get(`api/v1/folders/${id}`);
   },
   getImage() {
-    return API().get('api/v1/folders/image/:id');
+    return API().noAuth().get('api/v1/folders/image/:id');
   },
   addNewItem(args) {
     let form=new FormData();
@@ -31,11 +31,12 @@ export default {
   removeItem(id) {
     return API().delete(`api/v1/folders/${id}`,);
   },
-  // get(args) {
-    //   let query = 'api/v1/my-drive/';
-    //   if(args.folderId){
-    //     query +=`${args.filterString}`
-    //   }
-    //   return API().get(query);
-    // },
+  get(id) {
+      let query = 'api/v1/my-drive/';
+      if(id){
+        query +=`${id}`
+      }
+      console.log(query);
+    return API.noAuth().get(query);
+    },
 }

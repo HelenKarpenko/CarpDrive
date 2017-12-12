@@ -1,21 +1,12 @@
 <template>
-  <v-toolbar color="amber" app  clipped-left>
-    <v-toolbar-side-icon v-if="$vuetify.breakpoint.width <= 1264" @click="drawer = !drawer"></v-toolbar-side-icon>
-    <!--<v-toolbar-title class="white--text">Title</v-toolbar-title>-->
+  <v-toolbar color="amber" app fixed clipped-left dense >
+    <v-toolbar-side-icon  @click.stop="$emit('toggleSidebar')"></v-toolbar-side-icon>
     <span class="title">Cloud&nbsp;<span class="text">lab 9</span></span>
     <v-spacer></v-spacer>
-    <!--<v-btn icon :to="{name:'Login'}">-->
-      <!--<v-avatar v-if="$store.getters.isUserLoggedIn()">-->
-        <!--&lt;!&ndash;<img src="/static/doc-images/john.jpg" alt="">&ndash;&gt;-->
-        <!--<span class="white&#45;&#45;text headline">{{$store.state.user.name}}</span>-->
-        <!--&lt;!&ndash;<span class="white&#45;&#45;text headline">A</span>&ndash;&gt;-->
-      <!--</v-avatar>-->
-    <!--</v-btn>-->
   </v-toolbar>
 </template>
 
 <script>
-//  import foldersAPI from '@/services/folders';
   export default {
     data: () => ({
       drawer: null,
