@@ -1,34 +1,40 @@
 let mongoose = require('mongoose');
 let mongoosePaginate = require('mongoose-paginate');
-var mongooseTree = require('mongoose-tree');
+var mongooseTree = require('mongoose-path-tree');
 
 let Schema = mongoose.Schema;
 let file = require('../controllers/fileController');
 
 let folderSchema = new Schema({
     name: String,
+    hasChildren: Boolean,
     // owner: String,
-    owner: Schema.Types.ObjectId,
-    sharedWith : [
-        {
-            user: Schema.Types.ObjectId,
-            AccessLevel: String,
-        }
-    ],
-    info: {
-        modified: {type: Date, default: Date.now},
-        created: {type: Date, default: Date.now},
-        description: String,
-    },
-    parent: Schema.Types.ObjectId,
-    children: {
-        folders: [Schema.Types.ObjectId],
-        files: [Schema.Types.ObjectId]
-    }
+    // owner: Schema.Types.ObjectId,
+    // sharedWith : [
+    //     {
+    //         user: Schema.Types.ObjectId,
+    //         AccessLevel: String,
+    //     }
+    // ],
+    // info: {
+    //     modified: {type: Date, default: Date.now},
+    //     created: {type: Date, default: Date.now},
+    //     description: String,
+    // },
+    // parent: Schema.Types.ObjectId,
+    // children: {
+    //     folders: [Schema.Types.ObjectId],
+    //     files: [Schema.Types.ObjectId]
+    // }
 });
 
 folderSchema.plugin(mongoosePaginate);
-folderSchema.plugin(mongooseTree);
+folderSchema.plugin(mongooseTree, {
+    pathSeparator : '#',
+    onDelete : 'REPARENT',
+    numWorkers: 5,
+    idType: Schema.ObjectId,
+});
 
 folderSchema.methods.removeChild = function (child) {
     console.log('remove child call',this.id);

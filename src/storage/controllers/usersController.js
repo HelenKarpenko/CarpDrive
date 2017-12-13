@@ -11,16 +11,16 @@ function connect(url) {
     }
 }
 
-async function create(name,login,password) {
-    let user = new User({
-        name: name,
-        login: login,
-        password: password,
-        folder: null,
-        sharedWithMe: [],
-    });
-    return user.save();
-}
+// async function create(name,login,password) {
+//     let user = new User({
+//         name: name,
+//         login: login,
+//         password: password,
+//         folder: null,
+//         sharedWithMe: [],
+//     });
+//     return user.save();
+// }
 
 function getAll() {
     return User.find().exec();
@@ -76,6 +76,43 @@ async function getAllFolder(id) {
     }
 }
 
+//////////////////////
+async function create(name, username ,password) {
+    let user = new User({
+        name: name,
+        username: username,
+        password: password
+    });
+    return user.save();
+}
+
+let get = {
+    async byCredentials(username, password) {
+        const user = await User.findOne({username: username});
+        console.log(user);
+        if(user && user.comparePassword(password)){
+            return user;
+        }
+        return null;
+    },
+    async byAccessToken (token) {
+        const user = await User.findOne({'tokens.access.value': token})
+        if(user && user.verifyAccessToken(token)){
+            return user;
+        }
+        return null;
+    },
+    async byRefreshToken (token) {
+        const user = await User.findOne({'tokens.refresh.value': token})
+        if(user && user.verifyRefreshToken(token)){
+            return user;
+        }
+        return null;
+    }
+}
+
+//////////////////////
+
 module.exports = {
     connect: connect,
     create: create,
@@ -87,5 +124,8 @@ module.exports = {
     getByUsername: getByUsername,
     addFolder: addFolder,
     getAllFolder: getAllFolder,
-    addMainFolder: addMainFolder
+    addMainFolder: addMainFolder,
+    //////
+    get: get,
+    //////
 };

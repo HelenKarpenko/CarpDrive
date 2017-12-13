@@ -58,7 +58,8 @@
           const result = await authAPI.login(this.credentials);
           console.log(result.data);
           if(result.data.success) {
-//            this.$store.dispatch('setUser', result.data.user);
+
+            this.$store.dispatch('setUser', result.data.user);
 //            this.$router.push({name: 'Folders'})
           }
         }catch(e){console.log(e);}

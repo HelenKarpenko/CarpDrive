@@ -16,12 +16,6 @@ export default new Vuex.Store({
     createPersistedState()
   ],
   mutations: {
-    setUsername (state, value) {
-      state.username = value;
-    },
-    setPassword (state, value) {
-      state.password = value;
-    },
     setUser (state, value) {
       state.user = value;
     },
@@ -32,12 +26,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    setUsername ({commit}, value) {
-      commit('setUsername', value);
-    },
-    setPassword ({commit}, value) {
-      commit('setPassword', value);
-    },
     setUser ({commit}, value) {
       commit('setUser', value);
     },

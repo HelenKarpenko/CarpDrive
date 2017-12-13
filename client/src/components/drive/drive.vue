@@ -1,5 +1,5 @@
 <template>
-  <!--<v-container>-->
+  <v-container>
       <v-container grid-list-md text-xs-center>
         <v-layout row wrap>
           <template v-if="item.children.length > 0">
@@ -30,7 +30,7 @@
           </template>
         </v-layout>
       </v-container>
-  <!--</v-container>-->
+  </v-container>
 </template>
 
 <script>
@@ -42,7 +42,7 @@
     },
     data(){
       return{
-        folderID: null,
+        folderID: '5a2da94fc745e95a0cdb8783',
         item: {
           info: null,
           children: null,
@@ -50,6 +50,7 @@
       }
     },
     created: async function (){
+      await this.load();
     },
     watch:{
       page:async function(){
@@ -64,6 +65,7 @@
     methods: {
       load: async function () {
         try {
+          console.log("<<<"+ this.folderID);
           let res = await foldersAPI.get(this.folderID);
           if(res.data.success){
             this.item = res.data.folder;

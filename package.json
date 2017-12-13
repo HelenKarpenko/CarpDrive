@@ -15,6 +15,7 @@
   "dependencies": {
     "busboy-body-parser": "^0.3.0",
     "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
     "crypto": "^1.0.1",
     "document": "^0.4.7",
     "dotenv": "^4.0.0",
@@ -24,15 +25,36 @@
     "fs-promise": "^2.0.3",
     "gridfs": "^1.0.0",
     "gridfs-stream": "^1.1.1",
+    "module-alias": "^2.0.3",
     "mongo-tree": "0.0.4",
     "mongodb": "^2.2.33",
     "mongoose": "^4.13.1",
     "mongoose-gridfs": "^0.3.1",
     "mongoose-paginate": "^5.0.3",
+    "mongoose-pass": "^1.0.3",
+    "mongoose-path-tree": "^1.3.5",
+    "mongoose-tree": "^0.2.2",
     "morgan": "^1.9.0",
     "nodemon": "^1.12.1",
     "passport": "^0.4.0",
+    "passport-http": "^0.3.0",
+    "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
-    "serve-favicon": "^2.4.5"
+    "serve-favicon": "^2.4.5",
+    "vuetify": "^0.17.4"
+  },
+  "_moduleAliases": {
+    "@root": "./src/",
+    "@API": "./src/routes/api.js",
+    "@DB": "./src/storage",
+    "@routes": "./src/routes",
+    "@config": "./src/utils/config.js",
+    "@utils": "./src/utils/utils.js",
+    "@auth": "./src/config/auth.js",
+    "@jwt": "./src/utils/jwt.js",
+    "@models": "./src/storage/models/models.js",
+    "@APIv1": "./src/routes/api/v1",
+    "@validator": "./src/utils/validator.js",
+    "@APIroad": "./src/endpoints.md"
   }
 }

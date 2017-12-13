@@ -1,4 +1,6 @@
 "use strict";
+require('module-alias/register');
+
 let express = require('express');
 let path = require('path');
 let favicon = require('serve-favicon');
@@ -13,21 +15,24 @@ const LocalStrategy = require('passport-local').Strategy;
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const crypto = require('crypto');
-
-let  index = require('./routes/index');
-let  users = require('./routes/folders');
-let  res = require('./routes/res');
-let  u = require('./routes/users');
-const user = require('./controllers/usersController');
+const cors = require('cors');
 
 
+// let  index = require('./routes/old/index');
+// let  users = require('./routes/old/folders');
+// let  res = require('./routes/old/res');
+// let  u = require('./routes/old/users');
+// let api = require('@API');
+const user = require('./storage/controllers/usersController');
 
-const database = require('./controllers/folderController');
-database.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds111066.mlab.com:11066/carpdrive`)
-// database.connect(`mongodb://localhost:27017/carpdrive`)
+
+
+const database = require('./storage/controllers/folderController');
+// database.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds111066.mlab.com:11066/carpdrive`)
+database.connect(`mongodb://localhost:27017/carpdrive`)
     .then(data => {
       console.log('+connected');
-      require('./controllers/fileDataController').connect();
+      require('./storage/controllers/fileDataController').connect();
     })
     .catch(err => {throw err});
 
@@ -36,6 +41,7 @@ let  app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -56,10 +62,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', index);
-app.use('/folders', users);
-app.use('/res', res);
-app.use('/users', u);
+// app.use('/', index);
+// app.use('/folders', users);
+// app.use('/res', res);
+// app.use('/users', u);
+// app.use('/api/v1', api);
+require('@auth')(app);
+app.use('/api/', require('@API'));
 
 const serverSalt = "45%sAlT_";
 

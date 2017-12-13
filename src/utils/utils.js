@@ -16,3 +16,15 @@ module.exports.crypto = {
             .toString('base64');
     }
 }
+
+module.exports.errors = {
+    InvalidRequesDatatError (msg) {
+        return {
+            name: 'InvalidRequesDatatError',
+            message: msg
+        }
+    }
+}
+module.exports.sendError = (res, code, msg) => {
+    return res.status(code).json({success: false, message: msg}).end();
+}
