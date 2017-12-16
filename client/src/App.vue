@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-      <my-header @toggleSidebar="toggleSidebar()"/>
-      <my-sidebar :toggle="UI.sidebar.toggle"/>
+      <my-header/>
       <v-content>
       <router-view/>
       </v-content>
@@ -12,28 +11,28 @@
 
 <script>
   import myHeader from '@/components/globals/header.vue';
-  import mySidebar from '@/components/globals/sidebar.vue';
+//  import mySidebar from '@/components/globals/sidebar.vue';
   export default {
     name: 'app',
     data(){
       return{
         msg:'lena',
-        UI:{
-          sidebar: {
-            toggle: true,
-          }
-        }
+//        UI:{
+//          sidebar: {
+//            toggle: true,
+//          }
+//        }
       }
     },
     components:{
       myHeader,
-      mySidebar
+//      mySidebar
     },
-    methods:{
-      toggleSidebar(){
-        this.UI.sidebar.toggle = !this.UI.sidebar.toggle;
-      }
-    }
+//    methods:{
+//      toggleSidebar(){
+//        this.UI.sidebar.toggle = !this.UI.sidebar.toggle;
+//      }
+//    }
   }
 </script>
 

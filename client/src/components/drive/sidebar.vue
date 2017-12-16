@@ -45,13 +45,13 @@
       }
     },
     props: ['toggle'],
-    watch: {
-      toggle() {
-        console.log(1)
-        this.UI.isShown = !this.UI.isShown;
-        console.log(this.UI.isShown)
-      },
-    },
+//    watch: {
+//      toggle() {
+//        console.log(1)
+//        this.UI.isShown = !this.UI.isShown;
+//        console.log(this.UI.isShown)
+//      },
+//    },
     methods: {
       toggleSize() {
         this.UI.isMini = !this.UI.isMini;

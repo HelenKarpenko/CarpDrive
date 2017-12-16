@@ -35,18 +35,14 @@
     methods:{
       async addNewFolder (args) {
         this.closeAddDialog();
-        this.$emit('addNewItem',{
-          //some args
-          name:'I love u'
-        });
-        return;
         try {
           console.log("ARGS");
           console.log(args);
           const result = await foldersAPI.addNewItem(this.$route.params.id,args);
           console.log(result.data);
           if (result.data.success) {
-            this.item.push(result.data.folder);
+//            this.item.push(result.data.folder);
+            this.$emit('addNewItem', result.data.folder);
           }
         } catch (e) {
           console.log(e);

@@ -1,14 +1,21 @@
 <template>
-  <el-tree
-    lazy
-    :props="defaultProps"
-    :load="loadNode"
-    @node-click="handleNodeClick"/>
+  <span>
+    <el-tree
+      lazy
+      :props="defaultProps"
+      :load="loadNode"
+      @node-click="handleNodeClick"
+    />
+  </span>
 </template>
 
 <script>
   import foldersAPI from '@/services/folders';
+  import MyDrive from '@/components/drive/drive';
   export default{
+    components:{
+      MyDrive,
+    },
     data(){
       return{
         defaultProps: {
@@ -25,13 +32,15 @@
         console.log(this.UI.isShown)
       }
     },
+    created: async function (){
+    },
     methods: {
       handleNodeClick: async function (data) {
-        this.$router.push({name: 'MyDrive', params:{id:data._id}})
+        this.$router.push({name: 'Drive', params:{id:data._id}})
       },
       loadNode: async function (node, resolve) {
         try {
-          let firstGeneration = await foldersAPI.get('5a2da94fc745e95a0cdb8783');
+          let firstGeneration = await foldersAPI.get(this.$store.state.user.myDrive);
           if (node.level === 0) {
             return resolve(firstGeneration.data.folder.children);
           }else{

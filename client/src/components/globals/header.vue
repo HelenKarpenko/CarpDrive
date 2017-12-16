@@ -1,6 +1,7 @@
 <template>
   <v-toolbar color="amber" app fixed clipped-left dense>
-    <v-toolbar-side-icon  @click.stop="$emit('toggleSidebar')"></v-toolbar-side-icon>
+    <!--<v-toolbar-side-icon  @click.stop="$emit('toggleSidebar')"></v-toolbar-side-icon>-->
+    <v-toolbar-side-icon></v-toolbar-side-icon>
     <span class="title">Cloud&nbsp;<span class="text">lab 9</span></span>
   </v-toolbar>
 </template>
