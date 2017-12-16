@@ -1,5 +1,6 @@
 let mongoose = require('mongoose');
 let User = require('../models/userModel');
+const folderCtrl = require('./folderController');
 
 mongoose.Promise = global.Promise;
 
@@ -11,16 +12,6 @@ function connect(url) {
     }
 }
 
-// async function create(name,login,password) {
-//     let user = new User({
-//         name: name,
-//         login: login,
-//         password: password,
-//         folder: null,
-//         sharedWithMe: [],
-//     });
-//     return user.save();
-// }
 
 function getAll() {
     return User.find().exec();
@@ -48,7 +39,10 @@ function getByLogin(login) {
 }
 
 async function addMainFolder(user, folderId) {
-    user.folder = folderId;
+    console.log("*****")
+    console.log(user);
+    console.log(folderId);
+    user.myDrive = folderId;
     return user.save();
 }
 
@@ -78,11 +72,13 @@ async function getAllFolder(id) {
 
 //////////////////////
 async function create(name, username ,password) {
+    console.log(2)
     let user = new User({
         name: name,
         username: username,
-        password: password
+        password: password,
     });
+    console.log(1)
     return user.save();
 }
 

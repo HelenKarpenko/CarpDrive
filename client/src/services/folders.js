@@ -3,30 +3,13 @@ import API from './api';
 export default {
   find(args) {
     let query = 'api/v1/my-drive';
-    // if(args.filterString){
-    //   query +=`name=${args.filterString}&`
-    // }
-    // if(args.page){
-    //   query +=`page=${args.page}&`
-    // }
-    // if(args.limit){
-    //   query += `limit=${args.limit}&`
-    // }
     return API.noAuth().get(query);
   },
-  getItem(id) {
-    return API().noAuth().get(`api/v1/folders/${id}`);
-  },
-  getImage() {
-    return API().noAuth().get('api/v1/folders/image/:id');
-  },
-  addNewItem(args) {
-    let form=new FormData();
-    for(var key in args){
-      form.append(key,args[key]);
-    }
-    console.log(form)
-    return API().post(`api/v1/folders`, form);
+  addNewItem(parent,args) {
+    console.log(parent);
+    console.log(`api/v1/my-drive/${parent}`);
+    return API.bearerAccessAuth().post(`api/v1/my-drive/${parent}`, args);
+    // return API().post(`api/v1/my-drive/5a30671f7dadbb136173ad05`);
   },
   removeItem(id) {
     return API().delete(`api/v1/folders/${id}`,);
@@ -36,7 +19,6 @@ export default {
       if(id){
         query +=`${id}`
       }
-      console.log(query);
-    return API.noAuth().get(query);
+    return API.bearerAccessAuth().get(query);
     },
 }

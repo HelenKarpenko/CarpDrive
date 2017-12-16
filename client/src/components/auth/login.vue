@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md text-xs-center>
-    <v-card color="grey lighten-4" v-if="!$store.getters.isUserLoggedIn()" flat>
+    <v-card color="grey lighten-4" v-if="!$store.getters.isLogged()" flat>
       <v-card-text>
         <v-container fluid>
           <v-layout row>
@@ -58,17 +58,22 @@
           const result = await authAPI.login(this.credentials);
           console.log(result.data);
           if(result.data.success) {
-
             this.$store.dispatch('setUser', result.data.user);
-//            this.$router.push({name: 'Folders'})
+            this.$store.dispatch('setAccessToken', result.data.tokens.access);
+            this.$store.dispatch('setRefreshToken', result.data.tokens.refresh);
+            this.$router.push({name: 'MyDrive'})
           }
         }catch(e){console.log(e);}
       },
       logout:async function(){
-          this.$store.dispatch('setUsername', null);
-          this.$store.dispatch('setPassword', null);
-        this.$store.dispatch('setUser', null);
+        try {
+          await authAPI.logout(this.credentials);
+        }catch (e){
 
+        }
+        this.$store.dispatch('setUser', null);
+        this.$store.dispatch('setAccessToken', null);
+        this.$store.dispatch('setRefreshToken', null);
       }
     },
   }

@@ -56,5 +56,14 @@
     "@APIv1": "./src/routes/api/v1",
     "@validator": "./src/utils/validator.js",
     "@APIroad": "./src/endpoints.md"
+  },
+  "nodemonConfig":{
+    "ignore":[
+      "node_modules/*",
+      "client/*",
+      ".git",
+      ".gitignore",
+      "README.md"
+    ]
   }
 }

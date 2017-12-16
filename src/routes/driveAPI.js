@@ -1,342 +1,334 @@
-var express = require('express');
-var router = express.Router();
+// todo
+// get publication by query
+// remove publication
+// create publication
+// update publication
+"use strict";
+const express = require('express');
+let router = express.Router();
+const Utils = require('@utils');
+const DBpublications = require('@DB/controller.publications')
+const DBimage = require('@DB/controller.image')
+const DBusers = require('@DB/controller.users')
+const config = require('@config');
+const auth = require('@auth')
+let tools = {
+    collect: {
+        find: (req) => {
+            return {
+                page: Number(req.query.page) || 1,
+                limit: Number(req.query.limit) || config.LIMIT,
+                query: tools.query.find(req.query)
+            }
+        },
+        delete: (req) => {
+            return {
+                query: tools.query.delete(req.body)
+            }
+        },
+        put: (req) => {
+            return {
+                query: tools.query.put(req.body)
+            }
+        },
+        post: (req) => {
+            return {
+                query: tools.query.post(req.body)
+            }
+        }
+    },
+    check: {
+        find: (args) => {
+            if (!args.page || !Number(args.page) || Number(args.page) <= 0) {
+                return false;
+            }
+            if (!args.limit || !Number(args.limit) || Number(args.limit) <= 0) {
+                return false;
+            }
+            if (!args.query) return false;
+            return true;
+        },
+        delete: (args, user) => {
+            return args.query.id && ( user.isAdmin || user.publications.indexOf(args.query.id) >= 0);
+        },
+        put: (args, user) => {
+            return tools.check.delete(args, user) && Object.keys(args.query.values).length > 0;
+        },
+        post: (args) => {
+            return args.query && args.query.title && args.query.text;
+        }
+    },
+    query: {
+        find: (req) => {
+            let query = {}
+            //title
+            if (req.title) {
+                query.title = new RegExp(`^${req.title.trim()}`, "i");
+            }
+            //author
+            if (req.author && Utils.isValidID(req.author)) {
+                query.author_id = Utils.str2id(req.author);
+            }
+            //tag
+            if (req.tags) {
+                let tags = {$in: []};
+                let parsed = Utils.parseJSON(req.tags);
+                if (Array.isArray(parsed)) {
+                    parsed.forEach((value) => {
+                        tags.$in.push(String(value));
+                    })
+                } else if (parsed) {
+                    tags.$in.push(parsed);
+                }
+                if (parsed) {
+                    query.tags = tags;
+                }
+            }
+            //id
+            if (req.id) {
+                if (Utils.isValidID(req.id)) {
+                    query._id = Utils.str2id(req.id);
+                } else {
+                    query._id = Utils.emptyId();
+                }
+            }
+            return query;
+        },
+        delete: (req) => {
+            let query = {};
+            if (req.id && Utils.isValidID(req.id)) {
+                query.id = Utils.str2id(req.id);
+            }
+            return query;
+        },
+        put: (req) => {
 
-const folderCtrl = require('../storage/controllers/folderController');
-const userCtrl = require('../storage/controllers/usersController');
-const utilities = require('../utils/utils');
-
-const ObjectId = require('mongoose').Types.ObjectId;
-
-
-router.get('/folders/:folder_id', (req, res, next) => {
-    let id = req.params.folder_id;
-    if(id && ObjectId.isValid(id) &&
-        (req.query.limit < 0 ||
-        req.query.page < 0 ||
-        ('limit' in req.query && !Number(req.query.limit)) ||
-        ('page' in req.query && !Number(req.query.page)))){
-        // utils.apierror(400,'Bad request',res);
-    }else {
-        // const query = parseQuery(req.query);
-        // query.parent = id;
-        let query = {parent: id};
-        folderCtrl.find(query, req.query.page, req.query.limit)
-            .then(items => {
-                return res.json(items);
+            let query = {values: {}};
+            // get target
+            if (req.target && Utils.isValidID(req.target)) {
+                query.id = Utils.str2id(req.target);
+            }
+            // get new values
+            if (req.title) {
+                query.values.title = req.title;
+            }
+            if (req.description) {
+                query.values.description = req.description;
+            }
+            if (req.text) {
+                query.values.text = req.text;
+            }
+            if (req.difficult && Number(req.difficult)) {
+                query.values.difficult = req.difficult;
+            }
+            if (req.add_tags) {
+                let parsed = Utils.parseJSON(req.add_tags);
+                if (Array.isArray(parsed)) {
+                    query.values.add_tags = [];
+                    parsed.forEach((value) => {
+                        query.values.add_tags.push(String(value));
+                    })
+                } else if (parsed) {
+                    query.values.add_tags = [String(parsed)];
+                }
+            }
+            if (req.remove_tags) {
+                let parsed = Utils.parseJSON(req.remove_tags);
+                if (Array.isArray(parsed)) {
+                    query.values.remove_tags = [];
+                    parsed.forEach((value) => {
+                        query.values.remove_tags.push(String(value));
+                    })
+                } else if (parsed) {
+                    query.values.remove_tags = [String(parsed)];
+                }
+            }
+            if (req.image_id && Utils.isValidID(req.image_id)) {
+                query.image_id = Utils.str2id(req.image_id);
+            }
+            return query;
+        },
+        post: (req) => {
+            let query = {};
+            if (req.title) {
+                query.title = req.title;
+            }
+            if (req.description) {
+                query.description = req.description;
+            }
+            if (req.text) {
+                query.text = req.text;
+            }
+            if (req.difficult && Number(req.difficult)) {
+                query.difficult = req.difficult;
+            }
+            if (req.tags) {
+                let parsed = Utils.parseJSON(req.tags);
+                if (Array.isArray(parsed)) {
+                    query.tags = [];
+                    parsed.forEach((value) => {
+                        query.tags.push(String(value));
+                    })
+                } else if (parsed) {
+                    query.tags = [String(parsed)];
+                }
+            }
+            if (req.image_id && Utils.isValidID(req.image_id)) {
+                query.image_id = Utils.str2id(req.image_id);
+            }
+            return query;
+        }
+    },
+    result: {
+        find: (args) => {
+            return {
+                success: true,
+                query: args.query,
+                page: args.page,
+                total: args.total,
+                limit: args.limit,
+                pages: args.pages,
+                items: tools.doc2items(args.docs)
+            }
+        },
+        delete: (args) => {
+            return {
+                success: true,
+                query: args.query,
+                publication: tools.minimize(args.publication)
+            }
+        },
+        put: (args) => {
+            return tools.result.delete(args)
+        },
+        post: (args) => {
+            return {
+                success: true,
+                publication: tools.minimize(args.publication)
+            }
+        }
+    },
+    doc2items (docs) {
+        if (docs) {
+            let items = [];
+            docs.forEach((doc) => {
+                items.push(tools.minimize(doc));
             });
+            return items;
+        } else {
+            return []
+        }
+    },
+    minimize: (doc) => {
+        return {
+            title: doc.title,
+            author_id: doc.author_id,
+            image_id: doc.image_id,
+            text: doc.text,
+            description: doc.description,
+            id: doc._id,
+            createdAt: doc.createdAt,
+            tags: doc.tags,
+            difficult: doc.difficult
+        }
     }
-});
+};
 
-function parseQuery(req) {
-    let query = {};
-    if(req.name){
-        query.name = new RegExp('^'+req.name.trim(), "i");
-    }
-    return query;
-}
+router.route('/')
+    .get(async (req, res, next) => {
+        const args = tools.collect.find(req);
+        if (!tools.check.find(args)) {
+            return Utils.errorAPI(res, 400, "Invalid arguments");
+        }
+        try {
+            const result = await DBpublications.find(args.query, args.page, args.limit);
+            return res.json(tools.result.find(result));
+        } catch (e) {
+            console.log(e);
+            return Utils.errorAPI(res, 500, "Server error");
+        }
+    })
+    .delete(auth.jwt.check.login, async (req, res, next) => {
+        const args = tools.collect.delete(req);
+        if (!tools.check.delete(args, req.user)) {
+            if (!args.query.id) {
+                return Utils.errorAPI(res, 400, "Invalid arguments");
+            } else {
+                return Utils.errorAPI(res, 403, "Forbidden");
+            }
+        }
+        try {
+            args.publication = await DBpublications.remove(args.query.id);
+            if (args.publication) {
+                console.log(args.publication);
+                if (args.publication.image_id) {
+                    try {
+                        if (await DBimage.isFileExist(args.publication.image_id)) {
+                            await DBimage.remove(args.publication.image_id);
+                        }
+                    } catch (e) {
+                    }
+                }
+                const owner = await DBusers.getById(args.publication.author_id);
+                if (owner) {
+                    owner.removePublication(args.publication.id);
+                }
+                return res.json(tools.result.delete(args));
+            } else {
+                return Utils.errorAPI(res, 404, "No such publication");
+            }
+        } catch (e) {
+            console.log(e);
+            return Utils.errorAPI(res, 500, "Server error");
+        }
+    })
+    .put(auth.jwt.check.login, async (req, res, next) => {
+        const args = tools.collect.put(req);
+        if (!tools.check.put(args, req.user)) {
+            return Utils.errorAPI(res, 400, "Invalid arguments");
+        }
+        try {
+            args.publication = await DBpublications.getById(args.query.id);
+            if (args.publication) {
+                if (!await args.publication.update(args.query.values)) {
+                    return Utils.errorAPI(res, 400, "Bad arguments");
+                } else {
+                    return res.json(tools.result.delete(args));
+                }
+            } else {
+                return Utils.errorAPI(res, 404, "No such publication");
+            }
+        } catch (e) {
+            console.log(e);
+            return Utils.errorAPI(res, 500, "Server error");
+        }
+    })
+    .post(auth.jwt.check.login, async (req, res, next) => {
+        const args = tools.collect.post(req);
+        console.log(JSON.stringify(args));
+        if (!tools.check.post(args, req.user)) {
+            return Utils.errorAPI(res, 400, "Invalid arguments");
+        }
+        try {
+            args.publication = await DBpublications.create(
+                args.query.title,
+                req.user._id,
+                args.query.image_id,
+                args.query.tags,
+                args.query.difficult,
+                args.query.description,
+                args.query.text);
+            if (args.publication) {
+                await req.user.addPublication(args.publication._id);
+                return res.json(tools.result.put(args));
+            } else {
+                return Utils.errorAPI(res, 400, "Bad arguments");
+            }
+        } catch (e) {
+            console.log(e);
+            return Utils.errorAPI(res, 500, "Server error");
+        }
+    })
 
-// router.get('/', async(req, res) => {
-//     let text = await fs.readFile(path.join(__dirname, 'v1.md'), 'utf8');
-//     let args = {
-//         text: markdown(text),
-//         user: req.user
-//     };
-//     res.render('v1', args);
-//
-//     res.status(200).end();
-// });
-//
-// // FOLDER
-//
-// router.get('/folders', checkAuth, (req, res,next) => {
-//     if(req.query.limit < 0 ||
-//         req.query.page < 0 ||
-//         ('limit' in req.query && !Number(req.query.limit))||
-//         ('page' in req.query && !Number(req.query.page))){
-//         utils.apierror(400,'Bad request',res);
-//     }else {
-//         const query = parseQuery(req.query);
-//         console.log(query);
-//         folderCtrl.find(query, req.query.page, req.query.limit)
-//             .then(items => {
-//                 return res.json(filterGetFolderInfo(items, query));
-//             });
-//     }
-// });
-//
-// router.get('/folders/:id', checkAuth, (req, res,next) => {
-//     if(req.params.id && ObjectId.isValid(req.params.id)) {
-//         folderCtrl.getById(req.params.id)
-//             .then(item => res.json(filterFolderInfo(item)))
-//             .catch(err => res.json(err));
-//     }else{
-//         utils.apierror(400,'Bad request',res);
-//     }
-// });
-//
-// router.post('/folders', checkAuth, checkAdmin, async(req, res) => {
-//     if(!req.body.name || !req.body.size) return utils.apierror(400,"Bad request",res)
-//     let img = null;
-//     if(req.files && req.files.img) {
-//         img = req.files.img;
-//     }
-//     folderCtrl.create(
-//         img,
-//         req.body.name,
-//         req.body.size,
-//         req.body.type,
-//         req.body.location,
-//         req.user._id,
-//         req.body.description)
-//         .then(newItem => {
-//             let result = {};
-//             result.success = true;
-//             result.folder = filterFolderInfo(newItem)
-//             res.json(result);
-//         })
-//         .catch(err => utils.apierror(500,"Some error at server, when create "+ err, res));
-// });
-//
-// router.put('/folders/:id', checkAuth, checkAdmin, async (req, res) => {
-//     if(!req.body.fieldName || !req.body.newVal){
-//         return utils.apierror(400,'No parameters found',res);
-//     }
-//
-//     try{
-//         let update = await folderCtrl.update(req.params.id, req.body.fieldName, req.body.newVal);
-//         if(update === null) utils.apierror(400,"Bad request",res);
-//         let folder = await folderCtrl.getById(req.params.id);
-//         let result = {};
-//         result.success = true;
-//         result.folder = filterFolderInfo(folder)
-//         res.json(result);
-//     }catch(error){
-//         utils.apierror(500,"Some error at server, when update",res);
-//     }
-// });
-//
-// router.delete('/folders/:id', checkAuth, checkAdmin, (req, res) => {
-//     folderCtrl.remove(req.params.id)
-//         .then(item => {
-//             let result = {};
-//             result.success = true;
-//             result.folder = filterFolderInfo(item)
-//             res.json(result);
-//         })
-//         .catch(err => {
-//                 console.log(">>>>" +err);
-//                 res.status(404).json({error: err})
-//             }
-//         );
-// })
-//
-// // /FOLDER
-//
-// // USERS
-//
-// router.get('/users', checkAuth, checkAdmin, (req, res, next) => {
-//     if(req.query.limit < 0 ||
-//         req.query.page < 0||
-//         ('limit' in req.query && !Number(req.query.limit))||
-//         ('page' in req.query && !Number(req.query.page))){
-//         utils.apierror(400,'Bad request',res);
-//     }else {
-//         const query = parseQuery(req.query);
-//         userCtrl.find(query, req.query.page, req.query.limit)
-//             .then(items => {
-//                 res.json(filterGetUserInfo(items));
-//             });
-//     }
-// });
-//
-// router.get('/users/:id', checkAuth, checkAdmin, (req, res, next) => {
-//     if(req.params.id && ObjectId.isValid(req.params.id)) {
-//         userCtrl.getById(req.params.id)
-//             .then(item => res.json(filterUserInfo(item)))
-//             .catch(err => res.json(err));
-//     }else{
-//         utils.apierror(400,'Bad request',res);
-//     }
-// });
-//
-// router.put('/users/:id', checkAuth, checkAdmin, async (req, res) => {
-//     if(!req.body.fieldName || !req.body.newVal){
-//         return utils.apierror(400,'No parameters found',res);
-//     }
-//     try{
-//         let update = await userCtrl.update(req.params.id, req.body.fieldName, req.body.newVal);
-//         if(update === null) utils.apierror(400,"Bad request",res);
-//         let user = await userCtrl.getById(req.params.id);
-//         let result = {};
-//         result.success = true;
-//         result.user = filterUserInfo(user)
-//         res.json(result);
-//     }catch(error){
-//         utils.error(500,"Some error at server, when update",next);
-//     }
-// });
-//
-// router.delete('/users/:id', (req, res) => {
-//     userCtrl.remove(req.params.id)
-//         .then(item => {
-//             let result = {};
-//             result.success = true;
-//             result.user = filterUserInfo(item)
-//             res.json(result);
-//         })
-//         .catch(err => {
-//                 console.log(">>>>" +err);
-//                 res.status(404).json({error: err})
-//             }
-//         );
-// })
-//
-// // /USERS
-//
-// router.post('/login', async (req, res) => {
-//     if(!req.body.username || !req.body.password) return utils.apierror(400,"Bad request",res)
-//     let answer = await userCtrl.checkPassword(req.body.username, req.body.password);
-//     let result = answer;
-//     if(answer.success){
-//         console.log("login " + req.body.username);
-//         let user = await userCtrl.getByUsername(req.body.username);
-//         result.user = filterUserInfo(user);
-//     }
-//     res.json(result);
-// });
-//
-// router.post('/register', async (req, res) => {
-//     if(!req.body.name || !req.body.username || !req.body.password) return utils.apierror(400,"Bad request",res)
-//
-//     let passwordHash = utils.sha512(req.body.password, serverSalt).passwordHash;
-//     let user = await userCtrl.getByUsername(req.body.username);
-//     if(!user) {
-//         userCtrl.create(
-//             req.body.name,
-//             req.body.username,
-//             passwordHash,
-//             false)
-//             .then(newItem => {
-//                 let result = {};
-//                 result.success = true;
-//                 result.user = filterUserInfo(newItem)
-//                 res.json(result);
-//             })
-//             .catch(err => utils.apierror(500, "Some error at server, when create " + err, res));
-//     }else{
-//         utils.apierror(400, "User with same username already exists", res)
-//     }
-// });
-//
-// function parseQuery(req) {
-//     let query = {};
-//     if(req.name){
-//         query.name = new RegExp('^'+req.name.trim(), "i");
-//     }
-//     return query;
-// }
-//
-//
-// const pagesRange = 4;
-// function filterGetFolderInfo(object, query) {
-//     let result = object;
-//     result.docs = filterFoldersInfo(object.docs);
-//     result.range = pagesRange;
-//     return result;
-// }
-// function filterFoldersInfo(items) {
-//     let result = [];
-//     for(let item of items){
-//         result.push(filterFolderInfo(item));
-//     }
-//     return result;
-// }
-// function filterFolderInfo(item) {
-//     let result = {};
-//     result.id = item._id;
-//     result.img_id = item.img;
-//     result.name = item.name;
-//     result.size = item.size;
-//     result.type = item.type;
-//     result.location = item.location;
-//     result.owner = item.owner;
-//     result.description = item.description;
-//     result.created = item.created;
-//     result.modified = item.modified;
-//     return result;
-// }
-//
-// function filterGetUserInfo(object) {
-//     let result = object;
-//     result.docs = filterUsersInfo(object.docs);
-//     return result;
-// }
-// function filterUsersInfo(items) {
-//     let result = [];
-//     for(let item of items){
-//         result.push(filterUserInfo(item));
-//     }
-//     return result;
-// }
-// function filterUserInfo(item) {
-//     let result = {};
-//     result.id = item._id;
-//     result.name = item.name;
-//     result.username = item.username;
-//     result.isAdmin = item.isAdmin;
-//     result.folders = item.folders;
-//     return result;
-// }
-//
-// const serverSalt = "45%sAlT_";
-//
-// async function checkAuth(req, res, next) {
-//     console.log(req.body);
-//     let credentials = auth(req)
-//     if (credentials) {
-//         try {
-//             console.log("checkAuth"+credentials.name);
-//             const user = await userCtrl.getByUsername(credentials.name);
-//             if (user && utils.sha512(credentials.pass,serverSalt).passwordHash === user.password) {
-//                 req.user = user;
-//             } else {
-//                 res.statusCode = 401
-//                 return utils.apierror(401,'Access denied',res);
-//                 // return res.end('Access denied')
-//             }
-//             next();
-//         } catch (e) {
-//             res.statusCode = 500;
-//             return utils.apierror(500,'Server error : ' ,res);
-//             // return res.end('Server error : ' + e);
-//         }
-//     }else {
-//         res.statusCode = 401
-//         return utils.apierror(401,'Access denied' ,res);
-//         // return res.end('Access denied')
-//     }
-// }
-// async function checkAdmin(req, res, next) {
-//     // let user = await userCtrl.getByUsername(auth(req).name);
-//     let user = await userCtrl.getByUsername(req.user.username);
-//     if(!user.isAdmin){
-//         return utils.apierror(403,"forbidden",next);
-//     }
-//     next();
-// }
-//
-//
-// function markdown(text) {
-//     var reader = new commonmark.Parser();
-//     var writer = new commonmark.HtmlRenderer();
-//     var parsed = reader.parse(text); // parsed is a 'Node' tree
-// // transform parsed if you like...
-//
-//     return writer.render(parsed); // result is a String
-// }
-//
-//api
-    //drive
-    //auth
-    //users
+
 module.exports = router;

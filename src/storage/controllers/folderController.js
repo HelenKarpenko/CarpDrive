@@ -2,6 +2,8 @@ let mongoose = require('mongoose');
 let Folder = require('../models/folderModel');
 const file = require('./fileController')
 
+const MAINFOLDER = '5a30671f7dadbb136173ad05';
+
 mongoose.Promise = global.Promise;
 
 function connect(url) {
@@ -128,9 +130,6 @@ async function getMyDrive(id) {
     return Folder.findById(id).exec();
 }
 
-// let get = {
-//     async  (token)
-// }
 
 async function get(folder, args) {
     args = {
@@ -147,20 +146,21 @@ async function get(folder, args) {
     });
 }
 
-async function create(parent, name) {
+async function create(parent, name, owner, description) {
 
     let folder = new Folder({
         name: name,
         hasChildren: false,
+        owner: mongoose.Types.ObjectId(owner),
+        sharedWithMe: [],
+        info: {description: description},
     });
 
     folder.parent = parent;
-    if(parent){
-        folder.parent = parent;
-        parent.hasChildren = true;
-        await parent.save();
-    }
-    return await folder.save();
+    parent.hasChildren = true;
+
+    await parent.save();
+    return folder.save();
 }
 
 async function getAllChildren(id) {
@@ -209,6 +209,10 @@ async function remove(id) {
     return Folder.findByIdAndRemove(id).exec();
 }
 
+async function getMainFolder() {
+    return Folder.findById(MAINFOLDER);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -233,5 +237,6 @@ module.exports = {
     getChildren: getFirstChildren,
     getInfo: getInfo,
     remove: remove,
+    getMainFolder: getMainFolder,
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };

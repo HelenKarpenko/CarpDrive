@@ -8,9 +8,9 @@
         <hr>
         <v-card-text>
           <v-icon>image</v-icon>
-          <input type='file' name="img" id="img" class="custom-file-input" required @change="loadFile" ref="file"/>
+          <!--<input type='file' name="img" id="img" class="custom-file-input" required @change="loadFile" ref="file"/>-->
           <v-text-field label="Folder name" prepend-icon="folder" required v-model="create.name"></v-text-field>
-          <v-text-field box multi-line label="Description" v-model="create.description"></v-text-field>
+          <!--<v-text-field box multi-line label="Description" v-model="create.description"></v-text-field>-->
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -28,9 +28,9 @@
       return{
         show: false,
         create: {
-          img: null,
+//          img: null,
           name: null,
-          description: null,
+//          description: null,
         }
       }
     },
@@ -47,20 +47,20 @@
         this.create.img = event.target.files[0];
         console.log(this.create.img);
       },
-      addNewFolder: async function () {
+      async addNewFolder () {
         this.$emit('add',this.create);
 
-        this.create.name = null;
-        this.create.description = null;
-        this.create.img = null;
-        this.$refs.file.value = "";
+//        this.create.name = null;
+//        this.create.description = null;
+//        this.create.img = null;
+//        this.$refs.file.value = "";
       },
       closeDialog(){
         this.$emit('close');
-        this.create.img = null;
+//        this.create.img = null;
         this.create.name = null;
-        this.create.description = null;
-        this.$refs.file.value = "";
+//        this.create.description = null;
+//        this.$refs.file.value = "";
 
       }
     }

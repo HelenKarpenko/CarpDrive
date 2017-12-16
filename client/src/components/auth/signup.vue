@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md text-xs-center>
-    <v-card color="grey lighten-4" v-if="!$store.getters.isUserLoggedIn()" flat>
+    <v-card color="grey lighten-4" v-if="!$store.getters.isLogged()" flat>
       <v-card-text>
         <v-container fluid>
 
@@ -35,16 +35,16 @@
             </v-flex>
           </v-layout>
 
-          <v-layout row>
-            <v-flex xs12>
-              <v-text-field
-                v-model="registration.email"
-                label="Email"
-                type="email"
-                :rules="[rules.required, rules.email]"
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
+          <!--<v-layout row>-->
+            <!--<v-flex xs12>-->
+              <!--<v-text-field-->
+                <!--v-model="registration.email"-->
+                <!--label="Email"-->
+                <!--type="email"-->
+                <!--:rules="[rules.required, rules.email]"-->
+              <!--&gt;</v-text-field>-->
+            <!--</v-flex>-->
+          <!--</v-layout>-->
 
           <v-card-actions>
             <v-btn @click.stop="signup()">Sign Up</v-btn>

@@ -2,6 +2,7 @@ const express = require('express');
 let router = express.Router();
 const passport = require('passport');
 const userCtrl = require('../../../storage/controllers/usersController');
+const folderCtrl = require('../../../storage/controllers/folderController');
 
 let tools = {};
 tools.collectDataFromReq = {
@@ -41,7 +42,12 @@ router.post('/register', async function (req, res, next) {
     }
     try{
         let user = await userCtrl.create(args.name, args.username, args.password);
-        console.log(user)
+        let folder = await  folderCtrl.create(
+            await folderCtrl.getMainFolder(),
+            `${args.name} folder`,
+            user._id,
+            `${args.name} folder`);
+        await userCtrl.addMainFolder(user, folder._id);
         return res.json(
             {
                 success: true,
@@ -69,11 +75,11 @@ router.post('/login', passport.authenticate('basic', {session: false}), async (r
 
         res.json({
             success: true,
-            user: req.user
-            // tokens: {
-            //     access: req.user.accessToken,
-            //     refresh: req.user.refreshToken
-            // },
+            user: req.user.minInfo(),
+            tokens: {
+                access: req.user.accessToken,
+                refresh: req.user.refreshToken
+            },
         });
     } catch (err) {
         console.log(err);

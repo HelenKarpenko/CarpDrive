@@ -17,9 +17,16 @@ export default {
     })
   },
   bearerAccessAuth() {
-    //todo
+    console.log(storage.state.accessToken)
+    return new axios.create({
+      baseURL: `http://localhost:3001`,
+      headers: {'authorization': "Bearer " + storage.state.accessToken}
+    })
   },
   bearerRefreshAuth() {
-    //todo
+    return new axios.create({
+      baseURL: `http://localhost:3001`,
+      headers: {'Authorization': "Bearer" + storage.state.refreshToken}
+    })
   }
 }
