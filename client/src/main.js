@@ -2,24 +2,27 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import ElementUI from 'element-ui'
+// tools
 import router from './router'
-import VueDragTree from 'vue-drag-tree'
-
 import {sync} from 'vuex-router-sync'
 import store from '@/services/storage/storage'
+// styles
+import ElementUI from 'element-ui'
+import KeenUI from 'keen-ui';
+import 'keen-ui/dist/keen-ui.css';
+import 'vuetify/dist/vuetify.min.css';
 import 'element-ui/lib/theme-chalk/index.css'
 import Vuetify from 'vuetify'
-import 'vuetify/dist/vuetify.min.css';
+import contextMenu from 'vue-context-menu'
 Vue.config.productionTip = false
 // register vue-auth-image directive
 
 sync(store, router);
 
-
-Vue.component('vue-drag-tree', VueDragTree)
+Vue.use(contextMenu);
 Vue.use(ElementUI)
 Vue.use(Vuetify)
+Vue.use(KeenUI)
 
 
 /* eslint-disable no-new */

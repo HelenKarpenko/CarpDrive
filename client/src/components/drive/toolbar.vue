@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import addDialog from '@/components/drive/addDialog.vue';
+  import addDialog from '@/components/drive/dialog/addDialog.vue';
   import foldersAPI from '@/services/folders';
   export default{
     components:{
@@ -38,10 +38,9 @@
         try {
           console.log("ARGS");
           console.log(args);
-          const result = await foldersAPI.addNewItem(this.$route.params.id,args);
+          const result = await foldersAPI.addNewFolder(this.$route.params.id,args);
           console.log(result.data);
           if (result.data.success) {
-//            this.item.push(result.data.folder);
             this.$emit('addNewItem', result.data.folder);
           }
         } catch (e) {

@@ -30,6 +30,7 @@
         create: {
 //          img: null,
           name: null,
+          isFolder: true,
 //          description: null,
         }
       }

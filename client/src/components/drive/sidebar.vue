@@ -20,7 +20,7 @@
         </v-list>
       </v-flex>
       <v-flex xs9 v-show="!UI.isMini">
-        <tree-item/>
+        <tree-item />
       </v-flex>
     </v-layout>
 
@@ -44,14 +44,6 @@
         ],
       }
     },
-    props: ['toggle'],
-//    watch: {
-//      toggle() {
-//        console.log(1)
-//        this.UI.isShown = !this.UI.isShown;
-//        console.log(this.UI.isShown)
-//      },
-//    },
     methods: {
       toggleSize() {
         this.UI.isMini = !this.UI.isMini;

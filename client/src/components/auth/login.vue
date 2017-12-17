@@ -61,7 +61,7 @@
             this.$store.dispatch('setUser', result.data.user);
             this.$store.dispatch('setAccessToken', result.data.tokens.access);
             this.$store.dispatch('setRefreshToken', result.data.tokens.refresh);
-            this.$router.push({name: 'MyDrive'})
+            this.$router.push({name:'Drive', params: {id: this.$store.state.user.myDrive}})
           }
         }catch(e){console.log(e);}
       },

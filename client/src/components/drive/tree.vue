@@ -1,52 +1,62 @@
 <template>
   <span>
     <el-tree
-      lazy
       :props="defaultProps"
       :load="loadNode"
       @node-click="handleNodeClick"
+      :expand-on-click-node="false"
+      lazy
+      node-key="id"
+      ref="tree"
     />
   </span>
 </template>
 
 <script>
   import foldersAPI from '@/services/folders';
-  import MyDrive from '@/components/drive/drive';
-  export default{
-    components:{
-      MyDrive,
+  import Toolbar from '@/components/drive/toolbar';
+
+  export default {
+    components: {
+      Toolbar,
     },
-    data(){
-      return{
+    data() {
+      return {
         defaultProps: {
           children: 'children',
           label: 'name'
-        }
+        },
       }
     },
-    props:['toggle'],
-    watch:{
-      toggle(){
-        console.log(1)
-        this.UI.isShown = !this.UI.isShown;
-        console.log(this.UI.isShown)
-      }
-    },
-    created: async function (){
-    },
+
+    props:
+      [
+        'toggle',
+        'setNewNode'
+      ],
+    watch:
+      {
+        toggle() {
+          console.log(1)
+          this.UI.isShown = !this.UI.isShown;
+          console.log(this.UI.isShown)
+        },
+      },
     methods: {
       handleNodeClick: async function (data) {
-        this.$router.push({name: 'Drive', params:{id:data._id}})
-      },
+        this.$router.push({name: 'Drive', params: {id: data._id}})
+      }
+      ,
       loadNode: async function (node, resolve) {
         try {
           let firstGeneration = await foldersAPI.get(this.$store.state.user.myDrive);
           if (node.level === 0) {
             return resolve(firstGeneration.data.folder.children);
-          }else{
+          } else {
             var data;
             if (node.data.hasChildren) {
               let children = await foldersAPI.get(node.data._id);
+              console.log(children);
               data = children.data.folder.children;
             } else {
               data = [];
@@ -57,6 +67,10 @@
           console.log(e)
         }
       }
+      ,
     }
   }
 </script>
+
+
+
