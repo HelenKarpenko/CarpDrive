@@ -6,7 +6,7 @@
         <v-layout row wrap>
           <template v-if=" item.children && item.children.length > 0">
             <v-flex xs3 v-for="(item, i) in item.children" :key="i" @contextmenu.prevent="$refs.ctx.open($event,item)">
-              <card-item :item="item" />
+              <card-item :item="item"/>
             </v-flex>
           </template>
           <template v-else>
@@ -31,7 +31,7 @@
                @select="menuCall($event)"/>
     </context-menu>
     <rename-dialog :open="rename"  @close="closeRenameDialog" @rename="renameFolder"/>
-    <share-dialog :open="share"  @close="closeShareDialog" @rename="shareFolder"/>
+    <share-dialog :open="share"  @close="closeShareDialog" @share="shareFolder"/>
     <drop-file v-show="showDropZone" @addFile="addNewItem"/>
   </span>
 </template>
@@ -114,7 +114,7 @@
     },
     async beforeRouteUpdate (to, from, next) {
       this.processRouter(to.params);
-      await this.getMyDriveTree();
+//      await this.getMyDriveTree();
       await this.load();
       next();
     },
@@ -136,12 +136,12 @@
           await this.copyFolder(this.Menu.data);
         }
         if(e.id == 'share'){
-          console.log("share")
           this.openShareDialog();
         }
       },
       addNewItem(args){
         this.item.children.push(args);
+        this.getMyDriveTree();
       },
       async removeFolder(removeItem) {
         try {
@@ -151,6 +151,7 @@
           console.log(result.data);
           if (result.data.success) {
             this.item.children.splice(this.item.children.indexOf(removeItem),1);
+            this.getMyDriveTree();
           }
         } catch (e) {
           console.log(e);
@@ -163,6 +164,7 @@
           console.log(result.data);
           if(result.data.success){
             this.item.children[this.item.children.indexOf(this.Menu.data)].name = args.name;
+            this.getMyDriveTree();
           }
         } catch (e) {
           console.log(e);
@@ -182,6 +184,7 @@
           console.log(result.data);
           if (result.data.success) {
             this.item.children.push(result.data.folder);
+            this.getMyDriveTree();
           }
         } catch (e) {
           console.log(e);
@@ -189,6 +192,15 @@
       },
 
       async shareFolder(args) {
+        this.closeShareDialog()
+        try {
+          const result = await foldersAPI.shareFolder(this.Menu.data._id, args);
+          if (result.data.success) {
+            console.log(result.data);
+          }
+        } catch (e) {
+          console.log(e);
+        }
       },
       openShareDialog(){
         this.share = !this.share;
@@ -223,9 +235,8 @@
           let user = this.$store.state.user;
           let res = await foldersAPI.get(user.myDrive);
           if(res.data.success){
-            this.tree = res.data.folder;
-            console.log(tree);
-            await this.getPath();
+            this.tree = res.data.folder.children;
+            console.log(this.tree);
           }
         } catch (e) {
           console.log(e)
@@ -234,7 +245,6 @@
       async getPath(){
         try{
           const result = await foldersAPI.getPath(this.folderID);
-          console.log(result.data.path)
           if (result.data.success) {
             this.path = result.data.path;
             console.log(this.path);

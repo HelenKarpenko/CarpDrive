@@ -48,8 +48,8 @@ let userSchema = new Schema({
         default: null,
     },
     sharedWithMe: {
-        type: [Schema.Types.ObjectId],
-        default: [],
+        id: Schema.Types.ObjectId,
+        children: [Schema.Types.ObjectId],
     },
 });
 

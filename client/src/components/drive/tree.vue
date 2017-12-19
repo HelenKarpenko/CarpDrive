@@ -44,9 +44,8 @@
       },
     methods: {
       handleNodeClick: async function (data) {
-        this.$router.push({name: 'Drive', params: {id: data._id}})
-      }
-      ,
+        this.$router.push({name: this.$router.name, params: {id: data._id}})
+      },
 //      loadNode: async function (node, resolve) {
 //        try {
 //          let firstGeneration = await foldersAPI.get(this.$store.state.user.myDrive);

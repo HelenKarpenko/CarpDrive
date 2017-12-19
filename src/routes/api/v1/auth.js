@@ -47,7 +47,13 @@ router.post('/register', async function (req, res, next) {
             `${args.name} folder`,
             user._id,
             `${args.name} folder`);
-        await userCtrl.addMainFolder(user, folder._id);
+        // let sharedFolder = await  folderCtrl.create(
+        //     await folderCtrl.getMainFolder(),
+        //     `Shared with me`,
+        //     user._id,
+        //     `Shared with me`);
+        await userCtrl.addMainFolder(user, folder._id)
+        // await userCtrl.addSharedFolder(user, sharedFolder._id)
         return res.json(
             {
                 success: true,

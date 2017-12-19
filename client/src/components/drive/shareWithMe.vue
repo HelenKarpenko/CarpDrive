@@ -1,12 +1,12 @@
 <template>
   <span @dragover="handleDrop($event,true)"  @dragleave="handleDrop($event,false)" @drop="handleDrop($event,false)">
     <sidebar :tree="tree"/>
-    <!--<toolbar @addNewItem="addNewItem" @addNewFile="addNewItem" :path="path"/>-->
+    <toolbar :path="path"/>
       <v-container grid-list-md text-xs-center v-if="item">
         <v-layout row wrap>
           <template v-if=" item.children && item.children.length > 0">
             <v-flex xs3 v-for="(item, i) in item.children" :key="i" @contextmenu.prevent="$refs.ctx.open($event,item)">
-              <card-item :item="item" />
+              <card-item :item="item"/>
             </v-flex>
           </template>
           <template v-else>
@@ -22,17 +22,6 @@
           </template>
         </v-layout>
       </v-container>
-    <!--<context-menu ref="ctx" @ctx-open="onCtxOpen">-->
-      <!--<ui-menu class="text-xs-left"-->
-               <!--contain-focus-->
-               <!--has-icons-->
-               <!--has-secondary-text-->
-               <!--:options="menuOptions"-->
-               <!--@select="menuCall($event)"/>-->
-    <!--</context-menu>-->
-    <!--<rename-dialog :open="rename"  @close="closeRenameDialog" @rename="renameFolder"/>-->
-    <!--<share-dialog :open="share"  @close="closeShareDialog" @rename="shareFolder"/>-->
-    <!--<drop-file v-show="showDropZone" @addFile="addNewItem"/>-->
   </span>
 </template>
 
@@ -103,22 +92,19 @@
       }
     },
     created: async function (){
-      this.processRouter(this.$router.params)
+      this.processRouter(this.$route.params)
       await this.getSharedTree();
-//      await this.load();
+      await this.load();
     },
     watch:{
       page:async function(){
-        await this.getSharedTree();
-
-//        await this.load();
+        await this.load();
       }
     },
     async beforeRouteUpdate (to, from, next) {
       this.processRouter(to.params);
-      await this.getSharedTree();
-
-//      await this.load();
+//      await this.getMyDriveTree();
+      await this.load();
       next();
     },
     methods: {
@@ -218,15 +204,26 @@
           this.folderID = this.folderID||this.$store.state.user.myDrive;
         }
       },
-      async getSharedTree() {
+
+      async load() {
         try {
           let user = this.$store.state.user;
-          let res = await foldersAPI.getSharedTree(user);
+          let res = await foldersAPI.getSharedFolder(this.folderID);
           if(res.data.success){
-            console.log(res.data.folders) ;
-            this.tree = res.data.folders[0];
-            this.item = res.data.folders[0][0];
-            console.log(tree);
+            this.item = res.data.folder;
+            await this.getPath();
+          }
+        } catch (e) {
+          console.log(e)
+        }
+      },
+      async getSharedTree(){
+        try {
+          let user = this.$store.state.user;
+          let res = await foldersAPI.getSharedTree(user.sharedWithMe.id);
+          if(res.data.success){
+            this.tree = res.data.folders;
+            console.log(this.tree);
           }
         } catch (e) {
           console.log(e)
@@ -234,10 +231,10 @@
       },
       async getPath(){
         try{
-          const result = await foldersAPI.getPath(this.$route.params.id);
-          console.log(result.data.path)
+          const result = await foldersAPI.getPath(this.folderID);
           if (result.data.success) {
             this.path = result.data.path;
+            console.log(this.path);
           }
         }catch(e){
           console.log(e);

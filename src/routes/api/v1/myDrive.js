@@ -120,9 +120,11 @@ router.get('/:id/copy', passport.authenticate(['bearer-access', 'basic']),async(
 
 router.post('/:id/share', passport.authenticate(['bearer-access', 'basic']),async(req, res,next) => {
     if(tools.check(req.params.id)){
-        if(!req.body.shareUserId) return utilities.apierror(400,"Bad request",res)
+        if(!req.body.username) return utilities.apierror(400,"Bad request",res)
 
-        let isShare = await folderCtrl.shareFolder(req.params.id, req.body.shareUserId);
+        let user = await userCtrl.getByUsername(req.body.username);
+        console.log(user);
+        let isShare = await folderCtrl.shareFolder(req.params.id, user._id);
 
         let result = {
             success: isShare,

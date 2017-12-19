@@ -10,7 +10,7 @@ let folderSchema = new Schema({
     data: Schema.Types.ObjectId,
     hasChildren: Boolean,
     owner: Schema.Types.ObjectId,
-    sharedWith : [
+    sharedWith: [
         {
             user: Schema.Types.ObjectId,
             AccessLevel: String,
@@ -21,6 +21,10 @@ let folderSchema = new Schema({
         created: {type: Date, default: Date.now},
         description: String,
     },
+    children: {
+        type: [Schema.Types.ObjectId],
+        default: [],
+    }
 
 });
 

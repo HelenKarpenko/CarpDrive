@@ -1,7 +1,8 @@
 <template>
   <span>
-    <v-card  >
-      <router-link :to="{name:'Drive', params: {id: item._id}}">
+    <v-card>
+      <router-link  :to="{name:$router.name, params: {id: item._id}}">
+        <!--:to="{name:'$router.name', params: {id: item._id}}"-->
         <template v-if="item.isFolder">
           <v-card-media src="/static/image/folder.svg" height="250px" contain>
           </v-card-media>
@@ -33,12 +34,12 @@
       }
     },
     props: [
-      'item'
+      'item',
     ],
     methods: {
       openDropdown(e) {
         this.$refs.dropdown.toggle();
-      }
+      },
     }
   }
 </script>

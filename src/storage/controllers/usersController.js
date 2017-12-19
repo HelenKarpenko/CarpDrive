@@ -1,6 +1,7 @@
 let mongoose = require('mongoose');
 let User = require('../models/userModel');
 const folderCtrl = require('./folderController');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 mongoose.Promise = global.Promise;
 
@@ -31,7 +32,7 @@ function getByName(name) {
 }
 
 function getByUsername(username) {
-    return User.find({username: username}).exec();
+    return User.findOne({username: username}).exec();
 }
 
 function getByLogin(login) {
@@ -43,6 +44,14 @@ async function addMainFolder(user, folderId) {
     console.log(user);
     console.log(folderId);
     user.myDrive = folderId;
+    return user.save();
+}
+
+async function addSharedFolder(user, folderId) {
+    console.log("*****")
+    console.log(user);
+    console.log(folderId);
+    user.sharedWithMe = folderId;
     return user.save();
 }
 
@@ -77,6 +86,10 @@ async function create(name, username ,password) {
         name: name,
         username: username,
         password: password,
+        sharedWithMe: {
+            id: new ObjectId(),
+            children: [],
+        }
     });
     console.log(1)
     return user.save();
@@ -121,6 +134,7 @@ module.exports = {
     addFolder: addFolder,
     getAllFolder: getAllFolder,
     addMainFolder: addMainFolder,
+    addSharedFolder: addSharedFolder,
     //////
     get: get,
     //////

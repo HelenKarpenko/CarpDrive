@@ -33,6 +33,7 @@ export default {
       if(id){
         query +=`${id}`
       }
+      console.log(query);
     return API.bearerAccessAuth().get(query);
     },
   getPath(id) {
@@ -42,7 +43,13 @@ export default {
     console.log(`api/v1/my-drive/${id}/copy`);
     return API.bearerAccessAuth().get(`api/v1/my-drive/${id}/copy`);
   },
-  getSharedTree() {
-    return API.bearerAccessAuth().get(`api/v1/share/`);
+  shareFolder(id, username){
+    return API.bearerAccessAuth().post(`api/v1/my-drive/${id}/share`, username);
+  },
+  getSharedFolder(id) {
+    return API.bearerAccessAuth().get(`api/v1/shared/${id}`);
+  },
+  getSharedTree(id) {
+    return API.bearerAccessAuth().get(`api/v1/shared/${id}/tree`);
   },
 }

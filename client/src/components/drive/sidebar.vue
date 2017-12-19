@@ -38,8 +38,8 @@
           isMini: true,
         },
         navigation: [
-          {id: 'Drive', icon: 'cloud', active: true},
-          {id: 'ShareWithMe', icon: 'folder_shared', active: false},
+          {id: 'Drive', icon: 'cloud'},
+          {id: 'ShareWithMe', icon: 'folder_shared'},
         ],
         activeItem: null,
       }
@@ -53,10 +53,20 @@
         if(item == this.activeItem || !this.activeItem){
           this.UI.isMini = !this.UI.isMini;
         }
-        this.$router.push({name: item.id})
       },
-      chooseItem(item){
-//        params: {id: this.$store.state.user.myDrive}}
+      async chooseItem(item){
+        if(item.id == 'Drive'){
+          this.$router.push({
+            name: item.id,
+            params: {id: this.$store.state.user.myDrive}
+          })
+        }
+        if(item.id == 'ShareWithMe'){
+          this.$router.push({
+            name: item.id,
+            params: {id: this.$store.state.user.sharedWithMe.id}
+          })
+        }
         this.toggleSize(item);
         this.activeItem = item;
       }

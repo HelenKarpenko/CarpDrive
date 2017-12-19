@@ -1,21 +1,27 @@
 <template>
   <v-toolbar color="amber" app fixed clipped-left dense>
-    <!--<v-toolbar-side-icon  @click.stop="$emit('toggleSidebar')"></v-toolbar-side-icon>-->
     <v-toolbar-side-icon></v-toolbar-side-icon>
-    <span class="title">Cloud&nbsp;<span class="text">lab 9</span></span>
+    <span class="title">Carpdrive&nbsp;</span>
     <v-spacer></v-spacer>
-    <v-btn icon :to="{name:'Login'}">
-      <v-avatar v-if="$store.getters.isUserLoggedIn()">
-        <!--<img src="/static/doc-images/john.jpg" alt="">-->
-        <span class="white--text headline">{{$store.state.user.name}}</span>
-        <!--<span class="white&#45;&#45;text headline">A</span>-->
-      </v-avatar>
+    <v-btn icon @click.prevent="$refs.ctx.open($event,item)">
+      <v-icon>face</v-icon>
     </v-btn>
+    <context-menu ref="ctx" @ctx-open="onCtxOpen">
+      <ui-menu class="text-xs-left"
+               contain-focus
+               has-icons
+               has-secondary-text
+               :options="menuOptions"
+               @select="menuCall($event)"/>
+    </context-menu>
+
   </v-toolbar>
 </template>
 
 <script>
   import foldersAPI from '@/services/folders';
+  import authAPI from '@/services/auth';
+
   export default {
     components:{
     },
@@ -37,10 +43,54 @@
         { icon: 'phonelink', text: 'App downloads' },
         { icon: 'keyboard', text: 'Keyboard shortcuts' }
       ],
+
+      menuOptions: [
+        {
+          id: 'profile',
+          label: 'Profile',
+          icon: 'perm_identity',
+        },
+        {
+          type: 'divider'
+        },
+        {
+          id: 'signOut',
+          label: 'Sign Out',
+          icon: 'exit_to_app',
+        }
+      ],
+      Menu:{
+        data:{}
+      },
     }),
     props: {
       source: String
     },
+    methods:{
+      onCtxOpen(data){
+        this.Menu.data = data;
+      },
+      async menuCall(e){
+        if(e.id == 'profile'){
+          this.$router.push({name:'Profile'})
+        }
+        if(e.id == 'signOut'){
+          try {
+            await authAPI.logout({
+              username: this.$store.state.username,
+              password:  this.$store.state.password,
+            });
+          }catch (e){
+
+          }
+          this.$store.dispatch('setUser', null);
+          this.$store.dispatch('setAccessToken', null);
+          this.$store.dispatch('setRefreshToken', null);
+
+          this.$router.push({name:'Login'})
+        }
+      },
+    }
   }
 
 </script>

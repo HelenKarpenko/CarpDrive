@@ -23,14 +23,14 @@ async function getMyDrive(id) {
 }
 
 
-async function get(folder) {
-    return new Promise((resolve, reject) => {
-        folder.getChildren(function (err,children) {
-            if(err)reject(err);
-            resolve(children);
-        })
-    });
-}
+// async function get(folder) {
+//     return new Promise((resolve, reject) => {
+//         folder.getChildren(function (err,children) {
+//             if(err)reject(err);
+//             resolve(children);
+//         })
+//     });
+// }
 
 async function create(parent, name, owner, description) {
 
@@ -137,8 +137,14 @@ async function shareFolder(folder_id, user_id) {
     console.log("SHARED")
     let user = await userCtrl.getById(user_id);
     let folder = await Folder.findById(folder_id).exec();
-    if(user.sharedWithMe.indexOf(folder_id) == -1) {
-        user.sharedWithMe.push(folder_id);
+    let path = folder.path.split('#');
+    for(let p of path){
+        if(user.sharedWithMe.children.indexOf(p) != -1){
+            return false
+        }
+    }
+    if(user.sharedWithMe.children.indexOf(folder_id) == -1) {
+        user.sharedWithMe.children.push(folder_id);
         folder.sharedWith.push(user_id);
         await user.save();
         await folder.save();
@@ -148,18 +154,55 @@ async function shareFolder(folder_id, user_id) {
 }
 
 async function getSharedFolder(user) {
-
-    let folders = user.sharedWithMe;
+    let folders = user.sharedWithMe.children;
+    console.log(user);
     console.log(folders);
     let result = [];
     for(let f_id of folders){
         let folder = await Folder.findById(f_id).exec();
-        console.log(folder);
-
-        result.push(await get(folder));
+        let args = Object.assign({}, folder._doc);
+        args.children = await getFirstChildren(f_id);
+        result.push(args);
     }
     return result;
 }
+
+async function getShareChildren(id, user) {
+    if(id == user.sharedWithMe.id){
+        let result = [];
+        for(let ch of user.sharedWithMe.children){
+            result.push(await Folder.findById(ch).exec())
+        }
+        return result;
+    }else{
+        let folder = await Folder.findById(id).exec();
+        if(folder){
+            return new Promise((resolve, reject) => {
+                folder.getChildrenTree(function (err,children) {
+                    if(err)reject(err);
+                    resolve(children);
+                })
+            });
+        }else{
+            return new Promise.reject('Invalid id');
+        }
+    }
+}
+
+async function getSharedPath(id, user) {
+    let folder = await Folder.findById(id).exec();
+    let path = folder.path.split('#');
+    let result = [];
+    for(let i = 1; i < path.length; i++){
+        folder = await Folder.findById(path[i]).exec();
+
+        result.push({name: folder.name, id: folder._id});
+    }
+    // path.reverse();
+    return result;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -190,5 +233,6 @@ module.exports = {
     copyFolder: copyFolder,
     shareFolder: shareFolder,
     getSharedFolder: getSharedFolder,
+    getShareChildren: getShareChildren,
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };

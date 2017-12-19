@@ -21,9 +21,9 @@ let tools = {
 
 let MOTHER_FOLDER = "5a30671f7dadbb136173ad05"
 
-router.route('/')
+router.route('/:id/tree')
     .get(passport.authenticate(['bearer-access', 'basic']), async (req, res, next) => {
-        // if(tools.check(req.params.id)){
+        if(tools.check(req.params.id)){
             let folders = await folderCtrl.getSharedFolder(req.user);
 
             let result = {};
@@ -31,16 +31,33 @@ router.route('/')
                 result = {
                     success: true,
                     folders: folders,
-                    // folder:{
-                    //     info: info,
-                    //     children: children,
-                    // }
                 }
             }
             res.json(result);
-        // }else{
-        //     res.json({err: 'error'})
-        // }
+        }else{
+            res.json({err: 'error'})
+        }
+    })
+router.route('/:id')
+    .get(passport.authenticate(['bearer-access', 'basic']), async (req, res, next) => {
+        if(tools.check(req.params.id)){
+            let children = await folderCtrl.getShareChildren(req.params.id,req.user);
+            // let info = await folderCtrl.getInfo(req.params.id);
+
+            let result = {};
+            if(children){
+                result = {
+                    success: true,
+                    folder:{
+                        // info: info,
+                        children: children,
+                    }
+                }
+            }
+            res.json(result);
+        }else{
+            res.json({err: 'error'})
+        }
     })
 
 module.exports = router;
