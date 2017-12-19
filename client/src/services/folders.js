@@ -19,6 +19,15 @@ export default {
     console.log(`api/v1/my-drive/${id}`);
     return API.bearerAccessAuth().put(`api/v1/my-drive/${id}`, name);
   },
+  addNewFile(parent, args) {
+    let form = new FormData();
+    for(var key in args){
+      form.append(key,args[key]);
+    }
+    console.log("<<<<<")
+    console.log(form)
+    return API.bearerAccessAuth().post(`api/v1/my-drive/${parent}`, form);
+  },
   get(id) {
       let query = 'api/v1/my-drive/';
       if(id){
@@ -26,4 +35,10 @@ export default {
       }
     return API.bearerAccessAuth().get(query);
     },
+  getPath(id) {
+    return API.bearerAccessAuth().get(`api/v1/my-drive/${id}/path`);
+  },
+  copyFolder(id){
+    return API.bearerAccessAuth().get(`api/v1/my-drive/${id}/copy`);
+  }
 }

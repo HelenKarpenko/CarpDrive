@@ -2,8 +2,14 @@
   <span>
     <v-card  >
       <router-link :to="{name:'Drive', params: {id: item._id}}">
-        <v-card-media src="/static/image/folder.svg" height="250px" contain>
-        </v-card-media>
+        <template v-if="item.isFolder">
+          <v-card-media src="/static/image/folder.svg" height="250px" contain>
+          </v-card-media>
+        </template>
+        <template v-else>
+          <v-card-media :src="`http://localhost:3001/api/v1/my-drive/image/${item.data}`" height="250px" contain>
+          </v-card-media>
+        </template>
         <v-card-title primary-title>
           <div>
             <h3 class="headline mb-0">{{item.name}}</h3>

@@ -1,7 +1,7 @@
 <template>
-  <span>
+  <span @dragover="handleDrop($event,true)"  @dragleave="handleDrop($event,false)" @drop="handleDrop($event,false)">
     <sidebar/>
-    <toolbar @addNewItem="addNewFolder" @addNewFile="addNewFile"/>
+    <toolbar @addNewItem="addNewItem" @addNewFile="addNewItem" :path="path"/>
       <v-container grid-list-md text-xs-center v-if="item">
         <v-layout row wrap>
           <template v-if=" item.children && item.children.length > 0">
@@ -31,7 +31,7 @@
                @select="menuCall($event)"/>
     </context-menu>
     <rename-dialog :open="rename"  @close="closeRenameDialog" @rename="renameFolder"/>
-
+    <drop-file v-show="showDropZone" @addFile="addNewItem"/>
   </span>
 </template>
 
@@ -42,6 +42,7 @@
   import Sidebar from '@/components/drive/sidebar';
   import CardItem from '@/components/drive/carditem';
   import RenameDialog from '@/components/drive/dialog/renameDialog';
+  import DropFile from '@/components/drive/dropFile';
   import foldersAPI from '@/services/folders';
   export default{
     components:{
@@ -49,10 +50,12 @@
       Toolbar,
       Sidebar,
       CardItem,
+      DropFile,
       RenameDialog,
     },
     data(){
       return{
+        showDropZone:false,
         rename: false,
         menuOptions: [
           {
@@ -92,6 +95,7 @@
           info: null,
           children: null,
         },
+        path: null,
       }
     },
     created: async function (){
@@ -109,6 +113,9 @@
       next();
     },
     methods: {
+      handleDrop(e,b){
+        this.showDropZone = b;
+      },
       onCtxOpen(data){
         this.Menu.data = data;
       },
@@ -119,8 +126,11 @@
         if(e.id == 'rename'){
           this.openRenameDialog();
         }
+        if(e.id == 'copy'){
+          await this.copyFolder(this.Menu.data);
+        }
       },
-      addNewFolder(args){
+      addNewItem(args){
         this.item.children.push(args);
       },
       async removeFolder(removeItem) {
@@ -156,6 +166,17 @@
         console.log(3)
         this.rename = false;
       },
+      async copyFolder(item){
+        try {
+          const result = await foldersAPI.copyFolder(item._id);
+          console.log(result.data);
+          if (result.data.success) {
+            this.item.children.push(result.data.folder);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      },
 
       processRouter(params){
         if(params && params.id){
@@ -170,13 +191,27 @@
           let res = await foldersAPI.get(this.folderID);
           if(res.data.success){
             this.item = res.data.folder;
+            await this.getPath();
           }
         } catch (e) {
           console.log(e)
         }
       },
+      async getPath(){
+        try{
+          const result = await foldersAPI.getPath(this.$route.params.id);
+          console.log(result.data.path)
+          if (result.data.success) {
+            this.path = result.data.path;
+          }
+        }catch(e){
+          console.log(e);
+        }
+      }
     }
   }
 </script>
+<style scoped>
 
+</style>
 

@@ -1,6 +1,5 @@
 "use strict";
 require('module-alias/register');
-
 let express = require('express');
 let path = require('path');
 let favicon = require('serve-favicon');
@@ -23,11 +22,10 @@ const cors = require('cors');
 // let  res = require('./routes/old/res');
 // let  u = require('./routes/old/users');
 // let api = require('@API');
-const user = require('./storage/controllers/usersController');
-
 
 
 const database = require('./storage/controllers/folderController');
+
 // database.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds111066.mlab.com:11066/carpdrive`)
 database.connect(`mongodb://localhost:27017/carpdrive`)
     .then(data => {
@@ -81,6 +79,7 @@ function sha512(password, salt) {
         passwordHash: value
     };
 };
+const user = require('./storage/controllers/usersController');
 
 passport.use(new LocalStrategy(
     function (username, password, done) {

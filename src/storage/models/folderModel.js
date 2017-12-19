@@ -3,10 +3,11 @@ let mongoosePaginate = require('mongoose-paginate');
 var mongooseTree = require('mongoose-path-tree');
 
 let Schema = mongoose.Schema;
-let file = require('../controllers/fileController');
 
 let folderSchema = new Schema({
     name: String,
+    isFolder: Boolean,
+    data: Schema.Types.ObjectId,
     hasChildren: Boolean,
     owner: Schema.Types.ObjectId,
     sharedWith : [
@@ -20,6 +21,7 @@ let folderSchema = new Schema({
         created: {type: Date, default: Date.now},
         description: String,
     },
+
 });
 
 folderSchema.plugin(mongoosePaginate);

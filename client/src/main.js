@@ -14,11 +14,15 @@ import 'vuetify/dist/vuetify.min.css';
 import 'element-ui/lib/theme-chalk/index.css'
 import Vuetify from 'vuetify'
 import contextMenu from 'vue-context-menu'
+
 Vue.config.productionTip = false
 // register vue-auth-image directive
 
 sync(store, router);
+import {Drag, Drop} from 'vue-drag-drop';
 
+Vue.component('drag', Drag);
+Vue.component('drop', Drop);
 Vue.use(contextMenu);
 Vue.use(ElementUI)
 Vue.use(Vuetify)

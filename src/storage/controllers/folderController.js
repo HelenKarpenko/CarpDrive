@@ -139,7 +139,7 @@ async function get(folder, args) {
         allowEmptyChildren: false
     }
     return new Promise((resolve, reject) => {
-        folder.getChildrenTree(function (err,children) {
+        folder.getChildren(function (err,children) {
             if(err)reject(err);
             resolve(children);
         })
@@ -151,6 +151,8 @@ async function create(parent, name, owner, description) {
     let folder = new Folder({
         name: name,
         hasChildren: false,
+        isFolder: true,
+        data: null,
         owner: mongoose.Types.ObjectId(owner),
         sharedWithMe: [],
         info: {description: description},
@@ -177,7 +179,7 @@ async function getFirstChildren(id) {
     let folder = await Folder.findById(id).exec();
     if(folder){
         return new Promise((resolve, reject) => {
-            folder.getChildren(function (err,children) {
+            folder.getChildrenTree(function (err,children) {
                 if(err)reject(err);
                 resolve(children);
             })
@@ -213,6 +215,28 @@ async function getMainFolder() {
     return Folder.findById(MAINFOLDER);
 }
 
+async function rename(id, newName) {
+    return Folder.update({_id: id}, {name: newName}).exec();
+}
+
+async function getPath(id) {
+    let folder = await Folder.findById(id).exec();
+    let path = [];
+    while(folder._id != MAINFOLDER){
+        path.push(folder.name);
+        folder = await Folder.findById(folder.parent).exec();
+    }
+    path.reverse();
+    return path;
+}
+
+async function copyFolder(id) {
+    console.log("Утеук");
+    let folder = await Folder.findById(id).exec();
+    let parent = await Folder.findById(folder.parent).exec();
+    let copy = await this.create(parent, folder.name, folder.owner, folder.description);
+    return copy;
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -238,5 +262,8 @@ module.exports = {
     getInfo: getInfo,
     remove: remove,
     getMainFolder: getMainFolder,
+    rename: rename,
+    getPath: getPath,
+    copyFolder: copyFolder,
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };
