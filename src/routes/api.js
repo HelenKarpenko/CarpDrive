@@ -5,6 +5,7 @@ let router = express.Router();
 // const config = require('@config');
 
 router.use('/v1/my-drive', require('@APIv1/myDrive'));
+router.use('/v1/share', require('@APIv1/shareWithMe'));
 router.use('/v1/auth', require('@APIv1/auth'))
 
 module.exports = router;

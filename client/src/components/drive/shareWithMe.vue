@@ -1,7 +1,7 @@
 <template>
   <span @dragover="handleDrop($event,true)"  @dragleave="handleDrop($event,false)" @drop="handleDrop($event,false)">
     <sidebar :tree="tree"/>
-    <toolbar @addNewItem="addNewItem" @addNewFile="addNewItem" :path="path"/>
+    <!--<toolbar @addNewItem="addNewItem" @addNewFile="addNewItem" :path="path"/>-->
       <v-container grid-list-md text-xs-center v-if="item">
         <v-layout row wrap>
           <template v-if=" item.children && item.children.length > 0">
@@ -22,17 +22,17 @@
           </template>
         </v-layout>
       </v-container>
-    <context-menu ref="ctx" @ctx-open="onCtxOpen">
-      <ui-menu class="text-xs-left"
-               contain-focus
-               has-icons
-               has-secondary-text
-               :options="menuOptions"
-               @select="menuCall($event)"/>
-    </context-menu>
-    <rename-dialog :open="rename"  @close="closeRenameDialog" @rename="renameFolder"/>
-    <share-dialog :open="share"  @close="closeShareDialog" @rename="shareFolder"/>
-    <drop-file v-show="showDropZone" @addFile="addNewItem"/>
+    <!--<context-menu ref="ctx" @ctx-open="onCtxOpen">-->
+      <!--<ui-menu class="text-xs-left"-->
+               <!--contain-focus-->
+               <!--has-icons-->
+               <!--has-secondary-text-->
+               <!--:options="menuOptions"-->
+               <!--@select="menuCall($event)"/>-->
+    <!--</context-menu>-->
+    <!--<rename-dialog :open="rename"  @close="closeRenameDialog" @rename="renameFolder"/>-->
+    <!--<share-dialog :open="share"  @close="closeShareDialog" @rename="shareFolder"/>-->
+    <!--<drop-file v-show="showDropZone" @addFile="addNewItem"/>-->
   </span>
 </template>
 
@@ -104,93 +104,65 @@
     },
     created: async function (){
       this.processRouter(this.$router.params)
-      await this.getMyDriveTree();
-      await this.load();
+      await this.getSharedTree();
+//      await this.load();
     },
     watch:{
       page:async function(){
-        await this.load();
+        await this.getSharedTree();
+
+//        await this.load();
       }
     },
     async beforeRouteUpdate (to, from, next) {
       this.processRouter(to.params);
-      await this.load();
+      await this.getSharedTree();
+
+//      await this.load();
       next();
     },
     methods: {
-      handleDrop(e,b){
-        this.showDropZone = b;
-      },
-      onCtxOpen(data){
-        this.Menu.data = data;
-      },
-      async menuCall(e){
-        if(e.id == 'delete'){
-          await this.removeFolder(this.Menu.data);
-        }
-        if(e.id == 'rename'){
-          this.openRenameDialog();
-        }
-        if(e.id == 'copy'){
-          await this.copyFolder(this.Menu.data);
-        }
-        if(e.id == 'share'){
-          console.log("share")
-          this.openShareDialog();
-        }
-      },
-      addNewItem(args){
-        this.item.children.push(args);
-      },
-      async removeFolder(removeItem) {
-        try {
-          console.log("REMOVE")
-          console.log(this.item);
-          const result = await foldersAPI.removeFolder(removeItem._id);
-          console.log(result.data);
-          if (result.data.success) {
-            this.item.children.splice(this.item.children.indexOf(removeItem),1);
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      },
-      async renameFolder(args) {
-        this.closeRenameDialog();
-        try {
-          const result = await foldersAPI.renameFolder(this.Menu.data._id, args);
-          console.log(result.data);
-          if(result.data.success){
-            this.item.children[this.item.children.indexOf(this.Menu.data)].name = args.name;
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      },
-      openRenameDialog(){
-        this.rename = !this.rename;
-        console.log(this.rename)
-      },
-      async closeRenameDialog(){
-        console.log(3)
-        this.rename = false;
-      },
-      async copyFolder(item){
-        try {
-          const result = await foldersAPI.copyFolder(item._id);
-          console.log(result.data);
-          if (result.data.success) {
-            this.item.children.push(result.data.folder);
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      },
-
-      async shareFolder(args) {
-//        this.closeShareDialog();
+//      handleDrop(e,b){
+//        this.showDropZone = b;
+//      },
+//      onCtxOpen(data){
+//        this.Menu.data = data;
+//      },
+//      async menuCall(e){
+//        if(e.id == 'delete'){
+//          await this.removeFolder(this.Menu.data);
+//        }
+//        if(e.id == 'rename'){
+//          this.openRenameDialog();
+//        }
+//        if(e.id == 'copy'){
+//          await this.copyFolder(this.Menu.data);
+//        }
+//        if(e.id == 'share'){
+//          console.log("share")
+//          this.openShareDialog();
+//        }
+//      },
+//      addNewItem(args){
+//        this.item.children.push(args);
+//      },
+//      async removeFolder(removeItem) {
 //        try {
-//          const result = await foldersAPI.sharedFolder(this.Menu.data._id, args);
+//          console.log("REMOVE")
+//          console.log(this.item);
+//          const result = await foldersAPI.removeFolder(removeItem._id);
+//          console.log(result.data);
+//          if (result.data.success) {
+//            this.item.children.splice(this.item.children.indexOf(removeItem),1);
+//          }
+//        } catch (e) {
+//          console.log(e);
+//        }
+//      },
+//      async renameFolder(args) {
+//        this.closeRenameDialog();
+//        try {
+//          const result = await foldersAPI.renameFolder(this.Menu.data._id, args);
 //          console.log(result.data);
 //          if(result.data.success){
 //            this.item.children[this.item.children.indexOf(this.Menu.data)].name = args.name;
@@ -198,13 +170,45 @@
 //        } catch (e) {
 //          console.log(e);
 //        }
-      },
-      openShareDialog(){
-        this.share = !this.share;
-      },
-      async closeShareDialog(){
-        this.share = false;
-      },
+//      },
+//      openRenameDialog(){
+//        this.rename = !this.rename;
+//        console.log(this.rename)
+//      },
+//      async closeRenameDialog(){
+//        console.log(3)
+//        this.rename = false;
+//      },
+//      async copyFolder(item){
+//        try {
+//          const result = await foldersAPI.copyFolder(item._id);
+//          console.log(result.data);
+//          if (result.data.success) {
+//            this.item.children.push(result.data.folder);
+//          }
+//        } catch (e) {
+//          console.log(e);
+//        }
+//      },
+//
+//      async shareFolder(args) {
+////        this.closeShareDialog();
+////        try {
+////          const result = await foldersAPI.sharedFolder(this.Menu.data._id, args);
+////          console.log(result.data);
+////          if(result.data.success){
+////            this.item.children[this.item.children.indexOf(this.Menu.data)].name = args.name;
+////          }
+////        } catch (e) {
+////          console.log(e);
+////        }
+//      },
+//      openShareDialog(){
+//        this.share = !this.share;
+//      },
+//      async closeShareDialog(){
+//        this.share = false;
+//      },
 
 
       processRouter(params){
@@ -214,26 +218,15 @@
           this.folderID = this.folderID||this.$store.state.user.myDrive;
         }
       },
-      async load() {
+      async getSharedTree() {
         try {
           let user = this.$store.state.user;
-          let res = await foldersAPI.get(this.folderID);
+          let res = await foldersAPI.getSharedTree(user);
           if(res.data.success){
-            this.item = res.data.folder;
-            await this.getPath();
-          }
-        } catch (e) {
-          console.log(e)
-        }
-      },
-      async getMyDriveTree() {
-        try {
-          let user = this.$store.state.user;
-          let res = await foldersAPI.get(user.myDrive);
-          if(res.data.success){
-            this.tree = res.data.folder;
+            console.log(res.data.folders) ;
+            this.tree = res.data.folders[0];
+            this.item = res.data.folders[0][0];
             console.log(tree);
-            await this.getPath();
           }
         } catch (e) {
           console.log(e)

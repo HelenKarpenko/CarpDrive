@@ -103,7 +103,7 @@
       }
     },
     created: async function (){
-      this.processRouter(this.$router.params)
+      this.processRouter(this.$route.params)
       await this.getMyDriveTree();
       await this.load();
     },
@@ -114,6 +114,7 @@
     },
     async beforeRouteUpdate (to, from, next) {
       this.processRouter(to.params);
+      await this.getMyDriveTree();
       await this.load();
       next();
     },
@@ -188,16 +189,6 @@
       },
 
       async shareFolder(args) {
-//        this.closeShareDialog();
-//        try {
-//          const result = await foldersAPI.sharedFolder(this.Menu.data._id, args);
-//          console.log(result.data);
-//          if(result.data.success){
-//            this.item.children[this.item.children.indexOf(this.Menu.data)].name = args.name;
-//          }
-//        } catch (e) {
-//          console.log(e);
-//        }
       },
       openShareDialog(){
         this.share = !this.share;
@@ -208,6 +199,7 @@
 
 
       processRouter(params){
+        console.log(params  )
         if(params && params.id){
           this.folderID = params.id;
         }else{
@@ -241,10 +233,11 @@
       },
       async getPath(){
         try{
-          const result = await foldersAPI.getPath(this.$route.params.id);
+          const result = await foldersAPI.getPath(this.folderID);
           console.log(result.data.path)
           if (result.data.success) {
             this.path = result.data.path;
+            console.log(this.path);
           }
         }catch(e){
           console.log(e);

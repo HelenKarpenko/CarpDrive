@@ -23,13 +23,7 @@ async function getMyDrive(id) {
 }
 
 
-async function get(folder, args) {
-    args = {
-        filters: {},
-        minLevel: 1,
-        recursive: true,
-        allowEmptyChildren: false
-    }
+async function get(folder) {
     return new Promise((resolve, reject) => {
         folder.getChildren(function (err,children) {
             if(err)reject(err);
@@ -108,13 +102,15 @@ async function rename(id, newName) {
 
 async function getPath(id) {
     let folder = await Folder.findById(id).exec();
-    let path = [];
-    while(folder._id != MAINFOLDER){
-        path.push(folder.name);
-        folder = await Folder.findById(folder.parent).exec();
+    let path = folder.path.split('#');
+    let result = [];
+    for(let i = 1; i < path.length; i++){
+        folder = await Folder.findById(path[i]).exec();
+
+        result.push({name: folder.name, id: folder._id});
     }
-    path.reverse();
-    return path;
+    // path.reverse();
+    return result;
 }
 
 // COPY
@@ -151,7 +147,19 @@ async function shareFolder(folder_id, user_id) {
     return false;
 }
 
+async function getSharedFolder(user) {
 
+    let folders = user.sharedWithMe;
+    console.log(folders);
+    let result = [];
+    for(let f_id of folders){
+        let folder = await Folder.findById(f_id).exec();
+        console.log(folder);
+
+        result.push(await get(folder));
+    }
+    return result;
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -181,5 +189,6 @@ module.exports = {
     getPath: getPath,
     copyFolder: copyFolder,
     shareFolder: shareFolder,
+    getSharedFolder: getSharedFolder,
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };

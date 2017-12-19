@@ -38,8 +38,8 @@
           isMini: true,
         },
         navigation: [
-          {id: 'My drive', icon: 'cloud', active: true},
-          {id: 'Shared with me', icon: 'folder_shared', active: false},
+          {id: 'Drive', icon: 'cloud', active: true},
+          {id: 'ShareWithMe', icon: 'folder_shared', active: false},
         ],
         activeItem: null,
       }
@@ -53,8 +53,10 @@
         if(item == this.activeItem || !this.activeItem){
           this.UI.isMini = !this.UI.isMini;
         }
+        this.$router.push({name: item.id})
       },
       chooseItem(item){
+//        params: {id: this.$store.state.user.myDrive}}
         this.toggleSize(item);
         this.activeItem = item;
       }

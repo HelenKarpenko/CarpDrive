@@ -4,10 +4,11 @@
       <v-icon>folder</v-icon>
       <v-breadcrumbs divider="/">
         <v-breadcrumbs-item
-          v-for="(item,i) in path" :key="i"
-          :disabled="true"
+          v-for="item in path" :key="item.name"
+          :disabled="false"
+          :to="{name:'Drive', params: {id: item.id}}"
         >
-          {{item}}
+            {{item.name}}
         </v-breadcrumbs-item>
       </v-breadcrumbs>
 
@@ -103,6 +104,10 @@
           console.log(e);
         }
         fileList.splice(0,fileList.length)
+      },
+      async clickPath(item){
+        this.$route.push({name:'Drive', params: {id: item.id}})
+
       },
     }
   }

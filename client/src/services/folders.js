@@ -41,5 +41,8 @@ export default {
   copyFolder(id){
     console.log(`api/v1/my-drive/${id}/copy`);
     return API.bearerAccessAuth().get(`api/v1/my-drive/${id}/copy`);
-  }
+  },
+  getSharedTree() {
+    return API.bearerAccessAuth().get(`api/v1/share/`);
+  },
 }
