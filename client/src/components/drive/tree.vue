@@ -2,10 +2,9 @@
   <span>
     <el-tree
       :props="defaultProps"
-      :load="loadNode"
+      :data="tree"
       @node-click="handleNodeClick"
       :expand-on-click-node="false"
-      lazy
       node-key="id"
       ref="tree"
     />
@@ -32,7 +31,8 @@
     props:
       [
         'toggle',
-        'setNewNode'
+        'setNewNode',
+        'tree'
       ],
     watch:
       {
@@ -47,27 +47,27 @@
         this.$router.push({name: 'Drive', params: {id: data._id}})
       }
       ,
-      loadNode: async function (node, resolve) {
-        try {
-          let firstGeneration = await foldersAPI.get(this.$store.state.user.myDrive);
-          if (node.level === 0) {
-            return resolve(firstGeneration.data.folder.children);
-          } else {
-            var data;
-            if (node.data.hasChildren) {
-              let children = await foldersAPI.get(node.data._id);
-              console.log(children);
-              data = children.data.folder.children;
-            } else {
-              data = [];
-            }
-            resolve(data);
-          }
-        } catch (e) {
-          console.log(e)
-        }
-      }
-      ,
+//      loadNode: async function (node, resolve) {
+//        try {
+//          let firstGeneration = await foldersAPI.get(this.$store.state.user.myDrive);
+//          if (node.level === 0) {
+//            return resolve(firstGeneration.data.folder.children);
+//          } else {
+//            var data;
+//            if (node.data.hasChildren) {
+//              let children = await foldersAPI.get(node.data._id);
+//              console.log(children);
+//              data = children.data.folder.children;
+//            } else {
+//              data = [];
+//            }
+//            resolve(data);
+//          }
+//        } catch (e) {
+//          console.log(e)
+//        }
+//      }
+//      ,
     }
   }
 </script>

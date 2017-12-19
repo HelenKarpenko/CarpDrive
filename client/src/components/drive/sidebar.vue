@@ -3,24 +3,23 @@
     :mini-variant="UI.isMini"
     fixed
     clipped
-    :permanent="UI.isShown"
+    :permanent="true"
     app
-    v-model="UI.isShown">
+    >
     <v-layout>
       <v-flex>
         <v-list>
-          <v-list-tile v-for="item in navigation" :key="item.title" @click.stop="toggleSize()">
-            <v-list-tile-action>
-              <v-icon large>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
-            <!--<v-list-tile-content>-->
-            <!--<v-list-tile-title>{{ item.title }}</v-list-tile-title>-->
-            <!--</v-list-tile-content>-->
-          </v-list-tile>
+          <v-list-group v-for="item in navigation" :key="item.title" @click="chooseItem(item)" >
+            <v-list-tile slot="item" >
+              <v-list-tile-action>
+                <v-icon large>{{ item.icon }}</v-icon>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list-group>
         </v-list>
       </v-flex>
       <v-flex xs9 v-show="!UI.isMini">
-        <tree-item />
+        <tree-item :tree="tree"/>
       </v-flex>
     </v-layout>
 
@@ -39,14 +38,25 @@
           isMini: true,
         },
         navigation: [
-          {title: 'My drive', icon: 'cloud'},
-          {title: 'Shared with me', icon: 'folder_shared'},
+          {id: 'My drive', icon: 'cloud', active: true},
+          {id: 'Shared with me', icon: 'folder_shared', active: false},
         ],
+        activeItem: null,
       }
     },
+    props:
+      [
+        'tree'
+      ],
     methods: {
-      toggleSize() {
-        this.UI.isMini = !this.UI.isMini;
+      toggleSize(item) {
+        if(item == this.activeItem || !this.activeItem){
+          this.UI.isMini = !this.UI.isMini;
+        }
+      },
+      chooseItem(item){
+        this.toggleSize(item);
+        this.activeItem = item;
       }
     }
   }

@@ -10,8 +10,6 @@ const passport = require('passport');
 
 const ObjectId = require('mongoose').Types.ObjectId;
 
-// const config = require('@config');
-// const auth = require('@auth')
 let tools = {
     check: (id) => {
         return id || ObjectId.isValid(id);
@@ -114,6 +112,21 @@ router.get('/:id/copy', passport.authenticate(['bearer-access', 'basic']),async(
                 folder: folder,
             }
         }
+        res.json(result);
+    }else{
+        res.json({err: 'error'})
+    }
+});
+
+router.post('/:id/share', passport.authenticate(['bearer-access', 'basic']),async(req, res,next) => {
+    if(tools.check(req.params.id)){
+        if(!req.body.shareUserId) return utilities.apierror(400,"Bad request",res)
+
+        let isShare = await folderCtrl.shareFolder(req.params.id, req.body.shareUserId);
+
+        let result = {
+            success: isShare,
+        };
         res.json(result);
     }else{
         res.json({err: 'error'})

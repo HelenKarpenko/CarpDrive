@@ -1,6 +1,7 @@
 let mongoose = require('mongoose');
 let Folder = require('../models/folderModel');
 const file = require('./fileController')
+const userCtrl = require('./usersController');
 
 const MAINFOLDER = '5a30671f7dadbb136173ad05';
 
@@ -14,115 +15,6 @@ function connect(url) {
     }
 }
 
-// async function create(name,owner,description, parent) {
-//     let folder = new Folder({
-//         name: name,
-//         owner: mongoose.Types.ObjectId(owner),
-//         sharedWithMe: [],
-//         info: {description: description},
-//         parent: mongoose.Types.ObjectId(parent),
-//         children: {
-//             folders: [],
-//             files: []
-//         },
-//     });
-//     return new Promise((resolve,reject) =>{
-//         folder.save(function (err, data) {
-//             if(err) reject(err);
-//             else resolve(data);
-//         });
-//     });
-// }
-
-
-function getAll() {
-    return Folder.find().exec();
-}
-
-function getById(id) {
-    return Folder.findById(id).exec();
-}
-
-function getByName(name, owner) {
-    let regExp = new RegExp('^' + name, "i");
-    return Folder.find({
-        name: regExp,
-        owner: owner,
-    }).exec();
-}
-
-function addChild(id, childId, isFile) {
-    Folder.findById(id).exec()
-        .then(folder => {
-            if (isFile) {
-                folder.children.files.push(mongoose.Types.ObjectId(childId));
-            } else {
-                folder.children.folders.push(mongoose.Types.ObjectId(childId));
-            }
-            return folder.save();
-        })
-        .catch(err => console.log(err));
-}
-
-async function getAllItems(id) {
-    try {
-        let folder = await Folder.findById(id).exec();
-        let allChildren = [];
-        let child;
-        for (let fid of folder.children.folders) {
-            child = await Folder.findById(fid).exec();
-            if (child) {
-                allChildren.push(child);
-            }
-        }
-        for (let fid of folder.children.files) {
-            child = await file.getById(fid);
-            if (child) {
-                allChildren.push(child);
-            }
-        }
-        return allChildren;
-    } catch (err) {
-        console.log(err);
-        return []
-    }
-}
-
-async function remove(id) {
-    let folder = await Folder.findById(id).exec();
-    let parent = await Folder.findById(folder.parent).exec();
-    let index = parent.children.folders.indexOf(id)
-    if (index >= 0) parent.children.folders.splice(index, 1);
-    await parent.save();
-    return folder.remove(id);
-}
-
-async function removeAll(id) {
-    let folder = await Folder.findById(id).exec();
-    if (folder) {
-        return folder.clean();
-    }
-
-}
-
-async function removeAllFiles(folder) {
-    return folder.removeFiles();
-}
-
-async function getAllFiles(folder) {
-    return folder.getAllFiles();
-}
-
-async function getAllChildrenJSON(id) {
-    let folder = await Folder.findById(id).exec();
-    if (folder) {
-        return folder.getAllChildren();
-    }
-}
-
-function find(query, page, limit) {
-    return Folder.paginate(query, {page: Math.abs(Number(page)) || 1, limit: Math.abs(Number(limit)) || 12})
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,20 +86,15 @@ async function getInfo(id) {
 
 async function remove(id) {
     let folder = await Folder.findById(id).exec();
-    console.log('ENTER. '+ folder.name +' '+ folder._id);
     if(!folder){
-        console.log('EXIT.');
         return {success: true}
     }
     if(folder.hasChildren) {
-        console.log('HAS CHILDREN.');
         let children = await getFirstChildren(id);
-        console.log('CHILDREN: ' + children);
         for (let ch of children) {
             this.remove(ch._id);
         }
     }
-    console.log('REMOVE '+ folder.name +' '+ folder._id);
     return Folder.findByIdAndRemove(id).exec();
 }
 
@@ -230,13 +117,41 @@ async function getPath(id) {
     return path;
 }
 
+// COPY
 async function copyFolder(id) {
-    console.log("Утеук");
     let folder = await Folder.findById(id).exec();
     let parent = await Folder.findById(folder.parent).exec();
     let copy = await this.create(parent, folder.name, folder.owner, folder.description);
+    await copyFolderChildren(folder, copy);
+
     return copy;
 }
+async function copyFolderChildren(folder, parent) {
+    if(folder.hasChildren) {
+        let children = await getFirstChildren(folder._id);
+        for (let ch of children) {
+            let child = await create(parent, ch.name, ch.owner, ch.description);
+            await copyFolderChildren(ch, child);
+        }
+    }
+    return;
+}
+
+async function shareFolder(folder_id, user_id) {
+    console.log("SHARED")
+    let user = await userCtrl.getById(user_id);
+    let folder = await Folder.findById(folder_id).exec();
+    if(user.sharedWithMe.indexOf(folder_id) == -1) {
+        user.sharedWithMe.push(folder_id);
+        folder.sharedWith.push(user_id);
+        await user.save();
+        await folder.save();
+        return true;
+    }
+    return false;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -265,5 +180,6 @@ module.exports = {
     rename: rename,
     getPath: getPath,
     copyFolder: copyFolder,
+    shareFolder: shareFolder,
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };

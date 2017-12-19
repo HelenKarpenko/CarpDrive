@@ -39,6 +39,7 @@ export default {
     return API.bearerAccessAuth().get(`api/v1/my-drive/${id}/path`);
   },
   copyFolder(id){
+    console.log(`api/v1/my-drive/${id}/copy`);
     return API.bearerAccessAuth().get(`api/v1/my-drive/${id}/copy`);
   }
 }
