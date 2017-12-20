@@ -35,7 +35,7 @@ export default {
       }
       console.log(query);
     return API.bearerAccessAuth().get(query);
-    },
+  },
   getPath(id) {
     return API.bearerAccessAuth().get(`api/v1/my-drive/${id}/path`);
   },
@@ -51,5 +51,8 @@ export default {
   },
   getSharedTree(id) {
     return API.bearerAccessAuth().get(`api/v1/shared/${id}/tree`);
+  },
+  showFile(id) {
+    return API.bearerAccessAuth().get(`api/v1/my-drive/${id}/file`,{ responseType:"blob" });
   },
 }

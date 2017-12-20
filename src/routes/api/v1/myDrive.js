@@ -102,6 +102,7 @@ router.route('/:id')
             res.json({err: 'error'})
         }
     })
+
 router.get('/:id/copy', passport.authenticate(['bearer-access', 'basic']),async(req, res,next) => {
     if(tools.check(req.params.id)){
         let folder = await folderCtrl.copyFolder(req.params.id);
@@ -168,6 +169,32 @@ router.get('/:id/path/',passport.authenticate(['bearer-access', 'basic']), async
         }
     }else{
         return utilities.apierror(400,'Bad request',res);
+    }
+});
+
+router.get('/:id/file', passport.authenticate(['bearer-access', 'basic']),async(req, res,next) => {
+    if(tools.check(req.params.id)){
+
+
+
+        // let result = {};
+        // if(info && children){
+        //     result = {
+        //         success: true,
+        //         folder:{
+        //             info: info,
+        //             children: children,
+        //         }
+        //     }
+        // }
+        // res.json(result);
+        let data = await fileCtrl.getData(req.params.id)
+        res.type(data.filename.split('.').pop());
+        data.stream.pipe(res);
+        // res.json(data.stream.pipe(res))
+        res.json(res)
+    }else{
+        res.json({err: 'error'})
     }
 });
 module.exports = router;

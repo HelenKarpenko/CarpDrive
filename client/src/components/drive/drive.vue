@@ -140,6 +140,10 @@
         }
       },
       addNewItem(args){
+        this.$message({
+          message: 'Congrats, this is a success message.',
+          type: 'success'
+        });
         this.item.children.push(args);
         this.getMyDriveTree();
       },
@@ -152,6 +156,11 @@
           if (result.data.success) {
             this.item.children.splice(this.item.children.indexOf(removeItem),1);
             this.getMyDriveTree();
+            this.$message({
+              message: 'Congrats, this is a success message.',
+              type: 'success',
+              icon: "new_releases"
+            });
           }
         } catch (e) {
           console.log(e);
@@ -165,6 +174,10 @@
           if(result.data.success){
             this.item.children[this.item.children.indexOf(this.Menu.data)].name = args.name;
             this.getMyDriveTree();
+            this.$message({
+              message: 'Congrats, this is a success message.',
+              type: 'success'
+            });
           }
         } catch (e) {
           console.log(e);
@@ -185,6 +198,10 @@
           if (result.data.success) {
             this.item.children.push(result.data.folder);
             this.getMyDriveTree();
+            this.$message({
+              message: 'Congrats, this is a success message.',
+              type: 'success'
+            });
           }
         } catch (e) {
           console.log(e);
@@ -197,6 +214,10 @@
           const result = await foldersAPI.shareFolder(this.Menu.data._id, args);
           if (result.data.success) {
             console.log(result.data);
+            this.$message({
+              message: 'Congrats, this is a success message.',
+              type: 'success'
+            });
           }
         } catch (e) {
           console.log(e);

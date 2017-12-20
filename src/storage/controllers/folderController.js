@@ -106,7 +106,6 @@ async function getPath(id) {
     let result = [];
     for(let i = 1; i < path.length; i++){
         folder = await Folder.findById(path[i]).exec();
-
         result.push({name: folder.name, id: folder._id});
     }
     // path.reverse();
@@ -195,10 +194,10 @@ async function getSharedPath(id, user) {
     let result = [];
     for(let i = 1; i < path.length; i++){
         folder = await Folder.findById(path[i]).exec();
-
+        if(user.sharedWithMe.children.indexOf(folder._id))
         result.push({name: folder.name, id: folder._id});
     }
-    // path.reverse();
+
     return result;
 }
 
