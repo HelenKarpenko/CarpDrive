@@ -21,6 +21,7 @@
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "file-extension": "^4.0.1",
     "file-type": "^7.2.0",
     "fs-promise": "^2.0.3",
     "gridfs": "^1.0.0",
@@ -41,6 +42,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
     "serve-favicon": "^2.4.5",
+    "vue-pdf": "^2.0.4",
     "vuetify": "^0.17.4"
   },
   "_moduleAliases": {
@@ -57,8 +59,8 @@
     "@validator": "./src/utils/validator.js",
     "@APIroad": "./src/endpoints.md"
   },
-  "nodemonConfig":{
-    "ignore":[
+  "nodemonConfig": {
+    "ignore": [
       "node_modules/*",
       "client/*",
       ".git",

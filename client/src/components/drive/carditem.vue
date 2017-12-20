@@ -2,9 +2,6 @@
   <span>
     <a @click="show">
     <v-card>
-      <!--<div @click="showFile">-->
-      <!--<router-link :to="{name:$router.name, params: {id: item._id}}">-->
-      <!--<router-link v-else click="showFile()">-->
         <template v-if="item.isFolder">
           <v-card-media src="/static/image/folder.svg" height="250px" contain>
           </v-card-media>
@@ -20,21 +17,23 @@
         </v-card-title>
         <v-card-actions>
         </v-card-actions>
-      <!--</router-link>-->
-      <!--</router-link>-->
-      <!--</div>-->
     </v-card>
     </a>
+    <show-file :open="showFileDialog" @close="closeShowItemDialog()" :item="item"/>
   </span>
 </template>
 
 <script>
+  import ShowFile from'@/components/drive/dialog/showFileDialog';
   import foldersAPI from '@/services/folders';
-
   export default {
+    components:{
+      ShowFile,
+    },
     data() {
       return {
         folderID: null,
+        showFileDialog: false,
       }
     },
     props: [
@@ -49,26 +48,15 @@
         }
       },
       async showFile(){
-        this.$router.push({name: 'ShowFile', params: {id: this.item._id}})
-      }
-//        try {
-//          console.log("SHOW FILE ENTER");
-//          const result = await foldersAPI.showFile(this.item._id);
-//          console.log(result.data);
-//          if (result.data.success) {
-//
-////            this.item.children.splice(this.item.children.indexOf(removeItem),1);
-////            this.getMyDriveTree();
-////            this.$message({
-////              message: 'Congrats, this is a success message.',
-////              type: 'success',
-////              icon: "new_releases"
-////            });
-//          }
-//        } catch (e) {
-//          console.log(e);
-//        }
-//      }
+        this.openShowItemDialog();
+//        this.$router.push({name: 'ShowFile', params: {id: this.item._id}})
+      },
+      openShowItemDialog(){
+        this.showFileDialog = !this.showFileDialog;
+      },
+      closeShowItemDialog(){
+        this.showFileDialog = false;
+      },
     }
   }
 </script>

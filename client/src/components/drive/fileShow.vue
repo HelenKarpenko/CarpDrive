@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--<a href="{{data}}" target="_blank">Read more</a>-->
     <img ref="preview" >
   </div>
 </template>
@@ -9,7 +8,6 @@
   import foldersAPI from '@/services/folders';
 
   export default {
-    components: {},
     data() {
       return {
         id: this.$route.params.id,
@@ -22,12 +20,6 @@
       this.item = await foldersAPI.get(this.id);
       await this.showFile();
     },
-//    watch:{
-//      page:async function(){
-//      }
-//    },
-//    async beforeRouteUpdate (to, from, next) {
-//    },
     methods: {
       async showFile() {
         try {
@@ -40,14 +32,6 @@
               vm.$refs.preview.src=reader.result;
             }
             reader.readAsDataURL(result.data);
-//            this.item.children.splice(this.item.children.indexOf(removeItem),1);
-//            this.getMyDriveTree();
-//            this.$message({
-//              message: 'Congrats, this is a success message.',
-//              type: 'success',
-//              icon: "new_releases"
-//            });
-
         } catch (e) {
           console.log(e);
         }

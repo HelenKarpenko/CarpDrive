@@ -97,14 +97,16 @@ async function create(name, username ,password) {
 
 let get = {
     async byCredentials(username, password) {
+        if(!username|| username.length==0) return null;
         const user = await User.findOne({username: username});
-        console.log(user);
+        // console.log(user);
         if(user && user.comparePassword(password)){
             return user;
         }
         return null;
     },
     async byAccessToken (token) {
+        if(!token || token.length==0) return null;
         const user = await User.findOne({'tokens.access.value': token})
         if(user && user.verifyAccessToken(token)){
             return user;
@@ -112,6 +114,7 @@ let get = {
         return null;
     },
     async byRefreshToken (token) {
+        if(!token || token.length==0) return null;
         const user = await User.findOne({'tokens.refresh.value': token})
         if(user && user.verifyRefreshToken(token)){
             return user;

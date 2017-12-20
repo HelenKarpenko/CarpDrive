@@ -7,7 +7,7 @@ const userCtrl = require('../storage/controllers/usersController');
 module.exports = (app) => {
     passport.use('basic', new BasicStrategy(
         async function (username, password, done) {
-            console.log(username, password);
+            console.log('!!!!',username, password);
             try {
                 const user = await userCtrl.get.byCredentials(username, password);
                 if (user) {
@@ -21,8 +21,6 @@ module.exports = (app) => {
         }));
     passport.use('bearer-access', new BearerStrategy(
         async function (token, done) {
-            console.log(token);
-
             try {
                 const user = await userCtrl.get.byAccessToken(token);
                 if (user) {

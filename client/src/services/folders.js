@@ -55,4 +55,7 @@ export default {
   showFile(id) {
     return API.bearerAccessAuth().get(`api/v1/my-drive/${id}/file`,{ responseType:"blob" });
   },
+  getFileType(id) {
+    return API.bearerAccessAuth().get(`api/v1/my-drive/${id}/fileType`,{ responseType:"blob" });
+  },
 }

@@ -18,7 +18,7 @@ function connect() {
 function save(file) {
     return new Promise(async (resolve, reject) =>
     {
-        let ext = fileType(file.data).ext;
+        let type = fileType(file.data);
         var bufferStream = new stream.PassThrough();
         bufferStream.end(file.data);
         //create stream to db
@@ -26,7 +26,8 @@ function save(file) {
             {
                 filename: file.name,
                 mode: 'w',
-                content_type: `image/${ext}`,
+                content_type: type.mime,
+                extension: type.ext,
                 root: folder,
             });
         if (await bufferStream.pipe(writeStream)) {
