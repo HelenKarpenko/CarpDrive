@@ -8,6 +8,7 @@ export default {
     })
   },
   basicAuth(username, password) {
+    console.log(username,password);
     return new axios.create({
       baseURL:  Globals.ROOT_URL,
       auth: {

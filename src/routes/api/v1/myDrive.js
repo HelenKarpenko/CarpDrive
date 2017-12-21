@@ -21,16 +21,11 @@ let tools = {
 
 let MOTHER_FOLDER = "5a30671f7dadbb136173ad05"
 
+
+
 router.route('/:id')
     .get(async (req, res, next) => {
-        if(req.query.limit < 0 ||
-            req.query.page < 0 ||
-            ('limit' in req.query && !Number(req.query.limit))||
-            ('page' in req.query && !Number(req.query.page))){
-            return util.sendError(res, 400,'Bad request');
-        }
         if(tools.check(req.params.id)){
-            const query = parseQuery(req.query);
             let user = req.user;
             console.log(user);
             let children = await folderCtrl.getChildren(req.params.id);
@@ -212,6 +207,26 @@ router.get('/:id/fileType',async(req, res,next) => {
     }
 });
 
+router.get('/:id/find',async(req, res,next) => {
+    if(req.query.limit < 0 ||
+        req.query.page < 0 ||
+        ('limit' in req.query && !Number(req.query.limit))||
+        ('page' in req.query && !Number(req.query.page))) {
+        return util.sendError(400, 'Bad request', res);
+    }
+    if(tools.check(req.params.id)){
+        const query = parseQuery(req.query);
+        query.owner = req.user;
+        let folders = await folderCtrl.find(query, req.query.page, req.query.limit)
+        res.json({
+            success: true,
+            folders: folders,
+        })
+    }else{
+        res.json({err: 'error'})
+    }
+});
+
 function parseQuery(req) {
     let query = {};
     if(req.name){
@@ -219,4 +234,5 @@ function parseQuery(req) {
     }
     return query;
 }
+
 module.exports = router;
