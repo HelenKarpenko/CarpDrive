@@ -27,7 +27,7 @@ const cors = require('cors');
 const database = require('./storage/controllers/folderController');
 
 // database.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds111066.mlab.com:11066/carpdrive`)
-database.connect(`mongodb://localhost:27017/carpdrive`)
+database.connect(process.env.NODE_ENV=='dev'?`mongodb://localhost:27017/carpdrive`:`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds111066.mlab.com:11066/carpdrive`)
     .then(data => {
       console.log('+connected');
       require('./storage/controllers/fileDataController').connect();
