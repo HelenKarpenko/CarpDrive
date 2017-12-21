@@ -31,6 +31,7 @@ tools.verifyData = {
 }
 
 router.post('/register', async function (req, res, next) {
+    console.log("+++");
     const args = tools.collectDataFromReq.register(req);
     try{
         tools.verifyData.register(args);
@@ -38,7 +39,11 @@ router.post('/register', async function (req, res, next) {
         return Utils.sendError(res, 400, err.message);
     }
     try{
+        console.log("+++");
         let user = await userCtrl.create(args.name, args.username, args.password);
+        console.log("+++");
+        console.log(await folderCtrl.getMainFolder());
+        console.log("+++");
         let folder = await  folderCtrl.create(
             await folderCtrl.getMainFolder(),
             `${args.name} folder`,
@@ -57,7 +62,7 @@ router.post('/register', async function (req, res, next) {
         if (err.code == 11000) {
             return Utils.sendError(res, 400, "This username is already taken");
         } else {
-            return Utils.sendError(res, 500, "Server error");
+            // return Utils.sendError(res, 500, "Server error: " + err);
         }
     }
 });

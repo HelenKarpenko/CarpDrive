@@ -8,9 +8,6 @@
         </template>
         <template v-else>
           <v-card-media :src="previewURL" height="250px" contain/>
-          <!--<img ref="preview" width="100%">-->
-          <!--<v-card-media :src="`${rootURL}/api/v1/my-drive/image/${item.data}`" height="250px" contain>-->
-          <!--</v-card-media>-->
         </template>
         <v-card-title primary-title>
           <div>

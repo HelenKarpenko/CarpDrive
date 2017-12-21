@@ -61,4 +61,13 @@ export default {
   getFileInfo(id) {
     return API.bearerAccessAuth().get(`/api/v1/my-drive/${id}/fileInfo`);
   },
+  findByName(filterString, id){
+    let query = `/api/v1/my-drive/find?`;
+    if(filterString){
+      console.log("true")
+      query +=`name=${filterString}&`
+    }
+    console.log(query);
+    return API.bearerAccessAuth().get(query);
+  }
 }

@@ -3,7 +3,7 @@ let Folder = require('../models/folderModel');
 const file = require('./fileController')
 const userCtrl = require('./usersController');
 
-const MAINFOLDER = '5a30671f7dadbb136173ad05';
+const MAINFOLDER = "5a3c0dddc4944e2002b978a6";
 
 mongoose.Promise = global.Promise;
 
@@ -31,6 +31,25 @@ async function getMyDrive(id) {
 //         })
 //     });
 // }
+
+async function create(parent, name, owner, description) {
+
+    let folder = new Folder({
+        name: name,
+        hasChildren: false,
+        isFolder: true,
+        data: null,
+        owner: mongoose.Types.ObjectId(owner),
+        sharedWithMe: [],
+        info: {description: description},
+    });
+
+    folder.parent = parent;
+    parent.hasChildren = true;
+
+    await parent.save();
+    return folder.save();
+}
 
 async function create(parent, name, owner, description) {
 

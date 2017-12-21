@@ -13,6 +13,12 @@
       </v-breadcrumbs>
 
       <v-spacer/>
+        <v-text-field
+          v-model="filterString"
+          @input="changeFilter()"
+          label="Search"
+          prepend-icon="search"
+        ></v-text-field>
       <v-btn icon @click.stop="openAddDialog()">
         <v-icon>create_new_folder</v-icon>
       </v-btn>
@@ -45,8 +51,16 @@
       addDialog,
     },
     props: [
-      'path'
+      'path',
+      'clearFilterString'
     ],
+    watch:{
+      clearFilterString(){
+        if(this.clearFilterString){
+          this.filterString = "";
+        }
+      }
+    },
     data(){
       return{
         folderID: null,
@@ -55,6 +69,7 @@
           children: null,
         },
         create: false,
+        filterString: ""
       }
     },
     methods:{
@@ -108,6 +123,9 @@
       async clickPath(item){
         this.$route.push({name:'Drive', params: {id: item.id}})
 
+      },
+      async changeFilter () {
+        this.$emit('changeFilter', this.filterString);
       },
     }
   }

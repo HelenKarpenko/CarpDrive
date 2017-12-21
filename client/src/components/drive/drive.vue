@@ -1,7 +1,11 @@
 <template>
   <span @dragover="handleDrop($event,true)"  @dragleave="handleDrop($event,false)" @drop="handleDrop($event,false)">
     <sidebar :tree="tree"/>
-    <toolbar @addNewItem="addNewItem" @addNewFile="addNewItem" :path="path"/>
+    <toolbar @addNewItem="addNewItem"
+             @addNewFile="addNewItem"
+             @changeFilter="findByName"
+             :clearFilterString="clearFilterString"
+             :path="path"/>
       <v-container grid-list-md text-xs-center v-if="item">
         <v-layout row wrap>
           <template v-if=" item.children && item.children.length > 0">
@@ -100,6 +104,7 @@
         },
         tree: null,
         path: null,
+        clearFilterString: false,
       }
     },
     created: async function (){
@@ -113,9 +118,10 @@
       }
     },
     async beforeRouteUpdate (to, from, next) {
+      this.clearFilterString = true;
       this.processRouter(to.params);
-//      await this.getMyDriveTree();
       await this.load();
+      this.clearFilterString = false;
       next();
     },
     methods: {
@@ -274,6 +280,21 @@
           console.log(e);
         }
       },
+      async findByName(args){
+        try {
+          if(args == ''){
+            await this.load()
+            return
+          }
+          let res = await foldersAPI.findByName(args);
+          if(res.data.success){
+            this.item = res.data;
+//            await this.getPath();
+          }
+        } catch (e) {
+          console.log(e)
+        }
+      }
     }
   }
 </script>
