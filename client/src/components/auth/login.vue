@@ -58,6 +58,7 @@
     methods:{
       login:async function(){
         try{
+          console.log("LOGIn")
           const result = await authAPI.login(this.credentials);
           console.log(result.data);
           if(result.data.success) {

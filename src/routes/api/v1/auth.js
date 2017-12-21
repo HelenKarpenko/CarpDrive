@@ -19,15 +19,12 @@ tools.verifyData = {
     register (args) {
         if (!args.name/* || !validate(args.username)*/) {
             throw Utils.errors.InvalidRequesDatatError('Your name is invalid')
-            console.log('Your username is invalid');
         }
         if (!args.username/* || !validate(args.username)*/) {
             throw Utils.errors.InvalidRequesDatatError('Your username is invalid')
-            console.log('Your username is invalid');
         }
         if (!args.password /*|| !validate(args.password)*/) {
             throw Utils.errors.InvalidRequesDatatError('Your password is invalid')
-            console.log('Your password is invalid');
         }
         return true;
     }
@@ -38,7 +35,6 @@ router.post('/register', async function (req, res, next) {
     try{
         tools.verifyData.register(args);
     }catch (err){
-        console.log(err);
         return Utils.sendError(res, 400, err.message);
     }
     try{
@@ -81,7 +77,6 @@ router.post('/login', passport.authenticate('basic', {session: false}), async (r
             },
         });
     } catch (err) {
-        console.log(err);
         return Utils.sendError(res, 500, "Server error");
     }
 });
@@ -89,7 +84,6 @@ router.post('/login', passport.authenticate('basic', {session: false}), async (r
 router.post('/logout', passport.authenticate(['basic', 'bearer-access'], {session: false}), async (req, res, next) => {
     req.user.generateAccessToken();
     req.user.generateRefreshToken();
-
     await req.user.save();
     return res.json({success: true});
 });

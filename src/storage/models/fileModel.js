@@ -23,7 +23,6 @@ let fileSchema = new Schema({
 });
 
 fileSchema.pre('remove',async function (next) {
-    console.log('remove',this.name);
     await fileDataController.remove(this.data);
     next();
 });

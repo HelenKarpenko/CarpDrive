@@ -7,8 +7,10 @@
           </v-card-media>
         </template>
         <template v-else>
-          <v-card-media :src="`http://localhost:3001/api/v1/my-drive/image/${item.data}`" height="250px" contain>
-          </v-card-media>
+          <v-card-media :src="previewURL" height="250px" contain/>
+          <!--<img ref="preview" width="100%">-->
+          <!--<v-card-media :src="`${rootURL}/api/v1/my-drive/image/${item.data}`" height="250px" contain>-->
+          <!--</v-card-media>-->
         </template>
         <v-card-title primary-title>
           <div>
@@ -24,39 +26,98 @@
 </template>
 
 <script>
-  import ShowFile from'@/components/drive/dialog/showFileDialog';
+  import ShowFile from '@/components/drive/dialog/showFileDialog';
   import foldersAPI from '@/services/folders';
+  import globals from '@/services/globals';
+  import VCardMedia from "vuetify/src/components/VCard/VCardMedia";
+
   export default {
-    components:{
+    components: {
+      VCardMedia,
       ShowFile,
     },
     data() {
       return {
+        previewURL: '/static/image/folder.svg',
         folderID: null,
+        type: 'file',
         showFileDialog: false,
       }
     },
     props: [
       'item',
     ],
-    methods: {
-      async show(){
-        if(this.item.isFolder){
-          this.$router.push({name: this.$router.name, params: {id: this.item._id}})
+    created: async function () {
+      if (!this.item.isFolder) {
+        await this.getFileType();
+        console.log("------------")
+        console.log(this.type);
+        console.log("------------")
+        if(this.type[0] == 'image'){
+          this.loadPreview();
         }else{
+          if(this.type[1] == 'pdf'){
+            this.previewURL = '/static/image/pdf.svg'
+          }
+
+        }
+
+      }
+    },
+    methods: {
+      loadPreview() {
+        var reader = new FileReader();
+        let vm = this;
+        reader.onload = function (e) {
+          console.log(e)
+          vm.previewURL = reader.result;
+        }
+        foldersAPI.showFile(this.item._id)
+          .then(result => {
+            console.log("success")
+            return result.data
+          })
+          .then(data => {
+            reader.readAsDataURL(data);
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      },
+      async show() {
+        if (this.item.isFolder) {
+          this.$router.push({name: this.$router.name, params: {id: this.item._id}})
+        } else {
           await this.showFile();
         }
       },
-      async showFile(){
+      async showFile() {
         this.openShowItemDialog();
 //        this.$router.push({name: 'ShowFile', params: {id: this.item._id}})
       },
-      openShowItemDialog(){
+      openShowItemDialog() {
         this.showFileDialog = !this.showFileDialog;
       },
-      closeShowItemDialog(){
+      closeShowItemDialog() {
         this.showFileDialog = false;
       },
-    }
+      async getFileType() {
+        try {
+          const result = await foldersAPI.getFileType(this.item._id);
+          if (result.data.success) {
+            let type = result.data.type.split('/');
+            this.type = type;
+          }
+        } catch (e) {
+          console.log(e);
+          this.type = "file";
+        }
+      },
+    },
+    computed: {
+      rootURL() {
+        return globals.ROOT_URL;
+      }
+    },
   }
 </script>

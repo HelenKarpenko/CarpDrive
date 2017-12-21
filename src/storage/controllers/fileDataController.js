@@ -31,7 +31,6 @@ function save(file) {
                 root: folder,
             });
         if (await bufferStream.pipe(writeStream)) {
-            console.log(`+IMAGE SAVED ${writeStream.id}`);
             resolve(writeStream.id);
         } else {
             reject("Cannot write to db");
@@ -45,14 +44,11 @@ function getById(id) {
             async (err, file) => {
                 try {
                     if (err) {
-                        console.log(`ERROR FIND IMAGE ${id}`);
                         reject(err);
                     } else if (file === null) {
-                        console.log(`-FIND IMAGE ${id}`);
                         reject("Wrong id");
                     } else {
                         file.stream = getData(id);
-                        console.log(`+FIND IMAGE ${id}`);
                         resolve(file);
                     }
                 } catch (e) {
@@ -65,9 +61,7 @@ function getById(id) {
 function remove(id) {
     return new Promise((resolve, reject) => {
         fileModel.remove({_id: id, root: folder}, (err) => {
-            console.log('try to remove',id);
             if (err) reject(err);
-            console.log('sucess',id);
             resolve();
         });
     });

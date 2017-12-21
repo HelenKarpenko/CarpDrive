@@ -49,5 +49,5 @@ module.exports = (app) => {
     ));
 
     app.use(passport.initialize());
-    console.log("Auth configured");
+    console.log("+Auth configured");
 }

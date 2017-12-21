@@ -10,16 +10,21 @@
           <v-toolbar-title>{{item.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn icon :href="`http://localhost:3001/api/v1/my-drive/${item._id}/file`" dark>
+            <!--<v-btn icon :href="`http://localhost:3001/api/v1/my-drive/${item._id}/file`" dark>-->
+              <!--<v-icon>file_download</v-icon>-->
+            <!--</v-btn>-->
+
+            <v-btn icon @click.stop="downloadFile()" dark>
               <v-icon>file_download</v-icon>
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-card-text>
-          <iframe :src="`http://localhost:3001/api/v1/my-drive/${item._id}/file`" width="100%" height="700px" frameborder="0"></iframe>
-          <!--<div>-->
-            <!--<img ref="preview" width="100%">-->
-          <!--</div>-->
+          <div>
+            <iframe ref="preview" width="100%" height="700px" frameborder="0"/>
+          </div>
+
+
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -28,6 +33,7 @@
 
 <script>
   import foldersAPI from '@/services/folders';
+  import FileSaver from "file-saver"
   export default {
     data () {
       return {
@@ -35,6 +41,7 @@
 
         id: null,
         data: null,
+        blob: null,
         type: null,
       }
     },
@@ -49,6 +56,7 @@
 //        let res = await foldersAPI.get(this.id);
 //        this.item = res.data.folder;
         console.log(this.item)
+        await this.getFileInfo();
         await this.getFileType();
         await this.fileNext();
       }
@@ -73,23 +81,42 @@
           console.log("SHOW FILE ENTER");
           const result = await foldersAPI.showFile(this.id);
           console.log("SUCCESS");
-//          let vm = this;
-//          var reader  = new FileReader();
-//          reader.onload = function (e) {
-//            vm.$refs.preview.src = reader.result;
-//          }
-//          reader.readAsDataURL(result.data);
+          let vm = this;
+          var reader  = new FileReader();
+          reader.onload = function (e) {
+            vm.$refs.preview.src = reader.result;
+          }
+          reader.readAsDataURL(result.data);
+          this.blob = result.data;
+//          console.log("===============================");
+//          console.log(reader.readAsDataURL(result.data));
+//          console.log("===============================");
+
+        } catch (e) {
+          console.log(e);
+        }
+      },
+      async getFileInfo() {
+        try {
+          const result = await foldersAPI.getFileInfo(this.id);
+          console.log(result.data)
+          this.data = result.data;
         } catch (e) {
           console.log(e);
         }
       },
       async fileNext() {
-        if(this.type == 'image'){
-          this.showFile();
-        }
-        if(this.type == 'application'){
+//        if(this.type == 'image'){
 //          this.showFile();
-        }
+//        }
+//        if(this.type == 'application'){
+////          this.showFile();
+//        }
+        this.showFile();
+      },
+      async downloadFile(){
+
+          FileSaver.saveAs(this.blob, this.data.filename);
       }
     }
   }

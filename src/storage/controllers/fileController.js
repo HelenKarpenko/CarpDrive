@@ -37,7 +37,6 @@ async function getById(id) {
 }
 
 async function remove(id, parent) {
-    console.log('remove',id);
     let index = parent.children.files.indexOf(id)
     if(index >= 0) parent.children.files.splice(index, 1);
     let file = await getById(id);
@@ -57,8 +56,6 @@ async function getData(id){
     let file = await getById(id);
     return dataCtrl.getById(file.data);
 }
-
-
 
 module.exports = {
     connect: connect,

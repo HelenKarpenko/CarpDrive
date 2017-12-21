@@ -40,17 +40,11 @@ function getByLogin(login) {
 }
 
 async function addMainFolder(user, folderId) {
-    console.log("*****")
-    console.log(user);
-    console.log(folderId);
     user.myDrive = folderId;
     return user.save();
 }
 
 async function addSharedFolder(user, folderId) {
-    console.log("*****")
-    console.log(user);
-    console.log(folderId);
     user.sharedWithMe = folderId;
     return user.save();
 }
@@ -67,7 +61,6 @@ function addFolder(id, folderId) {
 async function getAllFolder(id) {
     try{
         let user = await User.findById(id).exec();
-        console.log(user);
         let allFolders = [];
         for (let fid of user.folders) {
             allFolders.push(folderCtrl.getById(fid));
@@ -81,7 +74,6 @@ async function getAllFolder(id) {
 
 //////////////////////
 async function create(name, username ,password) {
-    console.log(2)
     let user = new User({
         name: name,
         username: username,
@@ -91,7 +83,6 @@ async function create(name, username ,password) {
             children: [],
         }
     });
-    console.log(1)
     return user.save();
 }
 

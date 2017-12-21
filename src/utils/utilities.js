@@ -34,7 +34,6 @@ function checkAdmin(req, res, next) {
 }
 
 function checkMainFolder(req, res, next) {
-    console.log("-+-+-"+ req.user.folder+" === " +req.params.id)
     if(req.user.folder == req.params.id){
         error(403,"forbidden",next);
     }

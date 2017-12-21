@@ -31,12 +31,8 @@ module.exports.sendError = (res, code, msg) => {
 }
 
 module.exports.isOwner = async(req, res, next) => {
-    console.log("{{{--- " +req.params.id);
     let folder = await folderCtrl.getMyDrive(req.params.id);
-    console.log("{{{+++ " + folder);
-    console.log("<<< "+ req.user._id +" === "+ folder.owner);
     if(String(req.user._id) != String(folder.owner)){
-        console.log("ENTER");
         error(401,"unauthorized",next);
     }
     next();

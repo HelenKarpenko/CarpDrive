@@ -133,7 +133,6 @@ async function copyFolderChildren(folder, parent) {
 }
 
 async function shareFolder(folder_id, user_id) {
-    console.log("SHARED")
     let user = await userCtrl.getById(user_id);
     let folder = await Folder.findById(folder_id).exec();
     let path = folder.path.split('#');
@@ -154,8 +153,6 @@ async function shareFolder(folder_id, user_id) {
 
 async function getSharedFolder(user) {
     let folders = user.sharedWithMe.children;
-    console.log(user);
-    console.log(folders);
     let result = [];
     for(let f_id of folders){
         let folder = await Folder.findById(f_id).exec();

@@ -9,11 +9,7 @@ require('dotenv').config();
 const busboyBodyParser = require('busboy-body-parser');
 
 // new imports
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const crypto = require('crypto');
 const cors = require('cors');
 
 
@@ -47,67 +43,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(busboyBodyParser());//for files
 
 
-/////
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(session({
-    secret: 'SEGReT$25_',
-    resave: false,
-    saveUninitialized: true
-}));
-app.use(passport.initialize());
-app.use(passport.session());
 
-// app.use('/', index);
-// app.use('/folders', users);
-// app.use('/res', res);
-// app.use('/users', u);
-// app.use('/api/v1', api);
 require('@auth')(app);
 app.use('/api/', require('@API'));
 
-const serverSalt = "45%sAlT_";
-
-function sha512(password, salt) {
-    const hash = crypto.createHmac('sha512', salt);
-    hash.update(password);
-    const value = hash.digest('hex');
-    return {
-        salt: salt,
-        passwordHash: value
-    };
-};
 const user = require('./storage/controllers/usersController');
-
-passport.use(new LocalStrategy(
-    function (username, password, done) {
-        let hash = sha512(password, serverSalt).passwordHash;
-        // console.log(username, password);
-        user.getByLogin(username)
-            .then(data => {
-
-
-                    if (data && data.length > 0&& hash === data[0].password) {
-                        done(null, data[0]);
-                    } else {
-                        done('Passport error 1');
-                    }
-            }).catch(e=>done(e));
-    }
-));
-
-passport.serializeUser(function (user, done) {
-    done(null, user.id);
-});
-
-passport.deserializeUser(function (id, done) {
-    user.getById(id)
-        .then(data => {
-            done(data ? null : 'No user',data)
-        });
-});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -129,11 +73,4 @@ console.log(res.locals.error);
           status:err.status
     });
 });
-//
-// res.status(err.status || 500);
-// res.render('error',{
-//     message: err.message,
-//     status: err.status,
-// });
-
 module.exports = app;

@@ -1,3 +1,3 @@
 export default {
-  ROOT_URL:(process.env.NODE_ENV=='dev')?'http://localhost:3001':''
+  ROOT_URL:(process.env.NODE_ENV=='development')?'http://localhost:3001':''
 }

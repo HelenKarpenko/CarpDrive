@@ -22,8 +22,17 @@ let tools = {
 let MOTHER_FOLDER = "5a30671f7dadbb136173ad05"
 
 router.route('/:id')
-    .get(passport.authenticate(['bearer-access', 'basic']), async (req, res, next) => {
+    .get(async (req, res, next) => {
+        if(req.query.limit < 0 ||
+            req.query.page < 0 ||
+            ('limit' in req.query && !Number(req.query.limit))||
+            ('page' in req.query && !Number(req.query.page))){
+            return util.sendError(res, 400,'Bad request');
+        }
         if(tools.check(req.params.id)){
+            const query = parseQuery(req.query);
+            let user = req.user;
+            console.log(user);
             let children = await folderCtrl.getChildren(req.params.id);
             let info = await folderCtrl.getInfo(req.params.id);
 
@@ -42,17 +51,13 @@ router.route('/:id')
             res.json({err: 'error'})
         }
     })
-    .post(passport.authenticate(['bearer-access', 'basic']), async (req, res, next) => {
+    .post( async (req, res, next) => {
         if(tools.check(req.params.id)){
             let myDrive = await folderCtrl.getMyDrive(req.params.id);
             let item;
             if(req.body.isFolder){
                 item = await folderCtrl.create(myDrive, req.body.name, req.user._id);
             }else{
-                console.log("<<<<");
-                console.log(req.files.img.name);
-                console.log("<<<<");
-                console.log(req.files.img.data);
                 item = await fileCtrl.create(myDrive,req.files.img.name,req.user._id,req.files.img);
             }
 
@@ -68,7 +73,7 @@ router.route('/:id')
             res.json({err: 'error'})
         }
     })
-    .delete(passport.authenticate(['bearer-access', 'basic']), async (req, res, next) => {
+    .delete( async (req, res, next) => {
         if(tools.check(req.params.id)){
             let folder = folderCtrl.remove(req.params.id);
 
@@ -84,11 +89,10 @@ router.route('/:id')
             res.json({err: 'error'})
         }
     })
-    .put(passport.authenticate(['bearer-access', 'basic']), async (req, res, next) => {
+    .put( async (req, res, next) => {
         if(tools.check(req.params.id)){
             await folderCtrl.rename(req.params.id, req.body.name);
             let folder = await folderCtrl.getMyDrive(req.params.id);
-            console.log(folder);
 
             let result = {};
             if(folder){
@@ -103,7 +107,7 @@ router.route('/:id')
         }
     })
 
-router.get('/:id/copy', passport.authenticate(['bearer-access', 'basic']),async(req, res,next) => {
+router.get('/:id/copy',async(req, res,next) => {
     if(tools.check(req.params.id)){
         let folder = await folderCtrl.copyFolder(req.params.id);
         let result = {};
@@ -119,12 +123,12 @@ router.get('/:id/copy', passport.authenticate(['bearer-access', 'basic']),async(
     }
 });
 
-router.post('/:id/share', passport.authenticate(['bearer-access', 'basic']),async(req, res,next) => {
+router.post('/:id/share',async(req, res,next) => {
     if(tools.check(req.params.id)){
         if(!req.body.username) return utilities.apierror(400,"Bad request",res)
 
         let user = await userCtrl.getByUsername(req.body.username);
-        console.log(user);
+        // console.log(user);
         let isShare = await folderCtrl.shareFolder(req.params.id, user._id);
 
         let result = {
@@ -136,7 +140,7 @@ router.post('/:id/share', passport.authenticate(['bearer-access', 'basic']),asyn
     }
 });
 
-router.get('/image/:id', passport.authenticate(['bearer-access', 'basic']),async(req, res,next) => {
+router.get('/image/:id',async(req, res,next) => {
 
     if(req.params.id && ObjectId.isValid(req.params.id)) {
         try{
@@ -151,7 +155,7 @@ router.get('/image/:id', passport.authenticate(['bearer-access', 'basic']),async
     }
 });
 
-router.get('/:id/path/',passport.authenticate(['bearer-access', 'basic']), async(req, res,next) => {
+router.get('/:id/path/', async(req, res,next) => {
     if(req.params.id && ObjectId.isValid(req.params.id)) {
         try{
             let path = await folderCtrl.getPath(req.params.id);
@@ -172,19 +176,31 @@ router.get('/:id/path/',passport.authenticate(['bearer-access', 'basic']), async
     }
 });
 
-router.get('/:id/file', passport.authenticate(['bearer-access', 'basic']),async(req, res,next) => {
-    console.log('!',req.user)
+router.get('/:id/file',async(req, res,next) => {
     if(tools.check(req.params.id)){
-        let data = await fileCtrl.getData(req.params.id)
-        res.type(data.filename.split('.').pop());
-        data.stream.pipe(res);
-        // res.json(res)
+        let file = await fileCtrl.getById(req.params.id);
+        let fileData = await fileDataCtrl.getById(file.data)
+        res.type(fileData.filename.split('.').pop());
+        fileData.stream.pipe(res)
     }else{
         res.json({err: 'error'})
     }
 });
 
-router.get('/:id/fileType', passport.authenticate(['bearer-access', 'basic']),async(req, res,next) => {
+router.get('/:id/fileInfo',async(req, res,next) => {
+    if(tools.check(req.params.id)){
+        let file = await fileCtrl.getById(req.params.id);
+        let fileData = await fileDataCtrl.getById(file.data)
+        res.json({
+            filename: fileData.filename,
+            type: fileData.contentType,
+        });
+    }else{
+        res.json({err: 'error'})
+    }
+});
+
+router.get('/:id/fileType',async(req, res,next) => {
     if(tools.check(req.params.id)){
         let data = await fileCtrl.getData(req.params.id)
         res.json({
@@ -195,4 +211,12 @@ router.get('/:id/fileType', passport.authenticate(['bearer-access', 'basic']),as
         res.json({err: 'error'})
     }
 });
+
+function parseQuery(req) {
+    let query = {};
+    if(req.name){
+        query.name = new RegExp('^'+req.name.trim(), "i");
+    }
+    return query;
+}
 module.exports = router;
