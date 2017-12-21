@@ -198,6 +198,9 @@ async function getSharedPath(id, user) {
     return result;
 }
 
+function find(query, page, limit) {
+    return Folder.paginate(query, { page: Math.abs(Number(page)) || 1, limit: Math.abs(Number(limit)) || 12 })
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -230,5 +233,6 @@ module.exports = {
     shareFolder: shareFolder,
     getSharedFolder: getSharedFolder,
     getShareChildren: getShareChildren,
+    find: find,
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };
