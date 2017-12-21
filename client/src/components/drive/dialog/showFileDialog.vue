@@ -16,9 +16,10 @@
           </v-toolbar-items>
         </v-toolbar>
         <v-card-text>
-          <div>
-            <img ref="preview" width="100%">
-          </div>
+          <iframe :src="`http://localhost:3001/api/v1/my-drive/${item._id}/file`" width="100%" height="700px" frameborder="0"></iframe>
+          <!--<div>-->
+            <!--<img ref="preview" width="100%">-->
+          <!--</div>-->
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -49,7 +50,7 @@
 //        this.item = res.data.folder;
         console.log(this.item)
         await this.getFileType();
-        await this.showFile();
+        await this.fileNext();
       }
     },
     methods:{
@@ -72,14 +73,22 @@
           console.log("SHOW FILE ENTER");
           const result = await foldersAPI.showFile(this.id);
           console.log("SUCCESS");
-          let vm = this;
-          var reader  = new FileReader();
-          reader.onload = function (e) {
-            vm.$refs.preview.src = reader.result;
-          }
-          reader.readAsDataURL(result.data);
+//          let vm = this;
+//          var reader  = new FileReader();
+//          reader.onload = function (e) {
+//            vm.$refs.preview.src = reader.result;
+//          }
+//          reader.readAsDataURL(result.data);
         } catch (e) {
           console.log(e);
+        }
+      },
+      async fileNext() {
+        if(this.type == 'image'){
+          this.showFile();
+        }
+        if(this.type == 'application'){
+//          this.showFile();
         }
       }
     }

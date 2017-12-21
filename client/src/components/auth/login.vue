@@ -1,6 +1,9 @@
 <template>
   <v-container grid-list-md text-xs-center>
-    <v-card color="grey lighten-4" v-if="!$store.getters.isLogged()" flat>
+    <v-card v-if="!$store.getters.isLogged()" flat>
+      <v-card-title>
+        <h1>Login</h1>
+      </v-card-title>
       <v-card-text>
         <v-container fluid>
           <v-layout row>
@@ -21,7 +24,7 @@
             </v-flex>
           </v-layout>
           <v-card-actions>
-            <v-btn @click.stop="login()">Login</v-btn>
+            <v-btn @click.stop="login()" block>Login</v-btn>
           </v-card-actions>
         </v-container>
       </v-card-text>
@@ -31,7 +34,7 @@
         logined
       </v-card-text>
       <v-card-actions>
-        <v-btn @click.stop="logout()">logout</v-btn>
+        <v-btn @click.stop="logout()" block>logout</v-btn>
       </v-card-actions>
     </v-card>
 

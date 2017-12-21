@@ -3,6 +3,7 @@ let router = express.Router();
 const passport = require('passport');
 const userCtrl = require('../../../storage/controllers/usersController');
 const folderCtrl = require('../../../storage/controllers/folderController');
+const Utils = require('../../../utils/utils');
 
 let tools = {};
 tools.collectDataFromReq = {
@@ -17,15 +18,15 @@ tools.collectDataFromReq = {
 tools.verifyData = {
     register (args) {
         if (!args.name/* || !validate(args.username)*/) {
-            // throw Utils.errors.InvalidRequesDatatError('Your username is invalid')
+            throw Utils.errors.InvalidRequesDatatError('Your name is invalid')
             console.log('Your username is invalid');
         }
         if (!args.username/* || !validate(args.username)*/) {
-            // throw Utils.errors.InvalidRequesDatatError('Your username is invalid')
+            throw Utils.errors.InvalidRequesDatatError('Your username is invalid')
             console.log('Your username is invalid');
         }
         if (!args.password /*|| !validate(args.password)*/) {
-            // throw Utils.errors.InvalidRequesDatatError('Your password is invalid')
+            throw Utils.errors.InvalidRequesDatatError('Your password is invalid')
             console.log('Your password is invalid');
         }
         return true;
@@ -38,7 +39,7 @@ router.post('/register', async function (req, res, next) {
         tools.verifyData.register(args);
     }catch (err){
         console.log(err);
-        // return Utils.sendError(res, 400, err.message);
+        return Utils.sendError(res, 400, err.message);
     }
     try{
         let user = await userCtrl.create(args.name, args.username, args.password);
@@ -47,13 +48,7 @@ router.post('/register', async function (req, res, next) {
             `${args.name} folder`,
             user._id,
             `${args.name} folder`);
-        // let sharedFolder = await  folderCtrl.create(
-        //     await folderCtrl.getMainFolder(),
-        //     `Shared with me`,
-        //     user._id,
-        //     `Shared with me`);
         await userCtrl.addMainFolder(user, folder._id)
-        // await userCtrl.addSharedFolder(user, sharedFolder._id)
         return res.json(
             {
                 success: true,
@@ -64,11 +59,9 @@ router.post('/register', async function (req, res, next) {
             });
     }catch (err) {
         if (err.code == 11000) {
-            // return Utils.sendError(res, 400, "This username is already taken");
-            console.log("This username is already taken");
+            return Utils.sendError(res, 400, "This username is already taken");
         } else {
-            // return Utils.sendError(res, 500, "Server error");
-            console.log("Server error"+err);
+            return Utils.sendError(res, 500, "Server error");
         }
     }
 });
@@ -89,7 +82,7 @@ router.post('/login', passport.authenticate('basic', {session: false}), async (r
         });
     } catch (err) {
         console.log(err);
-        // return Utils.sendError(res, 500, "Server error");
+        return Utils.sendError(res, 500, "Server error");
     }
 });
 

@@ -11,28 +11,16 @@
 
 <script>
   import myHeader from '@/components/globals/header.vue';
-//  import mySidebar from '@/components/globals/sidebar.vue';
   export default {
     name: 'app',
     data(){
       return{
         msg:'lena',
-//        UI:{
-//          sidebar: {
-//            toggle: true,
-//          }
-//        }
       }
     },
     components:{
       myHeader,
-//      mySidebar
     },
-//    methods:{
-//      toggleSidebar(){
-//        this.UI.sidebar.toggle = !this.UI.sidebar.toggle;
-//      }
-//    }
   }
 </script>
 

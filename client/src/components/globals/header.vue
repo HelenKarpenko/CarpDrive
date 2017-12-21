@@ -87,7 +87,7 @@
           this.$store.dispatch('setAccessToken', null);
           this.$store.dispatch('setRefreshToken', null);
 
-          this.$router.push({name:'Login'})
+          this.$router.push({name:'Start'})
         }
       },
     }

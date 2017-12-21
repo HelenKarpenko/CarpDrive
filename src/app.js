@@ -80,34 +80,34 @@ function sha512(password, salt) {
     };
 };
 const user = require('./storage/controllers/usersController');
-//
-// passport.use(new LocalStrategy(
-//     function (username, password, done) {
-//         let hash = sha512(password, serverSalt).passwordHash;
-//         // console.log(username, password);
-//         user.getByLogin(username)
-//             .then(data => {
-//
-//
-//                     if (data && data.length > 0&& hash === data[0].password) {
-//                         done(null, data[0]);
-//                     } else {
-//                         done('Passport error 1');
-//                     }
-//             }).catch(e=>done(e));
-//     }
-// ));
-//
-// passport.serializeUser(function (user, done) {
-//     done(null, user.id);
-// });
-//
-// passport.deserializeUser(function (id, done) {
-//     user.getById(id)
-//         .then(data => {
-//             done(data ? null : 'No user',data)
-//         });
-// });
+
+passport.use(new LocalStrategy(
+    function (username, password, done) {
+        let hash = sha512(password, serverSalt).passwordHash;
+        // console.log(username, password);
+        user.getByLogin(username)
+            .then(data => {
+
+
+                    if (data && data.length > 0&& hash === data[0].password) {
+                        done(null, data[0]);
+                    } else {
+                        done('Passport error 1');
+                    }
+            }).catch(e=>done(e));
+    }
+));
+
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function (id, done) {
+    user.getById(id)
+        .then(data => {
+            done(data ? null : 'No user',data)
+        });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
