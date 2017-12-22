@@ -7,7 +7,12 @@
         </v-card-title>
         <hr>
         <v-card-text>
-          <v-text-field label="Folder name" prepend-icon="folder" required v-model="create.name"></v-text-field>
+          <v-text-field
+            label="Folder name"
+            prepend-icon="folder"
+            v-model="create.name"
+            :rules="[rules.required]"
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -27,6 +32,9 @@
         create: {
           name: null,
           isFolder: true,
+        },
+        rules: {
+          required: (value) => !!value || 'Required.',
         }
       }
     },
@@ -41,7 +49,9 @@
     },
     methods: {
       async addNewFolder () {
-        this.$emit('add',this.create);
+        if(this.create.name){
+          this.$emit('add',this.create);
+        }
       },
       closeDialog(){
         this.$emit('close');

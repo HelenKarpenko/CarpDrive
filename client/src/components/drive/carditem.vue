@@ -42,6 +42,20 @@
     props: [
       'item',
     ],
+    watch:{
+      async item(){
+        if (!this.item.isFolder) {
+          await this.getFileType();
+          if(this.type[0] == 'image'){
+            this.loadPreview();
+          }else{
+            if(this.type[1] == 'pdf'){
+              this.previewURL = '/static/image/pdf.svg'
+            }
+          }
+        }
+      }
+    },
     created: async function () {
       if (!this.item.isFolder) {
         await this.getFileType();

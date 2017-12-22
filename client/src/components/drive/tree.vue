@@ -40,6 +40,14 @@
           console.log(1)
           this.UI.isShown = !this.UI.isShown;
           console.log(this.UI.isShown)
+          if(this.tree){
+            this.tree = [{
+              name: 'Level two 2-1',
+              children: [{
+                name: 'Level three 2-1-1'
+              }]
+            }]
+          }
         },
       },
     methods: {

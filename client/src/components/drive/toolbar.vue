@@ -19,26 +19,29 @@
           label="Search"
           prepend-icon="search"
         ></v-text-field>
-      <v-btn icon @click.stop="openAddDialog()">
-        <v-icon>create_new_folder</v-icon>
-      </v-btn>
-      <el-upload
-        class="upload-demo"
-        ref="list"
-        action=""
-        :auto-upload="false"
-        :show-file-list="false"
-        :on-change="hookUploadFile"
-      >
-        <v-btn icon>
-          <v-icon>file_upload</v-icon>
+      <template v-if="edit">
+        <v-btn icon @click.stop="openAddDialog()">
+          <v-icon>create_new_folder</v-icon>
         </v-btn>
-      </el-upload>
-      <v-btn icon @click="showInfoSidebar()">
-        <v-icon>info</v-icon>
-      </v-btn>
+        <el-upload
+          class="upload-demo"
+          ref="list"
+          action=""
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-change="hookUploadFile"
+        >
+          <v-btn icon>
+            <v-icon>file_upload</v-icon>
+          </v-btn>
+        </el-upload>
+        <v-btn icon @click="showInfoSidebar()">
+          <v-icon>info</v-icon>
+        </v-btn>
+      </template>
     </v-toolbar>
     <add-dialog :open="create" @close="closeAddDialog()" @add="addNewFolder" hidden/>
+
   </span>
 
 </template>
@@ -52,7 +55,9 @@
     },
     props: [
       'path',
-      'clearFilterString'
+      'clearFilterString',
+      'edit'
+
     ],
     watch:{
       clearFilterString(){

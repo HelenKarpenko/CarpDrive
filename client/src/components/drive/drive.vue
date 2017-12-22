@@ -6,7 +6,9 @@
              @addNewFile="addNewFile"
              @changeFilter="findByName"
              :clearFilterString="clearFilterString"
-             :path="path"/>
+             :path="path"
+             :edit="true"
+    />
         <info-sidebar ref="info-sidebar" :item="item"/>
       <v-container grid-list-md text-xs-center v-if="item">
         <v-layout row wrap>
@@ -36,12 +38,11 @@
                :options="menuOptions"
                @select="menuCall($event)"/>
     </context-menu>
-    <rename-dialog :open="rename" @close="closeRenameDialog" @rename="renameFolder"/>
+    <rename-dialog :open="rename" @close="closeRenameDialog" @rename="renameFolder" :oldName="Menu.data.name"/>
     <share-dialog :open="share" @close="closeShareDialog" @share="shareFolder"/>
-    <drop-file v-show="showDropZone" @addFile="addNewItem"/>
+    <drop-file v-show="showDropZone" @addFile="addNew"/>
 
     <v-snackbar
-      :timeout="false"
       :bottom="true"
       :left="true"
       v-model="loadItem"
@@ -169,10 +170,12 @@
         this.loadText = 'Try to create a new item';
         try {
           console.log(args);
+          console.log("Try folder")
           const result = await foldersAPI.addNewFolder(this.$route.params.id,args);
           if (result.data.success) {
+            console.log("folder")
             this.$message({
-              message: 'New folder created',
+              message: `\"${result.data.folder.name}\" has been created`,
               type: 'success'
             });
             this.loadItem = false;
@@ -187,16 +190,33 @@
       async addNewFile(args){
         this.loadItem = true;
         this.loadText = 'Try to upload a new file';
+        args.isFolder = false;
+        console.log("++++")
+        console.log(args);
         try{
           const result = await foldersAPI.addNewFile(this.$route.params.id, args);
+          console.log("Try")
           if (result.data.success) {
+            this.$message({
+              message: `\"${result.data.folder.name}\" has been created`,
+              type: 'success'
+            });
             this.loadItem = false;
+            console.log("file")
             this.item.children.push(result.data.folder);
             this.getMyDriveTree();
           }
         }catch(e){
           console.log(e);
         }
+      },
+      async addNew(args){
+        this.$message({
+          message: `\"${args.name}\" has been created`,
+          type: 'success'
+        });
+        this.item.children.push(args)
+        this.getMyDriveTree();
       },
 
       async removeFolder(removeItem) {
@@ -209,7 +229,7 @@
             this.item.children.splice(this.item.children.indexOf(removeItem), 1);
             this.getMyDriveTree();
             this.$message({
-              message: 'Congrats, this is a success message.',
+              message: `\"${result.data.folder.name}\" has been removed`,
               type: 'success',
               icon: "new_releases"
             });
@@ -225,6 +245,7 @@
           console.log(result.data);
           if (result.data.success) {
             this.item.children[this.item.children.indexOf(this.Menu.data)].name = args.name;
+            console.log(args.name)
             this.getMyDriveTree();
             this.$message({
               message: 'Congrats, this is a success message.',
@@ -310,6 +331,11 @@
           let res = await foldersAPI.get(user.myDrive);
           if (res.data.success) {
             this.tree = res.data.folder.children;
+            if(this.tree.length == 0){
+              this.tree = [{
+                name: 'Empty'
+              }]
+            }
             console.log(this.tree);
           }
         } catch (e) {

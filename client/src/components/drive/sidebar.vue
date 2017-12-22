@@ -18,12 +18,12 @@
               </template>
               <template v-else>
               <template  v-for="file in item.items">
-                <v-list-tile-action >
-                  <v-progress-circular indeterminate color="amber"/>
-                </v-list-tile-action>
-                <v-list-tile-content v-if="activeItem && activeItem.id=='Loading'">
-                  {{file}}
-                </v-list-tile-content>
+                <!--<v-list-tile-action >-->
+                  <!--<v-progress-circular indeterminate color="amber"/>-->
+                <!--</v-list-tile-action>-->
+                <!--<v-list-tile-content v-if="activeItem && activeItem.id=='Loading'">-->
+                  <!--{{file}}-->
+                <!--</v-list-tile-content>-->
               </template>
               </template>
             </v-list-tile>

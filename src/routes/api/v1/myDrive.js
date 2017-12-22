@@ -67,9 +67,14 @@ router.route('/:id')
         if(tools.check(req.params.id)){
             let myDrive = await folderCtrl.getMyDrive(req.params.id);
             let item;
-            if(req.body.isFolder){
+
+            console.log('+++++++++++++++');
+            console.log(req.body.isFolder)
+            if(req.body.isFolder != 'false'){
+                console.log('000000000')
                 item = await folderCtrl.create(myDrive, req.body.name, req.user._id);
             }else{
+                console.log('1111111111')
                 item = await fileCtrl.create(myDrive,req.files.img.name,req.user._id,req.files.img);
             }
 
@@ -121,7 +126,16 @@ router.route('/:id')
 
 router.get('/:id/copy',async(req, res,next) => {
     if(tools.check(req.params.id)){
-        let folder = await folderCtrl.copyFolder(req.params.id);
+        let firstFolder = await folderCtrl.getMyDrive(req.params.id);
+        console.log(firstFolder);
+        let folder
+        if(firstFolder.isFolder){
+            console.log('Folder');
+            folder = await folderCtrl.copyFolder(req.params.id);
+        }else{
+            console.log('Enter');
+            folder = await fileCtrl.copy(req.params.id)
+        }
         let result = {};
         if(folder){
             result = {

@@ -1,11 +1,11 @@
 <template>
   <span @dragover="handleDrop($event,true)"  @dragleave="handleDrop($event,false)" @drop="handleDrop($event,false)">
     <sidebar :tree="tree"/>
-    <toolbar :path="path"/>
+    <toolbar :path="path" :edit="false"/>
       <v-container grid-list-md text-xs-center v-if="item">
         <v-layout row wrap>
           <template v-if=" item.children && item.children.length > 0">
-            <v-flex xs3 v-for="(item, i) in item.children" :key="i" @contextmenu.prevent="$refs.ctx.open($event,item)">
+            <v-flex xs3 v-for="(item, i) in item.children" :key="i">
               <card-item :item="item"/>
             </v-flex>
           </template>
@@ -223,6 +223,11 @@
           let res = await foldersAPI.getSharedTree(user.sharedWithMe.id);
           if(res.data.success){
             this.tree = res.data.folders;
+            if(this.tree.length == 0){
+              this.tree = [{
+                name: 'Empty'
+              }]
+            }
             console.log(this.tree);
           }
         } catch (e) {
@@ -234,6 +239,10 @@
           const result = await foldersAPI.getPath(this.folderID);
           if (result.data.success) {
             this.path = result.data.path;
+            this.path[0] = {
+              id: this.$store.state.user.sharedWithMe.id,
+              name: 'Shared with me '
+            };
             console.log(this.path);
           }
         }catch(e){

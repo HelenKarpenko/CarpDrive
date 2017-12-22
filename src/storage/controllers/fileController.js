@@ -57,6 +57,29 @@ async function getData(id){
     return dataCtrl.getById(file.data);
 }
 
+async function copy(id){
+    let file = await File.findById(id).exec();
+
+    let copy = new File({
+        name: file.name,
+        hasChildren: file.hasChildren,
+        isFolder: file.isFolder,
+        data: file.data,
+        owner: file.owner,
+        sharedWithMe: [],
+        info: file.info,
+    });
+
+    let parent = await File.findById(file.parent).exec();
+
+    console.log(parent);
+    copy.parent = parent;
+    parent.hasChildren = true;
+
+    await parent.save();
+    return copy.save();
+}
+
 module.exports = {
     connect: connect,
     create: create,
@@ -66,4 +89,5 @@ module.exports = {
     getByName: getByName,
     getData: getData,
     getByName: getByName,
+    copy:copy,
 };
