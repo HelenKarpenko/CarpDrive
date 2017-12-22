@@ -3,16 +3,15 @@
     <sidebar :tree="tree"/>
     <toolbar @addNewItem="addNewItem"
              @toggleInfoSidebar="toggleInfoSidebar"
-             @addNewFile="addNewItem"
+             @addNewFile="addNewFile"
              @changeFilter="findByName"
              :clearFilterString="clearFilterString"
              :path="path"/>
         <info-sidebar ref="info-sidebar" :item="item"/>
-
       <v-container grid-list-md text-xs-center v-if="item">
         <v-layout row wrap>
           <template v-if=" item.children && item.children.length > 0">
-            <v-flex xs3 v-for="(item, i) in item.children" :key="i" @contextmenu.prevent="$refs.ctx.open($event,item)">
+            <v-flex xs2 v-for="(item, i) in item.children" :key="i" @contextmenu.prevent="$refs.ctx.open($event,item)">
               <card-item :item="item"/>
             </v-flex>
           </template>
@@ -40,6 +39,16 @@
     <rename-dialog :open="rename" @close="closeRenameDialog" @rename="renameFolder"/>
     <share-dialog :open="share" @close="closeShareDialog" @share="shareFolder"/>
     <drop-file v-show="showDropZone" @addFile="addNewItem"/>
+
+    <v-snackbar
+      :timeout="false"
+      :bottom="true"
+      :left="true"
+      v-model="loadItem"
+    >
+      <v-progress-circular indeterminate color="amber"></v-progress-circular>
+      {{loadText}}
+    </v-snackbar>
   </span>
 </template>
 
@@ -111,6 +120,8 @@
         tree: null,
         path: null,
         clearFilterString: false,
+        loadItem: false,
+        loadText: 'load'
       }
     },
     created: async function () {
@@ -151,14 +162,43 @@
           this.openShareDialog();
         }
       },
-      addNewItem(args) {
-        this.$message({
-          message: 'Congrats, this is a success message.',
-          type: 'success'
-        });
-        this.item.children.push(args);
-        this.getMyDriveTree();
+
+//      ADD
+      async addNewItem(args) {
+        this.loadItem = true;
+        this.loadText = 'Try to create a new item';
+        try {
+          console.log(args);
+          const result = await foldersAPI.addNewFolder(this.$route.params.id,args);
+          if (result.data.success) {
+            this.$message({
+              message: 'New folder created',
+              type: 'success'
+            });
+            this.loadItem = false;
+            this.item.children.push(result.data.folder);
+            this.getMyDriveTree();
+          }
+        } catch (e) {
+          this.loadItem = false;
+          console.log(e);
+        }
       },
+      async addNewFile(args){
+        this.loadItem = true;
+        this.loadText = 'Try to upload a new file';
+        try{
+          const result = await foldersAPI.addNewFile(this.$route.params.id, args);
+          if (result.data.success) {
+            this.loadItem = false;
+            this.item.children.push(result.data.folder);
+            this.getMyDriveTree();
+          }
+        }catch(e){
+          console.log(e);
+        }
+      },
+
       async removeFolder(removeItem) {
         try {
           console.log("REMOVE")
@@ -220,6 +260,7 @@
         }
       },
 
+//      SHARE
       async shareFolder(args) {
         this.closeShareDialog()
         try {
@@ -227,7 +268,7 @@
           if (result.data.success) {
             console.log(result.data);
             this.$message({
-              message: 'Congrats, this is a success message.',
+              message: 'Success',
               type: 'success'
             });
           }

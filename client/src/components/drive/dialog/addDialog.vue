@@ -7,7 +7,6 @@
         </v-card-title>
         <hr>
         <v-card-text>
-          <v-icon>image</v-icon>
           <v-text-field label="Folder name" prepend-icon="folder" required v-model="create.name"></v-text-field>
         </v-card-text>
         <v-card-actions>
@@ -37,13 +36,10 @@
     watch:{
       open(){
         this.show = Boolean(this.open);
+        this.create.name = null;
       }
     },
     methods: {
-      loadFile(event){
-        this.create.img = event.target.files[0];
-        console.log(this.create.img);
-      },
       async addNewFolder () {
         this.$emit('add',this.create);
       },

@@ -1,16 +1,16 @@
 <template>
   <span>
     <a @click="show">
-    <v-card>
+    <v-card height="170px">
         <template v-if="item.isFolder">
-          <v-card-media src="/static/image/folder.svg" height="250px" contain>
+          <v-card-media src="/static/image/folder.svg" height="100px" contain>
           </v-card-media>
         </template>
         <template v-else>
-          <v-card-media :src="previewURL" height="250px" contain/>
+          <v-card-media :src="previewURL" height="100px" contain/>
         </template>
         <v-card-title primary-title>
-          <div>
+          <div id="title">
             <h3 class="headline mb-0">{{item.name}}</h3>
           </div>
         </v-card-title>
@@ -111,3 +111,13 @@
     },
   }
 </script>
+
+<style scoped>
+  #title{
+    height: 30px;
+    word-wrap: break-word;
+    overflow:hidden
+
+  }
+</style>
+

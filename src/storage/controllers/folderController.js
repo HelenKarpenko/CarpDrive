@@ -2,6 +2,7 @@ let mongoose = require('mongoose');
 let Folder = require('../models/folderModel');
 const file = require('./fileController')
 const userCtrl = require('./usersController');
+const dataCtrl = require('./fileDataController')
 
 // const MAINFOLDER = "5a3c0dddc4944e2002b978a6";
 
@@ -108,6 +109,9 @@ async function remove(id) {
         for (let ch of children) {
             this.remove(ch._id);
         }
+    }
+    if(!folder.isFolder){
+        await dataCtrl.remove(folder.data)
     }
     return Folder.findByIdAndRemove(id).exec();
 }

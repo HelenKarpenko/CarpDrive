@@ -73,16 +73,20 @@
       }
     },
     methods:{
+//      async addNewFolder (args) {
+//        this.closeAddDialog();
+//        try {
+//          const result = await foldersAPI.addNewFolder(this.$route.params.id,args);
+//          if (result.data.success) {
+//            this.$emit('addNewItem', result.data.folder);
+//          }
+//        } catch (e) {
+//          console.log(e);
+//        }
+//      },
       async addNewFolder (args) {
         this.closeAddDialog();
-        try {
-          const result = await foldersAPI.addNewFolder(this.$route.params.id,args);
-          if (result.data.success) {
-            this.$emit('addNewItem', result.data.folder);
-          }
-        } catch (e) {
-          console.log(e);
-        }
+        this.$emit('addNewItem', args);
       },
       openAddDialog(){
         this.create = true;
@@ -105,19 +109,27 @@
 //          console.log(e);
 //        }
 //      },
+//      async hookUploadFile(file, fileList){
+//        let args = {
+//          name: file.name,
+//          img: file.raw,
+//        }
+//        try{
+//          const result = await foldersAPI.addNewFile(this.$route.params.id, args);
+//          if (result.data.success) {
+//            this.$emit('addNewFile', result.data.folder);
+//          }
+//        }catch(e){
+//          console.log(e);
+//        }
+//        fileList.splice(0,fileList.length)
+//      },
       async hookUploadFile(file, fileList){
         let args = {
           name: file.name,
           img: file.raw,
         }
-        try{
-          const result = await foldersAPI.addNewFile(this.$route.params.id, args);
-          if (result.data.success) {
-            this.$emit('addNewFile', result.data.folder);
-          }
-        }catch(e){
-          console.log(e);
-        }
+        this.$emit('addNewFile', args);
         fileList.splice(0,fileList.length)
       },
       async clickPath(item){
