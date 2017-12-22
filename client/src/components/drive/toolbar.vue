@@ -35,10 +35,10 @@
             <v-icon>file_upload</v-icon>
           </v-btn>
         </el-upload>
+        </template>
         <v-btn icon @click="showInfoSidebar()">
           <v-icon>info</v-icon>
         </v-btn>
-      </template>
     </v-toolbar>
     <add-dialog :open="create" @close="closeAddDialog()" @add="addNewFolder" hidden/>
 

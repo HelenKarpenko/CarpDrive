@@ -41,15 +41,21 @@ router.route('/:id/tree')
 router.route('/:id')
     .get(async (req, res, next) => {
         if(tools.check(req.params.id)){
+            // let info;
+            // if(req.user.sharedWithMe.id = req.params.id,req.user){
+            //     info = {name: 'Shared with me'}
+            // }else{
+            //     let info = await folderCtrl.getInfo(req.params.id);
+            // }
             let children = await folderCtrl.getShareChildren(req.params.id,req.user);
-            // let info = await folderCtrl.getInfo(req.params.id);
+            let info = await folderCtrl.getInfo(req.params.id);
 
             let result = {};
             if(children){
                 result = {
                     success: true,
                     folder:{
-                        // info: info,
+                        info: info,
                         children: children,
                     }
                 }

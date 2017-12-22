@@ -15,7 +15,7 @@
         <v-card-media src="/static/image/folderImage.svg" height="250px" contain/>
       </template>
       <v-divider></v-divider>
-      <template v-if="item.info.sharedWith.length == 0">
+      <template v-if="item.info.sharedWith && item.info.sharedWith.length == 0">
         <v-icon>lock</v-icon><span>Вы жадина-говядина соленый огурец</span>
       </template>
       <template v-else>
@@ -60,8 +60,14 @@
     ],
     methods: {
       toggle(){
+        console.log(")))))")
+        console.log(this.item);
+
         this.open = !this.open;
-        if(this.item.info.sharedWith != 0){
+        if(this.item &&
+          this.item.info &&
+          this.item.info.sharedWith &&
+          this.item.info.sharedWith != 0){
           for(let user of this.item.info.sharedWith){
             this.loadAvatar(user);
           }

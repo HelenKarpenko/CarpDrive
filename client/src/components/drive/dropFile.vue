@@ -15,9 +15,11 @@
         let args = {
           name: files[0].name,
           img: files[0],
+          isFolder: false,
         }
         try{
           console.log("enter");
+
           const result = await foldersAPI.addNewFile(this.$route.params.id, args);
           if (result.data.success) {
             console.log("addFile");

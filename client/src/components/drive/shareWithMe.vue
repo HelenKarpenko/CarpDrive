@@ -1,7 +1,11 @@
 <template>
   <span @dragover="handleDrop($event,true)"  @dragleave="handleDrop($event,false)" @drop="handleDrop($event,false)">
     <sidebar :tree="tree"/>
-    <toolbar :path="path" :edit="false"/>
+    <toolbar
+      @toggleInfoSidebar="toggleInfoSidebar"
+      :path="path"
+      :edit="false"/>
+    <info-sidebar ref="info-sidebar" :item="item"/>
       <v-container grid-list-md text-xs-center v-if="item">
         <v-layout row wrap>
           <template v-if=" item.children && item.children.length > 0">
@@ -26,7 +30,7 @@
 </template>
 
 <script>
-
+  import InfoSidebar from '@/components/drive/infoSidebar.vue';
   import TreeItem from '@/components/drive/tree';
   import Toolbar from '@/components/drive/toolbar';
   import Sidebar from '@/components/drive/sidebar';
@@ -37,6 +41,7 @@
   import foldersAPI from '@/services/folders';
   export default{
     components:{
+      InfoSidebar,
       TreeItem,
       Toolbar,
       Sidebar,
@@ -50,35 +55,6 @@
         showDropZone:false,
         rename: false,
         share: false,
-        menuOptions: [
-          {
-            id: 'rename',
-            label: 'Rename',
-            icon: 'edit',
-            secondaryText: 'Ctrl+E',
-          },
-          {
-            id: 'copy',
-            label: 'Duplicate',
-            icon: 'content_copy',
-            secondaryText: 'Ctrl+D'
-          },
-          {
-            id: 'share',
-            label: 'Share',
-            icon: 'share',
-            secondaryText: 'Ctrl+Shift+S',
-          },
-          {
-            type: 'divider'
-          },
-          {
-            id: 'delete',
-            label: 'Delete',
-            icon: 'delete',
-            secondaryText: 'Del',
-          }
-        ],
         Menu:{
           data:{}
         },
@@ -249,6 +225,9 @@
           console.log(e);
         }
       },
+      toggleInfoSidebar() {
+        this.$refs['info-sidebar'].toggle()
+      }
     }
   }
 </script>
