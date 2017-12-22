@@ -72,7 +72,7 @@
   export default {
     data() {
       return {
-        previewURL: '/static/image/folder.svg',
+        previewURL: '/static/image/folderYellow.svg',
       }
     },
     props: [

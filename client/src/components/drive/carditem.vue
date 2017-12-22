@@ -3,7 +3,7 @@
     <a @click="show">
     <v-card height="170px">
         <template v-if="item.isFolder">
-          <v-card-media src="/static/image/folder.svg" height="100px" contain>
+          <v-card-media src="/static/image/folderImage.svg" height="100px" contain>
           </v-card-media>
         </template>
         <template v-else>
@@ -33,7 +33,7 @@
     },
     data() {
       return {
-        previewURL: '/static/image/folder.svg',
+        previewURL: '/static/image/folderYellow.svg',
         folderID: null,
         type: 'file',
         showFileDialog: false,

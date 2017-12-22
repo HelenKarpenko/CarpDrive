@@ -12,7 +12,7 @@
         </v-card-title>
       <v-divider/>
       <template v-if="item.info.isFolder">
-        <v-card-media src="/static/image/folder.svg" height="250px" contain/>
+        <v-card-media src="/static/image/folderImage.svg" height="250px" contain/>
       </template>
       <v-divider></v-divider>
       <template v-if="item.info.sharedWith.length == 0">
@@ -26,7 +26,7 @@
       <v-divider></v-divider>
       <v-card-text>
         Name: <b>{{item.info.name}}</b> <br>
-        Size: <b>{{item.info.name}}</b> <br>
+        Type: <b>Folder</b> <br>
         Created: <b>{{item.info.info.created}}</b><br>
         Modified: <b>{{item.info.info.modified}}</b>
       </v-card-text>
@@ -52,7 +52,7 @@
           {id: 'ShareWithMe', icon: 'folder_shared'},
         ],
         activeItem: null,
-        previewURL: '/static/image/folder.svg',
+        previewURL: '/static/image/folderYellow.svg',
       }
     },
     props: [

@@ -6,7 +6,12 @@
         </v-card-title>
         <hr>
         <v-card-text>
-          <v-text-field label="Folder name" prepend-icon="folder" v-model="create.name"></v-text-field>
+          <v-text-field
+            label="Folder name"
+            prepend-icon="folder"
+            v-model="create.name"
+            autofocus
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

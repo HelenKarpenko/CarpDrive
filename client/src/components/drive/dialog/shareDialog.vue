@@ -6,7 +6,13 @@
       </v-card-title>
       <hr>
       <v-card-text>
-        <v-text-field label="Enter username" prepend-icon="face" required v-model="share.username"></v-text-field>
+        <v-text-field
+          label="Enter username"
+          prepend-icon="face"
+          required
+          v-model="share.username"
+          autofocus
+        ></v-text-field>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>

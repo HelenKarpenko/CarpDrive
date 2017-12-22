@@ -176,7 +176,8 @@
             console.log("folder")
             this.$message({
               message: `\"${result.data.folder.name}\" has been created`,
-              type: 'success'
+              type: 'success',
+              icon: "new_releases"
             });
             this.loadItem = false;
             this.item.children.push(result.data.folder);
@@ -199,7 +200,8 @@
           if (result.data.success) {
             this.$message({
               message: `\"${result.data.folder.name}\" has been created`,
-              type: 'success'
+              type: 'success',
+              icon: "new_releases"
             });
             this.loadItem = false;
             console.log("file")
@@ -213,7 +215,8 @@
       async addNew(args){
         this.$message({
           message: `\"${args.name}\" has been created`,
-          type: 'success'
+          type: 'success',
+          icon: "new_releases"
         });
         this.item.children.push(args)
         this.getMyDriveTree();
@@ -248,8 +251,9 @@
             console.log(args.name)
             this.getMyDriveTree();
             this.$message({
-              message: 'Congrats, this is a success message.',
-              type: 'success'
+              message: `Item has been renamed to \"${result.data.folder.name}\"`,
+              type: 'success',
+              icon: "new_releases"
             });
           }
         } catch (e) {
@@ -289,8 +293,9 @@
           if (result.data.success) {
             console.log(result.data);
             this.$message({
-              message: 'Success',
-              type: 'success'
+              message: `Shared success`,
+              type: 'success',
+              icon: "new_releases"
             });
           }
         } catch (e) {

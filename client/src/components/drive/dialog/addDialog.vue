@@ -12,6 +12,7 @@
             prepend-icon="folder"
             v-model="create.name"
             :rules="[rules.required]"
+            autofocus
           ></v-text-field>
         </v-card-text>
         <v-card-actions>
