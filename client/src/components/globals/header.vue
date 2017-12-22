@@ -1,7 +1,8 @@
 <template>
   <v-toolbar color="amber" app fixed clipped-left dense>
-    <v-toolbar-side-icon></v-toolbar-side-icon>
-    <span class="title">Carpdrive&nbsp;</span>
+    <!--<v-toolbar-side-icon></v-toolbar-side-icon>-->
+    <v-icon>cloud</v-icon>
+    <span class="title">&nbsp;Carpdrive&nbsp;</span>
     <v-spacer></v-spacer>
     <v-btn icon @click.prevent="$refs.ctx.open($event,item)">
       <v-icon>face</v-icon>

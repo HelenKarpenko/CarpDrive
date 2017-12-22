@@ -18,7 +18,6 @@ export default {
     })
   },
   bearerAccessAuth() {
-    console.log(storage.state.accessToken)
     return new axios.create({
       baseURL:  Globals.ROOT_URL,
       headers: {'authorization': "Bearer " + storage.state.accessToken}
@@ -27,7 +26,7 @@ export default {
   bearerRefreshAuth() {
     return new axios.create({
       baseURL:  Globals.ROOT_URL,
-      headers: {'Authorization': "Bearer" + storage.state.refreshToken}
+      headers: {'Authorization': "Bearer " + storage.state.refreshToken}
     })
   }
 }

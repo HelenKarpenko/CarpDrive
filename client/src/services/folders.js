@@ -1,10 +1,7 @@
 import API from './api';
+import Auth from './auth';
 
 export default {
-  find(args) {
-    let query = '/api/v1/my-drive';
-    return API.noAuth().get(query);
-  },
   addNewFolder(parent, args) {
     console.log(parent);
     console.log(`/api/v1/my-drive/${parent}`);
@@ -34,7 +31,17 @@ export default {
         query +=`${id}`
       }
       console.log(query);
-    return API.bearerAccessAuth().get(query);
+    return API.bearerAccessAuth().get(query).catch(async err=>{
+      if(err.response.status==401){
+        if(await Auth.refreshToken()){
+          return this.get(id)
+        }else{
+          throw err;
+        }
+      }else{
+        throw err;
+      }
+    });
   },
   getPath(id) {
     return API.bearerAccessAuth().get(`/api/v1/my-drive/${id}/path`);

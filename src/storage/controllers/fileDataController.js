@@ -39,9 +39,11 @@ function save(file) {
 }
 
 function getById(id) {
+
     return new Promise((resolve, reject) => {
         fileModel.findOne({_id: id, root: folder},
             async (err, file) => {
+                console.log(file);
                 try {
                     if (err) {
                         reject(err);

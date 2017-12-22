@@ -26,11 +26,9 @@
   import ShowFile from '@/components/drive/dialog/showFileDialog';
   import foldersAPI from '@/services/folders';
   import globals from '@/services/globals';
-  import VCardMedia from "vuetify/src/components/VCard/VCardMedia";
 
   export default {
     components: {
-      VCardMedia,
       ShowFile,
     },
     data() {
@@ -47,18 +45,13 @@
     created: async function () {
       if (!this.item.isFolder) {
         await this.getFileType();
-        console.log("------------")
-        console.log(this.type);
-        console.log("------------")
         if(this.type[0] == 'image'){
           this.loadPreview();
         }else{
           if(this.type[1] == 'pdf'){
             this.previewURL = '/static/image/pdf.svg'
           }
-
         }
-
       }
     },
     methods: {

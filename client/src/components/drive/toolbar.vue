@@ -34,7 +34,7 @@
           <v-icon>file_upload</v-icon>
         </v-btn>
       </el-upload>
-      <v-btn icon>
+      <v-btn icon @click="showInfoSidebar()">
         <v-icon>info</v-icon>
       </v-btn>
     </v-toolbar>
@@ -48,7 +48,7 @@
   import foldersAPI from '@/services/folders';
   export default{
     components:{
-      addDialog,
+      addDialog
     },
     props: [
       'path',
@@ -127,6 +127,9 @@
       async changeFilter () {
         this.$emit('changeFilter', this.filterString);
       },
+      showInfoSidebar(){
+        this.$emit('toggleInfoSidebar')
+      }
     }
   }
 </script>

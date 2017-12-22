@@ -1,6 +1,7 @@
 let mongoose = require('mongoose');
 let User = require('../models/userModel');
 const folderCtrl = require('./folderController');
+const dataCtrl = require('./fileDataController')
 const ObjectId = require('mongoose').Types.ObjectId;
 
 mongoose.Promise = global.Promise;
@@ -114,6 +115,13 @@ let get = {
     }
 }
 
+async function setAvatar(id, avatar) {
+    let user = await User.findById(id).exec();
+    let ava = await dataCtrl.save(avatar)
+    user.avatar = ava;
+    return user.save();
+}
+
 //////////////////////
 
 module.exports = {
@@ -131,5 +139,6 @@ module.exports = {
     addSharedFolder: addSharedFolder,
     //////
     get: get,
+    setAvatar: setAvatar,
     //////
 };

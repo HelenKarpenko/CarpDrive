@@ -22,7 +22,7 @@ let tools = {
 let MOTHER_FOLDER = "5a30671f7dadbb136173ad05"
 
 router.route('/:id/tree')
-    .get(passport.authenticate(['bearer-access', 'basic']), async (req, res, next) => {
+    .get(async (req, res, next) => {
         if(tools.check(req.params.id)){
             let folders = await folderCtrl.getSharedFolder(req.user);
 
@@ -39,7 +39,7 @@ router.route('/:id/tree')
         }
     })
 router.route('/:id')
-    .get(passport.authenticate(['bearer-access', 'basic']), async (req, res, next) => {
+    .get(async (req, res, next) => {
         if(tools.check(req.params.id)){
             let children = await folderCtrl.getShareChildren(req.params.id,req.user);
             // let info = await folderCtrl.getInfo(req.params.id);

@@ -6,6 +6,10 @@ const ACCESS_TOKEN_LIFE = 60*60*24;             //one day
 const REFRESH_TOKEN_LIFE = 60*60*24*1000;
 
 let userSchema = new Schema({
+    avatar: {
+        type: Schema.Types.ObjectId,
+        default: null,
+    },
     name: {
         type: String,
         required: true,
@@ -100,6 +104,8 @@ userSchema.methods.comparePassword = function (plainPassword) {
 
 userSchema.methods.minInfo = function () {
     return {
+        id: this._id,
+        avatar: this.avatar,
         name: this.name,
         username: this.username,
         myDrive: this.myDrive,

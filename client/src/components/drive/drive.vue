@@ -1,11 +1,14 @@
 <template>
-  <span @dragover="handleDrop($event,true)"  @dragleave="handleDrop($event,false)" @drop="handleDrop($event,false)">
+  <span @dragover="handleDrop($event,true)" @dragleave="handleDrop($event,false)" @drop="handleDrop($event,false)">
     <sidebar :tree="tree"/>
     <toolbar @addNewItem="addNewItem"
+             @toggleInfoSidebar="toggleInfoSidebar"
              @addNewFile="addNewItem"
              @changeFilter="findByName"
              :clearFilterString="clearFilterString"
              :path="path"/>
+        <info-sidebar ref="info-sidebar" :item="item"/>
+
       <v-container grid-list-md text-xs-center v-if="item">
         <v-layout row wrap>
           <template v-if=" item.children && item.children.length > 0">
@@ -34,8 +37,8 @@
                :options="menuOptions"
                @select="menuCall($event)"/>
     </context-menu>
-    <rename-dialog :open="rename"  @close="closeRenameDialog" @rename="renameFolder"/>
-    <share-dialog :open="share"  @close="closeShareDialog" @share="shareFolder"/>
+    <rename-dialog :open="rename" @close="closeRenameDialog" @rename="renameFolder"/>
+    <share-dialog :open="share" @close="closeShareDialog" @share="shareFolder"/>
     <drop-file v-show="showDropZone" @addFile="addNewItem"/>
   </span>
 </template>
@@ -50,8 +53,11 @@
   import ShareDialog from '@/components/drive/dialog/shareDialog';
   import DropFile from '@/components/drive/dropFile';
   import foldersAPI from '@/services/folders';
-  export default{
-    components:{
+  import InfoSidebar from '@/components/drive/infoSidebar.vue';
+
+  export default {
+    components: {
+      InfoSidebar,
       TreeItem,
       Toolbar,
       Sidebar,
@@ -60,9 +66,9 @@
       RenameDialog,
       ShareDialog,
     },
-    data(){
-      return{
-        showDropZone:false,
+    data() {
+      return {
+        showDropZone: false,
         rename: false,
         share: false,
         menuOptions: [
@@ -94,8 +100,8 @@
             secondaryText: 'Del',
           }
         ],
-        Menu:{
-          data:{}
+        Menu: {
+          data: {}
         },
         folderID: null,
         item: {
@@ -107,17 +113,17 @@
         clearFilterString: false,
       }
     },
-    created: async function (){
+    created: async function () {
       this.processRouter(this.$route.params)
       await this.getMyDriveTree();
       await this.load();
     },
-    watch:{
-      page:async function(){
+    watch: {
+      page: async function () {
         await this.load();
       }
     },
-    async beforeRouteUpdate (to, from, next) {
+    async beforeRouteUpdate(to, from, next) {
       this.clearFilterString = true;
       this.processRouter(to.params);
       await this.load();
@@ -125,27 +131,27 @@
       next();
     },
     methods: {
-      handleDrop(e,b){
+      handleDrop(e, b) {
         this.showDropZone = b;
       },
-      onCtxOpen(data){
+      onCtxOpen(data) {
         this.Menu.data = data;
       },
-      async menuCall(e){
-        if(e.id == 'delete'){
+      async menuCall(e) {
+        if (e.id == 'delete') {
           await this.removeFolder(this.Menu.data);
         }
-        if(e.id == 'rename'){
+        if (e.id == 'rename') {
           this.openRenameDialog();
         }
-        if(e.id == 'copy'){
+        if (e.id == 'copy') {
           await this.copyFolder(this.Menu.data);
         }
-        if(e.id == 'share'){
+        if (e.id == 'share') {
           this.openShareDialog();
         }
       },
-      addNewItem(args){
+      addNewItem(args) {
         this.$message({
           message: 'Congrats, this is a success message.',
           type: 'success'
@@ -160,7 +166,7 @@
           const result = await foldersAPI.removeFolder(removeItem._id);
           console.log(result.data);
           if (result.data.success) {
-            this.item.children.splice(this.item.children.indexOf(removeItem),1);
+            this.item.children.splice(this.item.children.indexOf(removeItem), 1);
             this.getMyDriveTree();
             this.$message({
               message: 'Congrats, this is a success message.',
@@ -177,7 +183,7 @@
         try {
           const result = await foldersAPI.renameFolder(this.Menu.data._id, args);
           console.log(result.data);
-          if(result.data.success){
+          if (result.data.success) {
             this.item.children[this.item.children.indexOf(this.Menu.data)].name = args.name;
             this.getMyDriveTree();
             this.$message({
@@ -189,15 +195,15 @@
           console.log(e);
         }
       },
-      openRenameDialog(){
+      openRenameDialog() {
         this.rename = !this.rename;
         console.log(this.rename)
       },
-      async closeRenameDialog(){
+      async closeRenameDialog() {
         console.log(3)
         this.rename = false;
       },
-      async copyFolder(item){
+      async copyFolder(item) {
         try {
           const result = await foldersAPI.copyFolder(item._id);
           console.log(result.data);
@@ -229,27 +235,27 @@
           console.log(e);
         }
       },
-      openShareDialog(){
+      openShareDialog() {
         this.share = !this.share;
       },
-      async closeShareDialog(){
+      async closeShareDialog() {
         this.share = false;
       },
 
 
-      processRouter(params){
-        console.log(params  )
-        if(params && params.id){
+      processRouter(params) {
+        console.log(params)
+        if (params && params.id) {
           this.folderID = params.id;
-        }else{
-          this.folderID = this.folderID||this.$store.state.user.myDrive;
+        } else {
+          this.folderID = this.folderID || this.$store.state.user.myDrive;
         }
       },
       async load() {
         try {
           let user = this.$store.state.user;
           let res = await foldersAPI.get(this.folderID);
-          if(res.data.success){
+          if (res.data.success) {
             this.item = res.data.folder;
             await this.getPath();
           }
@@ -261,7 +267,7 @@
         try {
           let user = this.$store.state.user;
           let res = await foldersAPI.get(user.myDrive);
-          if(res.data.success){
+          if (res.data.success) {
             this.tree = res.data.folder.children;
             console.log(this.tree);
           }
@@ -269,31 +275,34 @@
           console.log(e)
         }
       },
-      async getPath(){
-        try{
+      async getPath() {
+        try {
           const result = await foldersAPI.getPath(this.folderID);
           if (result.data.success) {
             this.path = result.data.path;
             console.log(this.path);
           }
-        }catch(e){
+        } catch (e) {
           console.log(e);
         }
       },
-      async findByName(args){
+      async findByName(args) {
         try {
-          if(args == ''){
+          if (args == '') {
             await this.load()
             return
           }
           let res = await foldersAPI.findByName(args);
-          if(res.data.success){
+          if (res.data.success) {
             this.item = res.data;
 //            await this.getPath();
           }
         } catch (e) {
           console.log(e)
         }
+      },
+      toggleInfoSidebar() {
+        this.$refs['info-sidebar'].toggle()
       }
     }
   }
