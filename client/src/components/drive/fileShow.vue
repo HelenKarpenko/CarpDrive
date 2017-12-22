@@ -1,7 +1,10 @@
 <template>
-  <div>
-    <img ref="preview" >
-  </div>
+  <span>
+    <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    <div>
+      <img ref="preview" >
+    </div>
+  </span>
 </template>
 
 <script>
@@ -13,12 +16,15 @@
         id: this.$route.params.id,
         item: null,
         data: null,
+        loadItem: true,
       }
     },
     created: async function () {
       console.log(this.id);
       this.item = await foldersAPI.get(this.id);
+      this.loadItem = true;
       await this.showFile();
+//      this.loadItem = false;
     },
     methods: {
       async showFile() {

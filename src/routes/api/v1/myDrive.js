@@ -70,7 +70,7 @@ router.route('/:id')
 
             console.log('+++++++++++++++');
             console.log(req.body.isFolder)
-            if(req.body.isFolder != 'false' && !req.files.img){
+            if(req.body.isFolder != 'false'){
                 console.log('000000000')
                 item = await folderCtrl.create(myDrive, req.body.name, req.user._id);
             }else{

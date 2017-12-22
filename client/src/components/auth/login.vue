@@ -29,12 +29,10 @@
         </v-container>
       </v-card-text>
     </v-card>
-    <v-card color="grey lighten-4" v-else flat>
-      <v-card-text>
-        logined
-      </v-card-text>
+    <v-card v-else flat>
       <v-card-actions>
-        <v-btn @click.stop="logout()" block>logout</v-btn>
+        <v-btn @click.stop="enter()" block>My DRIVE</v-btn>
+        <v-btn @click.stop="logout()" block>Log out</v-btn>
       </v-card-actions>
     </v-card>
 
@@ -71,14 +69,23 @@
       },
       logout:async function(){
         try {
-          await authAPI.logout(this.credentials);
+          await authAPI.logout({
+            username: this.$store.state.username,
+            password:  this.$store.state.password,
+          });
         }catch (e){
 
         }
         this.$store.dispatch('setUser', null);
         this.$store.dispatch('setAccessToken', null);
         this.$store.dispatch('setRefreshToken', null);
+
+        this.$router.push({name:'Start'})
+      },
+      enter(){
+        this.$router.push({name:'Drive', params: {id: this.$store.state.user.myDrive}})
       }
+
     },
   }
 
