@@ -40,6 +40,7 @@
     </context-menu>
     <rename-dialog :open="rename" @close="closeRenameDialog" @rename="renameFolder" :oldName="Menu.data.name"/>
     <share-dialog :open="share" @close="closeShareDialog" @share="shareFolder"/>
+    <dialog-remove :item="itemToRemove" @remove="removeFolder" @close="closeRemoveDialog"/>
     <drop-file v-show="showDropZone" @addFile="addNew"/>
 
     <v-snackbar
@@ -64,6 +65,7 @@
   import DropFile from '@/components/drive/dropFile';
   import foldersAPI from '@/services/folders';
   import InfoSidebar from '@/components/drive/infoSidebar.vue';
+  import dialogRemove from '@/components/drive/dialog/removeDialog.vue'
 
   export default {
     components: {
@@ -75,6 +77,7 @@
       DropFile,
       RenameDialog,
       ShareDialog,
+      dialogRemove
     },
     data() {
       return {
@@ -122,7 +125,9 @@
         path: null,
         clearFilterString: false,
         loadItem: false,
-        loadText: 'load'
+        loadText: 'load',
+        itemToRemove: null,
+        remove: false,
       }
     },
     created: async function () {
@@ -151,7 +156,8 @@
       },
       async menuCall(e) {
         if (e.id == 'delete') {
-          await this.removeFolder(this.Menu.data);
+          this.openRemoveDialog(this.Menu.data);
+//          await this.removeFolder(this.Menu.data);
         }
         if (e.id == 'rename') {
           this.openRenameDialog();
@@ -223,6 +229,7 @@
       },
 
       async removeFolder(removeItem) {
+        this.closeRemoveDialog();
         try {
           console.log("REMOVE")
           console.log(this.item);
@@ -232,7 +239,7 @@
             this.item.children.splice(this.item.children.indexOf(removeItem), 1);
             this.getMyDriveTree();
             this.$message({
-              message: `\"${result.data.folder.name}\" has been removed`,
+              message: `Item has been removed`,
               type: 'success',
               icon: "new_releases"
             });
@@ -241,6 +248,13 @@
           console.log(e);
         }
       },
+      openRemoveDialog(item){
+        this.itemToRemove = item;
+      },
+      closeRemoveDialog(){
+        this.itemToRemove = null;
+      },
+
       async renameFolder(args) {
         this.closeRenameDialog();
         try {
